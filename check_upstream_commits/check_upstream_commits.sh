@@ -140,7 +140,7 @@ while IFS= read -r line; do
                 break
             fi
         fi
-    done < <(git log "$BRANCH" --format='%H %s' --grep="$TITLE_BASENAME")
+    done < <(git log "$BRANCH" --format='%H %s' --grep="$TITLE_BASENAME" --fixed-strings)
     if [ $MATCH_FOUND -eq 0 ]; then
         output "$(printf "%-7s (%-8s) %s" "ABSENT" "$ABBREV" "$line")"
         ABSENT=$((ABSENT+1))
