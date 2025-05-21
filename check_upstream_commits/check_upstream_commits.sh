@@ -96,12 +96,12 @@ while IFS= read -r line; do
     SHA=$(echo "$line" | awk '{print $1}')
     TOTAL=$((TOTAL+1))
     STATUS=""
-    ABBREV="--------"
+    ABBREV="------------"
 
     # 1. Check if SHA is present in branch
     if git merge-base --is-ancestor "$SHA" "$BRANCH" 2>/dev/null; then
         # Get abbreviated SHA from local branch
-        ABBREV=$(git rev-parse --short=8 "$SHA")
+        ABBREV=$(git rev-parse --short=12 "$SHA")
         output "$(printf "%-7s (%-8s) %s" "EXISTS" "$ABBREV" "$line")"
         EXISTS=$((EXISTS+1))
         continue
@@ -129,10 +129,10 @@ while IFS= read -r line; do
             #    Backported from commit: $SHA
             #    commit $SHA upstream
             #    Upstream commit $SHA
-            #
-            if git log -1 --format=%B "$commit_hash" | grep -qi -E "Cherry[- ]picked from commit:?\s*$SHA|Backported from commit:?\s*$SHA|commit\s+$SHA\s+upstream|Upstream commit\s+$SHA"; then
+	    #
+            if git log -1 --format=%B "$commit_hash" | grep -qi -E "Cherry[- ]picked from commit:?\s*$SHA|Backported from commit:?\s*$SHA|commit\s+$SHA[0-9a-f]*\s+upstream|Upstream commit\s+$SHA"; then
                 # Compare diffs
-                ABBREV_LOCAL=$(git rev-parse --short=8 "$commit_hash")
+                ABBREV_LOCAL=$(git rev-parse --short=12 "$commit_hash")
                 if diff -u -w \
                     <(git show --format= "$SHA" | grep -E '^[+-][^+-]') \
                     <(git show --format= "$commit_hash" | grep -E '^[+-][^+-]') \
