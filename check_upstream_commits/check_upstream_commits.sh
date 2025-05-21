@@ -122,8 +122,15 @@ while IFS= read -r line; do
     while read -r commit_hash commit_title; do
         commit_title_basename=$(echo "$commit_title" | sed 's/^[^:]*: *//')
         if [[ "$commit_title_basename" == *"$TITLE_BASENAME"* ]]; then
-            # Check for cherry-pick/backport note
-            if git log -1 --format=%B "$commit_hash" | grep -qi -E "Cherry[- ]picked from commit:?\s*$SHA|Backported from commit:?\s*$SHA"; then
+            # Check for cherry-pick/backport/upstream note:
+            #
+            #    Cherry-picked from commit: $SHA
+            #    Cherry picked from commit: $SHA
+            #    Backported from commit: $SHA
+            #    commit $SHA upstream
+            #    Upstream commit $SHA
+            #
+            if git log -1 --format=%B "$commit_hash" | grep -qi -E "Cherry[- ]picked from commit:?\s*$SHA|Backported from commit:?\s*$SHA|commit\s+$SHA\s+upstream|Upstream commit\s+$SHA"; then
                 # Compare diffs
                 ABBREV_LOCAL=$(git rev-parse --short=8 "$commit_hash")
                 if diff -u -w \
