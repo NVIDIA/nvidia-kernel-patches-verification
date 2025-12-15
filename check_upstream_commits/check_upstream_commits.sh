@@ -1,6 +1,6 @@
 #!/bin/bash
 #set -x
-set -e
+set -eo pipefail
 
 # Canonical upstream Linux kernel repository
 DEFAULT_UPSTREAM_URL="https://github.com/torvalds/linux"
