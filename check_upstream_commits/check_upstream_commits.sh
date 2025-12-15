@@ -2,10 +2,14 @@
 #set -x
 set -e
 
+# Canonical upstream Linux kernel repository
+DEFAULT_UPSTREAM_URL="https://github.com/torvalds/linux"
+DEFAULT_UPSTREAM_BRANCH="master"
+
 usage() {
-    echo "Usage: $0 [-b branch] [-u upstream/branch] [-q] [-n] [-v] <sha_list_file>"
+    echo "Usage: $0 [-b branch] [-U upstream] [-q] [-n] [-v] <sha_list_file>"
     echo "  -b branch         Branch to check (default: current branch)"
-    echo "  -u upstream/branch  Upstream remote/branch (default: upstream/master)"
+    echo "  -U upstream       Upstream source: URL or remote/branch (default: $DEFAULT_UPSTREAM_URL)"
     echo "  -q                Quiet mode (only summary)"
     echo "  -n                Dry run (show what would be checked, don't execute)"
     echo "  -v                Verbose mode (enable debug output)"
@@ -13,7 +17,7 @@ usage() {
 }
 
 BRANCH=""
-UPSTREAM="upstream/master"
+UPSTREAM_ARG=""
 QUIET=0
 DRY_RUN=0
 VERBOSE=0
@@ -25,10 +29,10 @@ for arg in "$@"; do
     fi
 done
 
-while getopts "b:u:qnv" opt; do
+while getopts "b:U:qnv" opt; do
     case $opt in
         b) BRANCH="$OPTARG" ;;
-        u) UPSTREAM="$OPTARG" ;;
+        U) UPSTREAM_ARG="$OPTARG" ;;
         q) QUIET=1 ;;
         n) DRY_RUN=1 ;;
         v) VERBOSE=1 ;;
@@ -82,7 +86,7 @@ if [ "$DRY_RUN" -eq 1 ]; then
     echo "  SHA list file: $SHA_LIST_FILE"
     echo "  SHAs to check: $SHA_COUNT"
     echo "  Target branch: $BRANCH"
-    echo "  Upstream:      $UPSTREAM"
+    echo "  Upstream:      ${UPSTREAM_ARG:-$DEFAULT_UPSTREAM_URL (default)}"
     echo "  Quiet mode:    $QUIET"
     exit 0
 fi
@@ -99,18 +103,41 @@ output() {
     fi
 }
 
-# Check for 'upstream' remote if UPSTREAM is default and not specified by user
-if [ "$UPSTREAM" = "upstream/master" ]; then
-    if ! git remote | grep -qx 'upstream'; then
-        echo "Remote branch containing upstream Linux kernel source was not found. Please specify the upstream remote branch with the -u parameter." >&2
-        echo "" >&2
-        echo "Alternatively, you can add and populate the remote with the following:" >&2
-        echo "" >&2
-        echo "    git remote add upstream https://github.com/torvalds/linux.git" >&2
-        echo "    git fetch upstream" >&2
-        exit 1
+# Setup upstream: determine if it's a URL or existing remote/branch
+is_url() {
+    [[ "$1" =~ ^(https?://|git://|ssh://|git@) ]]
+}
+
+setup_upstream() {
+    local arg="${1:-$DEFAULT_UPSTREAM_URL}"
+    
+    if is_url "$arg"; then
+        # It's a URL - fetch from it
+        UPSTREAM_REMOTE="__upstream_check_tmp__"
+        
+        # Remove existing temporary remote if present
+        if git remote | grep -qx "$UPSTREAM_REMOTE"; then
+            git remote remove "$UPSTREAM_REMOTE" 2>/dev/null || true
+        fi
+        
+        echo "Fetching upstream from $arg ($DEFAULT_UPSTREAM_BRANCH)..." >&2
+        git remote add "$UPSTREAM_REMOTE" "$arg"
+        
+        # Cleanup on exit
+        cleanup_upstream_remote() {
+            git remote remove "$UPSTREAM_REMOTE" 2>/dev/null || true
+        }
+        trap cleanup_upstream_remote EXIT
+        
+        git fetch --quiet "$UPSTREAM_REMOTE" "$DEFAULT_UPSTREAM_BRANCH"
+        UPSTREAM="${UPSTREAM_REMOTE}/${DEFAULT_UPSTREAM_BRANCH}"
+    else
+        # It's an existing remote/branch reference
+        UPSTREAM="$arg"
     fi
-fi
+}
+
+setup_upstream "$UPSTREAM_ARG"
 
 while IFS= read -r line; do
     # Skip lines that are only whitespace or comments
