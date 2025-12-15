@@ -91,11 +91,7 @@ if [ "$DRY_RUN" -eq 1 ]; then
     exit 0
 fi
 
-PRESENT=0
-REVIEW=0
-MISSING=0
-TOTAL=0
-NOTUPSTREAM=0
+# Note: REVIEW and TOTAL are used; PRESENT, MISSING, NOTUPSTREAM were unused (removed)
 
 output() {
     if [ $QUIET -eq 0 ]; then
