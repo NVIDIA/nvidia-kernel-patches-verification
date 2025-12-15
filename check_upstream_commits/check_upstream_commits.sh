@@ -1,6 +1,6 @@
 #!/bin/bash
 #set -x
-set -eo pipefail
+set -euo pipefail
 
 # Canonical upstream Linux kernel repository
 DEFAULT_UPSTREAM_URL="https://github.com/torvalds/linux"
@@ -47,8 +47,25 @@ fi
 
 SHA_LIST_FILE="$1"
 if [ ! -f "$SHA_LIST_FILE" ]; then
-    echo "File not found: $SHA_LIST_FILE"
+    echo "File not found: $SHA_LIST_FILE" >&2
     exit 1
+fi
+
+# Enable debug output if verbose mode is set
+if [ "$VERBOSE" -eq 1 ]; then
+    set -x
+fi
+
+# Dry run mode - show configuration and exit (doesn't require git repo)
+if [ "$DRY_RUN" -eq 1 ]; then
+    SHA_COUNT=$(grep -v -E '^[[:space:]]*#|^[[:space:]]*$' "$SHA_LIST_FILE" | wc -l)
+    echo "Dry run mode - configuration:"
+    echo "  SHA list file: $SHA_LIST_FILE"
+    echo "  SHAs to check: $SHA_COUNT"
+    echo "  Target branch: ${BRANCH:-<current>}"
+    echo "  Upstream:      ${UPSTREAM_ARG:-$DEFAULT_UPSTREAM_URL (default)}"
+    echo "  Quiet mode:    $QUIET"
+    exit 0
 fi
 
 # Check for Linux git repo in current directory or via LINUX_GIT
@@ -62,7 +79,7 @@ check_linux_repo() {
 }
 
 if ! check_linux_repo "."; then
-    if [ -z "$LINUX_GIT" ] || ! check_linux_repo "$LINUX_GIT"; then
+    if [ -z "${LINUX_GIT:-}" ] || ! check_linux_repo "${LINUX_GIT:-}"; then
         echo "Error: Not in a Linux git repo and LINUX_GIT is not set to a valid Linux git repo." >&2
         exit 1
     else
@@ -74,24 +91,12 @@ if [ -z "$BRANCH" ]; then
     BRANCH=$(git rev-parse --abbrev-ref HEAD)
 fi
 
-# Enable debug output if verbose mode is set
-if [ "$VERBOSE" -eq 1 ]; then
-    set -x
-fi
-
-# Dry run mode - show configuration and exit
-if [ "$DRY_RUN" -eq 1 ]; then
-    SHA_COUNT=$(grep -v -E '^[[:space:]]*#|^[[:space:]]*$' "$SHA_LIST_FILE" | wc -l)
-    echo "Dry run mode - configuration:"
-    echo "  SHA list file: $SHA_LIST_FILE"
-    echo "  SHAs to check: $SHA_COUNT"
-    echo "  Target branch: $BRANCH"
-    echo "  Upstream:      ${UPSTREAM_ARG:-$DEFAULT_UPSTREAM_URL (default)}"
-    echo "  Quiet mode:    $QUIET"
-    exit 0
-fi
-
-# Note: REVIEW and TOTAL are used; PRESENT, MISSING, NOTUPSTREAM were unused (removed)
+# Initialize counters (required for set -u)
+EXISTS=0
+REVIEW=0
+ABSENT=0
+BADSHA=0
+TOTAL=0
 
 output() {
     if [ "$QUIET" -eq 0 ]; then
@@ -206,8 +211,8 @@ if [ "$QUIET" -eq 0 ]; then
 fi
 echo "Summary"
 echo "_______"
-printf "%-7s: %d\n" "EXISTS" ${EXISTS:-0}
-printf "%-7s: %d\n" "REVIEW" ${REVIEW:-0}
-printf "%-7s: %d\n" "ABSENT" ${ABSENT:-0}
-printf "%-7s: %d\n" "BADSHA" ${BADSHA:-0}
-printf "%-7s: %d\n" "Total"  ${TOTAL:-0}
+printf "%-7s: %d\n" "EXISTS" "$EXISTS"
+printf "%-7s: %d\n" "REVIEW" "$REVIEW"
+printf "%-7s: %d\n" "ABSENT" "$ABSENT"
+printf "%-7s: %d\n" "BADSHA" "$BADSHA"
+printf "%-7s: %d\n" "Total"  "$TOTAL"
