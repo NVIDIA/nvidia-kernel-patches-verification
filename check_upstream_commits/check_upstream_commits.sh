@@ -41,7 +41,7 @@ while getopts "b:U:qnv" opt; do
 done
 shift $((OPTIND-1))
 
-if [ $# -ne 1 ]; then
+if [ "$#" -ne 1 ]; then
     usage
 fi
 
@@ -94,7 +94,7 @@ fi
 # Note: REVIEW and TOTAL are used; PRESENT, MISSING, NOTUPSTREAM were unused (removed)
 
 output() {
-    if [ $QUIET -eq 0 ]; then
+    if [ "$QUIET" -eq 0 ]; then
         echo "$@"
     fi
 }
@@ -194,14 +194,14 @@ while IFS= read -r line; do
             fi
         fi
     done < <(git log "$BRANCH" --format='%H %s' --grep="$TITLE_BASENAME" --fixed-strings)
-    if [ $MATCH_FOUND -eq 0 ]; then
+    if [ "$MATCH_FOUND" -eq 0 ]; then
         output "$(printf "%-7s (%-8s) %s" "ABSENT" "$ABBREV" "$line")"
         ABSENT=$((ABSENT+1))
     fi
 
 done < "$SHA_LIST_FILE"
 
-if [ $QUIET -eq 0 ]; then
+if [ "$QUIET" -eq 0 ]; then
     echo ""
 fi
 echo "Summary"
