@@ -3,11 +3,12 @@
 set -e
 
 usage() {
-    echo "Usage: $0 [-b branch] [-u upstream/branch] [-q] [-n] <sha_list_file>"
+    echo "Usage: $0 [-b branch] [-u upstream/branch] [-q] [-n] [-v] <sha_list_file>"
     echo "  -b branch         Branch to check (default: current branch)"
     echo "  -u upstream/branch  Upstream remote/branch (default: upstream/master)"
     echo "  -q                Quiet mode (only summary)"
     echo "  -n                Dry run (show what would be checked, don't execute)"
+    echo "  -v                Verbose mode (enable debug output)"
     exit 1
 }
 
@@ -15,6 +16,7 @@ BRANCH=""
 UPSTREAM="upstream/master"
 QUIET=0
 DRY_RUN=0
+VERBOSE=0
 
 # Support for -h and --help
 for arg in "$@"; do
@@ -23,12 +25,13 @@ for arg in "$@"; do
     fi
 done
 
-while getopts "b:u:qn" opt; do
+while getopts "b:u:qnv" opt; do
     case $opt in
         b) BRANCH="$OPTARG" ;;
         u) UPSTREAM="$OPTARG" ;;
         q) QUIET=1 ;;
         n) DRY_RUN=1 ;;
+        v) VERBOSE=1 ;;
         *) usage ;;
     esac
 done
@@ -65,6 +68,11 @@ fi
 
 if [ -z "$BRANCH" ]; then
     BRANCH=$(git rev-parse --abbrev-ref HEAD)
+fi
+
+# Enable debug output if verbose mode is set
+if [ "$VERBOSE" -eq 1 ]; then
+    set -x
 fi
 
 # Dry run mode - show configuration and exit
