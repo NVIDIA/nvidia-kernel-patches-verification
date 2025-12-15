@@ -66,7 +66,7 @@ if ! check_linux_repo "."; then
         echo "Error: Not in a Linux git repo and LINUX_GIT is not set to a valid Linux git repo." >&2
         exit 1
     else
-        cd "$LINUX_GIT"
+        cd "$LINUX_GIT" || { echo "Error: Cannot cd to '$LINUX_GIT'" >&2; exit 1; }
     fi
 fi
 
