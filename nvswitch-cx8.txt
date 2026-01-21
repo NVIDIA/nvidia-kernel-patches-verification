@@ -1,0 +1,64 @@
+# NVIDIA ConnectX-8 NVSwitch Bridge Patches
+# Format: COMMIT_SHA | TITLE
+
+## Multiport E-switch Support
+# Enable 4-port and 8-port multiport configurations
+e738e3550452 | net/mlx5: Enable 4 ports multiport E-switch
+e0e6adfe8c20 | net/mlx5: Enable 8 ports LAG
+
+## 800Gbps Link Speed Support
+# Support for 800Gbps link modes and XDR speed
+4f4db190893f | IB/mlx5: Adjust mlx5 rate mapping to support 800Gb
+b28ad32442be | IB/mlx5: Rename 400G_8X speed to comply to naming convention
+948f0bf5ad6a | IB/mlx5: Add support for 800G_8X lane speed
+561b4a3ac655 | IB/mlx5: Expose XDR speed through MAD
+703289ce43f7 | IB/core: Add support for XDR link speed
+8c54c89ad45a | net/mlx5e: Add support for 800Gbps link modes
+
+## Multiplane Support
+# Multi-plane device and port support for RDMA/IB
+af48f95492dc | RDMA/core: Introduce "name_assign_type" for an IB device
+7a2210a57d42 | RDMA/mlx5: Support per-plane port IB counters by querying PPCNT register
+c6b6677d85d4 | net/mlx5: mlx5_ifc update for accessing ppcnt register of plane ports
+3b43399b297c | RDMA/mlx5: Add plane index support when querying PTYS registers
+294424839b5e | RDMA/nldev: Add support to dump device type and parent device if exists
+060c642b2ab8 | RDMA/nldev: Add support to add/delete a sub IB device through netlink
+026a425990af | RDMA/mlx5: Support plane device and driver APIs to add and delete it
+a9e0facacfd1 | RDMA/core: Create GSI QP only when CM is supported
+bca51197620a | RDMA/core: Support IB sub device with type "SMI"
+2a5db20fa532 | RDMA/mlx5: Add support to multi-plane device and port
+65528cfb21fd | net/mlx5: mlx5_ifc update for multi-plane support
+50660c5197f5 | RDMA/core: Create "issm*" device nodes only when SMI is supported
+eb3d354efb39 | RDMA/mlx5: Support querying per-plane IB PortCounters
+45d339fefaa3 | RDMA/mlx5: Enable multiplane mode only when it is supported
+
+## DirectNIC (Data Direct) Support
+# Data direct device support for direct NIC access
+c77aec65e828 | RDMA/mlx5: Consider the query_vuid cap for data_direct
+ec7ad6530909 | RDMA/mlx5: Introduce GET_DATA_DIRECT_SYSFS_PATH ioctl
+de8f847a5114 | RDMA/mlx5: Add support for DMABUF MR registrations with Data-direct
+3aa73c6b795b | RDMA: Pass uverbs_attr_bundle as part of '.reg_user_mr_dmabuf' API
+253c61dc256b | RDMA/umem: Introduce an option to revoke DMABUF umem
+682358fd35de | RDMA/umem: Add support for creating pinned DMABUF umem with a given dma device
+2e8e631d7a41 | RDMA/mlx5: Add the initialization flow to utilize the 'data direct' device
+6910e3660d86 | RDMA/mlx5: Introduce the 'data direct' driver
+c772a2c69018 | net/mlx5: Add IFC related stuff for data direct
+47c8846a49ba | PCI: Extend ACS configurability
+
+## DDP (Data Direct Placement) Support
+# Data direct placement for optimized data transfer
+8b36f7c3c661 | RDMA/mlx5: Support OOO RX WQE consumption
+8439662f6f16 | Introduce mlx5 data direct placement (DDP)
+
+## PCIe and VFIO Support
+# PCIe extended capability and VFIO improvements
+fe4bf8d0b671 | vfio/pci: Properly hide first-in-list PCIe extended capability
+
+## SWS (Steering and Switching) Support for ConnectX-8
+# ConnectX-8 steering and device support
+4d617b57574f | net/mlx5: DR, add support for ConnectX-8 steering
+aa90a30804a5 | net/mlx5: DR, expand SWS STE callbacks and consolidate common structs
+e799ac9dd3c4 | net/mlx5: Add ConnectX-8 device to ifc
+
+
+

@@ -1,0 +1,45 @@
+# NVIDIA ConnectX-7 NVSwitch Bridge Patches
+# Format: COMMIT_SHA | TITLE
+
+## 1. Upstream Kernel Patches
+
+# PCI Device Support
+# Support for ConnectX-7 adapter cards in the PCIe subsystem
+505a7f547806 | net/mlx5: Update the list of the PCI supported devices
+
+# Link Speed Support - 400Gbps
+# Support for 400Gbps link modes (50Gbps per lane)
+14af7fd1d427 | ethtool: Add support for 400Gbps (50Gbps per lane) link modes
+c70f51de8530 | RDMA/mlx5: Support 400Gbps IB rate in mlx5 driver
+
+# Link Speed Support - 100Gbps per lane
+# Support for 100Gbps per lane link modes
+065e0d42a0a7 | ethtool: Add support for 100Gbps per lane link modes
+
+# RDMA/IB Support - ConnectX-7
+# RDMA features specific to ConnectX-7 hardware
+896ec9735336 | RDMA/mlx5: Set mkey relaxed ordering by UMR with ConnectX-7
+
+# RDMA/IB Support - Link Speed Fixes
+# Fixes for link speed reporting and active_speed field
+376ceb31ff87 | RDMA: Fix link active_speed size
+
+# NDR (Next Data Rate) Support - Core
+# NDR link speed support (400Gbps for InfiniBand)
+f946e45f59ef | IB/mlx5: Add support for NDR link speed
+c7adf7717301 | IB/core: Add support for NDR link speed
+fbdb0ba7051e | IB/mlx5: Expose NDR speed through MAD
+
+# NDR Support - IPoIB
+# NDR link speed support for IP over InfiniBand
+235b6ac30695 | RDMA/ipoib: Add 50Gb and 100Gb link speeds to ethtool
+ab57a912befe | net/mlx5e: IPoIB, Add support for NDR speed
+
+## 2. rdma-core Patches
+# User-space RDMA library patches (minimum version: rdma-core v39)
+
+# NDR Rate Support in rdma-core
+# Support for NDR rates in user-space RDMA libraries
+eb7a7fb3 | ibdiags: Extend support of NDR rates
+f6c49e79 | verbs: Extend support of NDR rates
+49c2d6e7 | pyverbs: Extend support of NDR rates

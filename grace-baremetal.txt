@@ -1,0 +1,205 @@
+# NVIDIA Grace BML Kernel Patches
+# Format: COMMIT_SHA | TITLE
+
+4c207e7121fa | PCI: Mark some NVIDIA GPUs to avoid bus reset
+6937b7dd4349 | PCI: Add support for ACPI _RST reset method
+a9c38c5d267c | dma-mapping: remove bogus test for pfn_valid from dma_map_resource
+bd2fdedbf2ba | i2c: tegra: Add the ACPI support
+f89d2cc3967a | spi: tegra210-quad: use devm call for cdata memory
+50665d58db05 | i2c: tegra: use i2c_timings for bus clock freq
+5f84e73f9a8f | gpio: tegra186: Add IRQ per bank for Tegra241
+d1056b771ddb | gpio: tegra186: Add support for Tegra241
+d7583c8a5748 | i2c: tegra: Add SMBus block read function
+ca0acb511c21 | device property: Add fwnode_irq_get_byname
+a263a84088f6 | i2c: smbus: Use device_*() functions instead of of_*()
+20e8ef5c7ffa | docs: firmware-guide: ACPI: Add named interrupt doc
+ac982578e7d3 | spi: tegra210-quad: use device_reset method
+ea23f0e148b8 | spi: tegra210-quad: add new chips to compatible
+75a1b44a54bd | spi: tegra210-quad: add acpi support
+1b8342cc4a38 | spi: tegra210-quad: combined sequence mode
+b76134178168 | spi: tegra210-quad: Multi-cs support
+0ddf10a319f1 | arm64: tegra: Enable Tegra SPI & QSPI in deconfig
+721255b9826b | genirq: Use a maple tree for interrupt descriptor management
+47c8846a49ba | PCI: Extend ACS configurability
+5bf71889ad9a | i2c: tegra: Set ACPI node as primary fwnode
+9f855779a387 | i2c: tegra: Fix PEC support for SMBUS block read
+35727af2b15d | irqchip/gicv3: Workaround for NVIDIA erratum T241-FABRIC-4
+4327a6137ed4 | drm/ast: Fix ARM compatibility
+195aba96b854 | tpm_tis_spi: Account for SPI header when allocating TPM SPI xfer buffer
+1a596ad00ffe | PCI: Use downstream bridges for distributing resources
+8777dd9dff40 | spi: tegra210-quad: Fix combined sequence
+ae4b3c1252f0 | spi: tegra210-quad: Don't initialise DMA if not supported
+2197aa6b0aa2 | spi: tegra210-quad: Fix duplicate resource error
+2e3468778dbe | mm: remember young/dirty bit for page migrations
+101ca8d05913 | rtc: efi: Enable SET/GET WAKEUP services as optional
+ef3691683d7b | KVM: arm64: GICv4.1: Fix race with doorbell on VPE activation/deactivation
+05da178ce0aa | ACPI/IORT: Update SMMUv3 DeviceID support
+047ee71ae4f4 | spi: tegra210-quad: Fix validate combined sequence
+2449d436681d | spi: tegra210-quad: Fix iterator outside loop
+f7482d8285b6 | spi: tegra210-quad: set half duplex flag
+010338d729c1 | arm64: kaslr: don't pretend KASLR is enabled if offset < MIN_KIMG_ALIGN
+c0e0421a60bf | ACPI: processor: Reorder acpi_processor_driver_init()
+c43198af05cf | thermal: core: Introduce thermal_cooling_device_present()
+790930f44289 | thermal: core: Introduce thermal_cooling_device_update()
+22c52fa5155a | ACPI: processor: thermal: Update CPU cooling devices on cpufreq policy changes
+b57841fb0b56 | thermal: core: Drop excessive lockdep_assert_held() calls
+bba5065963f8 | PCI/AER: Configure ECRC only if AER is native
+67a142dc9eb9 | spi: Add TPM HW flow flag
+967ca91a996f | spi: tegra210-quad: Enable TPM wait polling
+3e35d303ab7d | arm64: module: rework module VA range selection
+a86a42ac2bd6 | tpm_tis_spi: Add hardware wait polling
+d5afb4b47e13 | iommu/arm-smmu-v3: Fix soft lockup triggered by arm_smmu_mm_invalidate_range
+416ef04fe00c | mm/page_alloc: fix min_free_kbytes calculation regarding ZONE_MOVABLE
+081488051d28 | mm/mglru: fix underprotected page cache
+5095a2b23987 | mm/mglru: try to stop at high watermarks
+8aa420617918 | mm/mglru: respect min_ttl_ms with memcgs
+4376807bf2d5 | mm/mglru: reclaim offlined memcgs harder
+db744ddd59be | PCI/MSI: Prevent MSI hardware interrupt number truncation
+6d4266675279 | PCI/ASPM: Update save_state when configuration changes
+d806f474a9a7 | gpio: tegra186: Fix tegra186_gpio_is_accessible() check
+04867a7a3332 | swiotlb: Fix double-allocation of slots due to broken alignment handling
+cbf53074a528 | swiotlb: Honour dma_alloc_coherent() alignment in swiotlb_alloc()
+51b30ecb73b4 | swiotlb: Fix alignment checks when both allocation and DMA masks are present
+afc5aa46ed56 | iommu/dma: Force swiotlb_max_mapping_size on an untrusted device
+af133562d5af | swiotlb: extend buffer pre-padding to alloc_align_mask if necessary
+e3ba51ab24fd | arm64: tlb: Fix TLBI RANGE operand
+e07255d69702 | arm64: tlb: Improve __TLBI_VADDR_RANGE()
+73301e464a72 | arm64: tlb: Allow range operation for MAX_TLBI_RANGE_PAGES
+7bf9d2af7e89 | PCI: Clear Secondary Status errors after enumeration
+eebab7e3eb4b | PCI/DOE: Support discovery version 2
+90e4ed6bb02a | cpufreq/cppc: Don't compare desired_perf in target()
+4cd7ba16a0af | mm: fix old/young bit handling in the faulting path
+14d069d92951 | i2c: tegra: Do not mark ACPI devices as irq safe
+088984c8d54c | ACPI: PRM: Find EFI_MEMORY_RUNTIME block for PRM handler and context
+c47195631960 | cppc_cpufreq: Use desired perf if feedback ctrs are 0 or unchanged
+ea1829d4d413 | cppc_cpufreq: Remove HiSilicon CPPC workaround
+1bc542c6a0d1 | mm/vmscan: wake up flushers conditionally to avoid cgroup OOM
+c8e88de1b44e | ACPI/HMAT: Move HMAT messages to pr_debug()
+7f5704b6a143 | ACPI: PRM: Remove unnecessary strict handler address checks
+f7edb07ad7c6 | Fix mmu notifiers for range-based invalidates
+9cf8a952d57b | PCI/ACS: Fix 'pci=config_acs=' parameter
+a2ee7581afd5 | ACPI: thermal: Add Thermal fast Sampling Period (_TFP) support
+310293a2b941 | ACPI: processor: reduce CPUFREQ thermal reduction pctg for Tegra241
+ccb45b34d440 | ACPI: arm64: export acpi_arch_thermal_cpufreq_pctg()
+7dc7c5ef6463 | mm: allow deferred splitting of arbitrary anon large folios
+372cbd4d5a06 | mm: non-pmd-mappable, large folios for folio_add_new_anon_rmap()
+3485b88390b0 | mm: thp: introduce multi-size THP sysfs interface
+19eaf44954df | mm: thp: support allocation of anonymous multi-size THP
+b6aab3384caf | selftests/mm/kugepaged: restore thp settings at exit
+00679a183ac6 | selftests/mm: factor out thp settings management
+4f5070a5e40d | selftests/mm: support multi-size THP interface in thp_settings
+9f0704eae8a4 | selftests/mm/khugepaged: enlighten for multi-size THP
+12dc16b38463 | selftests/mm/cow: generalize do_run_with_thp() helper
+c0f79103322c | selftests/mm/cow: add tests for anonymous multi-size THP
+6280d7317cca | mm: clarify the spec for set_ptes()
+2bdba9868a4f | mm: thp: batch-collapse PMD with set_ptes()
+583ceaaa3399 | mm: introduce pte_advance_pfn() and use for pte_next_pfn()
+c1bd2b4028ae | arm64/mm: convert pte_next_pfn() to pte_advance_pfn()
+506b586769ec | x86/mm: convert pte_next_pfn() to pte_advance_pfn()
+fb23bf6bd288 | mm: tidy up pte_next_pfn() definition
+532736558e8e | arm64/mm: convert READ_ONCE(*ptep) to ptep_get(ptep)
+659e19302791 | arm64/mm: convert set_pte_at() to set_ptes(..., 1)
+cbb0294fdd72 | arm64/mm: convert ptep_clear() to ptep_get_and_clear()
+5a00bfd6a52c | arm64/mm: new ptep layer to manage contig bit
+d9d8dc2bd3fb | arm64/mm: dplit __flush_tlb_range() to elide trailing DSB
+4602e5757bcc | arm64/mm: wire up PTE_CONT for user mappings
+311a6cf29690 | arm64/mm: implement new wrprotect_ptes() batch API
+6b1e4efb6f54 | arm64/mm: implement new [get_and_]clear_full_ptes() batch APIs
+c6ec76a2ebc5 | mm: add pte_batch_hint() to reduce scanning in folio_pte_batch()
+fb5451e5f72b | arm64/mm: implement pte_batch_hint()
+b972fc6afba0 | arm64/mm: __always_inline to improve fork() perf
+f0c2264958e1 | arm64/mm: automatically fold contpte mappings
+ead79118dae6 | arm64/io: Provide a WC friendly __iowriteXX_copy()
+2b7a5e1fe022 | net: hns3: Remove io_stop_wc() calls after __iowrite64_copy()
+ef302283ddfc | IB/mlx5: Use __iowrite64_copy() for write combining stores
+1c5d62f5dd97 | ACPICA: Add support for ARM Performance Monitoring Unit Table.
+6251d38059ae | ACPI: ARM Performance Monitoring Unit Table (APMT) initial support
+e37dfd65731d | perf: arm_cspmu: Add support for ARM CoreSight PMU driver
+84481be7167e | perf: arm_cspmu: Add support for NVIDIA SCF and MCF attribute
+39522031798d | ACPI: APMT: Fix kerneldoc and indentation
+1830902eb896 | perf: arm_cspmu: Fix modular builds due to missing MODULE_LICENSE()s
+e72dbf9085b5 | perf: arm_cspmu: Fix build failure on x86_64
+a91bbd5c9984 | perf: arm_cspmu: Fix module cyclic dependency
+16e15834659e | perf: arm_cspmu: Fix variable dereference warning
+f462eb1d0df3 | arm64: defconfig: Enable ARM CoreSight PMU driver
+225d757012e0 | perf: arm_cspmu: Set irq affinitiy only if overflow interrupt is used
+71e0cb32d5fc | perf/arm_cspmu: Fix event attribute type
+7e51d05e43f1 | perf: arm_cspmu: Add missing MODULE_DEVICE_TABLE
+87b3b6d53efc | ACPI/APMT: Don't register invalid resource
+d2e3bb512818 | perf/arm_cspmu: Decouple APMT dependency
+f9bd34e3753e | perf/arm_cspmu: Clean up ACPI dependency
+3095e90eee5e | coresight: etm4x: Allocate and device assign 'struct etmv4_drvdata' earlier
+4e3b9a6eae98 | coresight: etm4x: Drop iomem 'base' argument from etm4_probe()
+5a1c7097472f | coresight: etm4x: Drop pid argument from etm4_probe()
+73d779a03a76 | coresight: etm4x: Change etm4_platform_driver driver for MMIO devices
+3a2888aa1f96 | coresight: platform: acpi: Ignore the absence of graph
+134124acb57f | coresight: etm4x: Add ACPI support in platform driver
+1aa3d0274a4a | arm_pmu: acpi: Add a representative platform device for TRBE
+81e5ee471609 | arm_pmu: acpi: Refactor arm_spe_acpi_register_device()
+4473949074c3 | perf vendor events arm64: Update N2 and V2 metrics and events using Arm telemetry repo
+15c7ef7341a2 | perf: arm_cspmu: Reject events meant for other PMUs
+a16afcc58a8c | perf cs-etm: Fix incorrect or missing decoder for raw trace
+bfc653aa89cb | perf: arm_cspmu: Separate Arm and vendor module
+17f8b216e026 | coresight: trbe: Enable ACPI based TRBE devices
+4277f035d227 | coresight: trbe: Add a representative coresight_platform_data for TRBE
+a24d9d9dc096 | perf parse-events: Make legacy events lower priority than sysfs/JSON
+f4d9d9dcc70b | arm64: Add Neoverse-V2 part
+dc6abbbde4b0 | tools headers arm64: Sync arm64's cputype.h with the kernel sources
+b6aa0de9a53a | perf cs-etm: Create decoders after both AUX and HW_ID search passes
+57880a7966be | perf: cs-etm: Allocate queues for all CPUs
+77c123f53e97 | perf: cs-etm: Move traceid_list to each queue
+19c3e4db38c5 | perf: cs-etm: Create decoders based on the trace ID mappings
+940007cee539 | perf: cs-etm: Only save valid trace IDs into files
+1506af6db8c4 | perf: cs-etm: Support version 0.1 of HW_ID packets
+022aa67b5ab9 | perf: cs-etm: Print queue number in raw trace dump
+34172002bdac | coresight: Remove unused ETM Perf stubs
+eda1d11979c0 | coresight: Clarify comments around the PID of the sink owner
+acb0184fe9bc | coresight: Move struct coresight_trace_id_map to common header
+7e52877868ae | coresight: Expose map arguments in trace ID API
+d53c8253c782 | coresight: Make CPU id map a property of a trace ID map
+5ad628a76176 | coresight: Use per-sink trace ID maps for Perf sessions
+de0029fdde86 | coresight: Remove pending trace ID release mechanism
+487eec8da80a | coresight: Emit sink ID in the HW_ID packets
+988d40a4d4e7 | coresight: Make trace ID map spinlock local to the map
+fb98fa3bf868 | perf arm-spe: Rename arm_spe__synth_data_source_generic()
+50b8f1d5bf4a | perf arm-spe: Rename the common data source encoding
+56ae663e7636 | perf arm-spe: Introduce arm_spe__is_homogeneous()
+ba5e7169e548 | perf arm-spe: Use metadata to decide the data source feature
+6bcf54c89b3d | perf arm-spe: Remove the unused 'midr' field
+041c0e5715a6 | perf arm-spe: Add Neoverse-V2 to common data source encoding list
+ea2ead4224fd | perf arm-spe: Add Cortex CPUs to common data source encoding list
+ac4c52956f62 | perf: arm_cspmu: nvidia: remove unsupported SCF events
+5f7cd0dc98a6 | perf: arm_cspmu: nvidia: fix sysfs path in the kernel doc
+ca26df4b1036 | perf: arm_cspmu: nvidia: enable NVLINK-C2C port filtering
+bce61d5c5764 | perf: arm_cspmu: nvidia: monitor all ports by default
+d923782b0412 | arm64: amu: Delay allocating cpumask for AMU FIE support
+004b500a9031 | arch_topology: init capacity_freq_ref to 0
+38e480d4fcac | cpufreq: Allow arch_freq_get_on_cpu to return an error
+fbb4a4759b54 | cpufreq: Introduce an optional cpuinfo_avg_freq sysfs entry
+16d1e27475f6 | arm64: Provide an AMU-based version of arch_freq_get_on_cpu
+39b19974982e | arm64: Update AMU-based freq scale factor on entering idle
+20711efa91e8 | arm64: Utilize for_each_cpu_wrap for reference lookup
+18b2db3b0385 | mm: Convert page kmemcg type to a page memcg flag
+368c0159d492 | RDMA/umem: Support importing dma-buf as user memory region
+b392a1989170 | vfio/pci: remove vfio_pci_nvlink2
+319561669a59 | mm/mmu_notifier.c: fix race in mmu_interval_notifier_remove()
+fd35ca3d12cc | mm/migrate_device.c: copy pte dirty bit to page
+a3589e1d5fe3 | mm/migrate_device.c: add missing flush_cache_page()
+60bae7370896 | mm/migrate_device.c: flush TLB while holding PTL
+aa6f8b2593b5 | mm/gup: stop leaking pinned pages in low memory conditions
+94efde1d1539 | mm/gup: avoid an unnecessary allocation call for FOLL_LONGTERM cases
+a1268be280d8 | mm/gup: handle NULL pages in unpin_user_pages()
+f3c3ccc4fe49 | PCI: Fix pci_enable_acs() support for the ACS quirks
+abc7b3f1f056 | RDMA/mlx5: Fix a WARN during dereg_mr for DM type
+b3f6fcd8404f | iommu: Skip PASID validation for devices without PASID capability
+41c721fc0939 | spi: tegra210-quad: use WARN_ON_ONCE instead of WARN_ON for timeouts
+21f4314e66ed | spi: tegra210-quad: add rate limiting and simplify timeout error message
+a6e04f05ce0b | i2c: tegra: check msg length in SMBUS block read
+56344e241c54 | i2c: tegra: Fix reset error handling with ACPI
+d8966b654133 | spi: tegra210-quad: modify chip select (CS) deactivation
+635bf3c88533 | i2c: tegra: Use internal reset when reset property is not available
+c7c31f8dc54a | drm/ast: Use msleep instead of mdelay for edid read
+7526183cfdbe | net: aquantia: Add missing descriptor cache invalidation on ATL2
+b4e002d8a7ce | spi: tegra210-quad: Fix timeout handling
+6022eacdda8b | spi: tegra210-quad: Refactor error handling into helper functions
+380fd29d57ab | spi: tegra210-quad: Check hardware status on timeout
