@@ -203,3 +203,6 @@ c7c31f8dc54a | drm/ast: Use msleep instead of mdelay for edid read
 b4e002d8a7ce | spi: tegra210-quad: Fix timeout handling
 6022eacdda8b | spi: tegra210-quad: Refactor error handling into helper functions
 380fd29d57ab | spi: tegra210-quad: Check hardware status on timeout
+e403e8538359 | arm64: errata: Assume that unknown CPUs _are_ vulnerable to Spectre BHB
+a5951389e58d | arm64: errata: Add newer ARM cores to the spectre_bhb_loop_affected() lists
+fee4d171451c | arm64: errata: Add missing sentinels to Spectre-BHB MIDR arrays
