@@ -1,0 +1,45 @@
+# NVIDIA Vera BML Kernel Patches
+# Format: COMMIT_SHA | TITLE
+
+f69767a1ada3 | PCI: Add TLP Processing Hints (TPH) support
+d2e8a34876ce | PCI/TPH: Add Steering Tag support
+48d0fd2b903e | PCI/TPH: Add TPH documentation
+b880a80011f5 | arm64: rsi: Add RSI definitions
+c077711f718b | arm64: Detect if in a realm and set RIPAS RAM
+399306954996 | arm64: realm: Query IPA size from the RMM
+371589437616 | arm64: rsi: Add support for checking whether an MMIO is protected
+3c6c70613956 | arm64: rsi: Map unprotected MMIO as decrypted
+491db21d8256 | efi: arm64: Map Device with Prot Shared
+fbf979a01375 | arm64: Enforce bounce buffers for realm DMA
+0e9cb5995b25 | arm64: mm: Avoid TLBI when marking pages as valid
+42be24a4178f | arm64: Enable memory encrypt for Realms
+7999edc484ca | virt: arm-cca-guest: TSM_REPORT support for realms
+972d755f0195 | arm64: Document Arm Confidential Compute
+e185c8a0d842 | arm64: cputype: Add NVIDIA Olympus definitions
+cc80537caaa7 | arm64: cpufeature: Add Olympus MIDR to BBML2 allow list
+fa84e534c3ec | arm64: realm: ioremap: Allow mapping memory as encrypted
+9e8a3df3e7f7 | arm64: Enable EFI secret area Securityfs support
+d02c2e45b1e7 | arm64: acpi: Enable ACPI CCEL support
+9631a10083d8 | gpio: tegra186: Add support for Tegra410
+f75db6f7f907 | gpio: tegra186: Use generic macro for port definitions
+c87f820bc474 | soc/tegra: fuse: Do not register SoC device on ACPI boot
+67f9b828d4e5 | gpio: tegra186: Fix GPIO name collisions for Tegra410
+12f78021973a | iommu/arm-smmu-v3: Fix pgsize_bit for sva domains
+89a2d212bdb4 | dma/pool: Ensure DMA_DIRECT_REMAP allocations are decrypted
+04bd15c4cbc3 | perf: arm_pmuv3: Call kvm_vcpu_pmu_resync_el0() before enabling counters
+dcca27bc1ecc | perf: arm_pmu: Don't disable counter in armpmu_add()
+4b0567ad0be5 | perf: arm_pmuv3: Don't disable counter in armv8pmu_enable_event()
+7a5387748215 | perf: arm_v7_pmu: Drop obvious comments for enabling/disabling counters and interrupts
+7bf1001e0d91 | perf: arm_v7_pmu: Don't disable counter in (armv7|krait_|scorpion_)pmu_enable_event()
+c2e793da59fc | perf: apple_m1: Don't disable counter in m1_pmu_enable_event()
+dc4d58a752ea | perf: arm_pmu: Move PMUv3-specific data
+52e4a56ab8b8 | arm64/sysreg: Add BRBE registers and fields
+ae344bcb0d49 | arm64: Handle BRBE booting requirements
+d7567e9b9ba5 | KVM: arm64: nvhe: Disable branch generation in nVHE guests
+58074a0fce66 | perf: arm_pmuv3: Add support for the Branch Record Buffer Extension (BRBE)
+a2573bc7908d | perf/arm_cspmu: Add callback to reset filter config
+04330be8dc7f | perf/arm_cspmu: Add pmpidr support
+82dfd72bfb03 | perf/arm_cspmu: nvidia: Add revision id matching
+decc3684c241 | perf/arm_cspmu: nvidia: Add pmevfiltr2 support
+f8f89e8cf3d6 | perf: arm_pmuv3: Factor out PMCCNTR_EL0 use conditions
+c3d78c34ad00 | perf: arm_pmuv3: Don't use PMCCNTR_EL0 on SMT cores
