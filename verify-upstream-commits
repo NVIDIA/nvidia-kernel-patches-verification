@@ -13,6 +13,10 @@ usage() {
     echo "  -q                Quiet mode (only summary)"
     echo "  -n                Dry run (show what would be checked, don't execute)"
     echo "  -v                Verbose mode (enable debug output)"
+    echo ""
+    echo "Example:"
+    echo "    ~/kernel-patches-verification/verify-upstream-commits -U https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git ~/nvidia-kernel-patches-verification/grace-baremetal.txt"
+    echo ""
     exit 1
 }
 
