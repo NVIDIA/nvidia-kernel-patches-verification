@@ -1,4 +1,8 @@
 #!/bin/bash
+
+# SPDX-FileCopyrightText: Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+# SPDX-License-Identifier: MIT
+
 #set -x
 set -euo pipefail
 
@@ -115,25 +119,25 @@ is_url() {
 
 setup_upstream() {
     local arg="${1:-$DEFAULT_UPSTREAM_URL}"
-    
+
     if is_url "$arg"; then
         # It's a URL - fetch from it
         UPSTREAM_REMOTE="__upstream_check_tmp__"
-        
+
         # Remove existing temporary remote if present
         if git remote | grep -qx "$UPSTREAM_REMOTE"; then
             git remote remove "$UPSTREAM_REMOTE" 2>/dev/null || true
         fi
-        
+
         echo "Fetching upstream from $arg ($DEFAULT_UPSTREAM_BRANCH)..." >&2
         git remote add "$UPSTREAM_REMOTE" "$arg"
-        
+
         # Cleanup on exit
         cleanup_upstream_remote() {
             git remote remove "$UPSTREAM_REMOTE" 2>/dev/null || true
         }
         trap cleanup_upstream_remote EXIT
-        
+
         git fetch --quiet "$UPSTREAM_REMOTE" "$DEFAULT_UPSTREAM_BRANCH"
         UPSTREAM="${UPSTREAM_REMOTE}/${DEFAULT_UPSTREAM_BRANCH}"
     else

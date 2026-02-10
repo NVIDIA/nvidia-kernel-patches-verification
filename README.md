@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+# SPDX-License-Identifier: MIT
+
 # verify-upstream-commits
 
 A script to check if a list of upstream Linux kernel commit SHAs are present (cherry-picked, backported, or otherwise) in a target branch, or to identify their status in your local repository.
