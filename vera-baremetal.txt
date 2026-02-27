@@ -1,5 +1,17 @@
 # NVIDIA Vera BML Kernel Patches
 # Format: COMMIT_SHA | TITLE
+#
+# This list is organized by the same groupings found in
+# the NVIDIA Grace and Vera Platform Support Software
+# Patches and Configurations Guide.
+#
+# https://docs.nvidia.com/dccpu/patches-config-guide/index.html
+#
+
+
+
+# Bare Metal Support: Enablement
+################################
 
 f69767a1ada3 | PCI: Add TLP Processing Hints (TPH) support
 d2e8a34876ce | PCI/TPH: Add Steering Tag support
@@ -24,8 +36,29 @@ d02c2e45b1e7 | arm64: acpi: Enable ACPI CCEL support
 f75db6f7f907 | gpio: tegra186: Use generic macro for port definitions
 c87f820bc474 | soc/tegra: fuse: Do not register SoC device on ACPI boot
 67f9b828d4e5 | gpio: tegra186: Fix GPIO name collisions for Tegra410
+
+
+
+# Bare Metal Support: Critical Fixes
+####################################
+
+
+
+# Bare Metal Support: Fixes
+###########################
+
 12f78021973a | iommu/arm-smmu-v3: Fix pgsize_bit for sva domains
 89a2d212bdb4 | dma/pool: Ensure DMA_DIRECT_REMAP allocations are decrypted
+
+
+
+# Bare Metal Support: Performance
+#################################
+
+
+
+# Bare Metal Support: Performance Tools
+#######################################
 04bd15c4cbc3 | perf: arm_pmuv3: Call kvm_vcpu_pmu_resync_el0() before enabling counters
 dcca27bc1ecc | perf: arm_pmu: Don't disable counter in armpmu_add()
 4b0567ad0be5 | perf: arm_pmuv3: Don't disable counter in armv8pmu_enable_event()
@@ -43,3 +76,12 @@ a2573bc7908d | perf/arm_cspmu: Add callback to reset filter config
 decc3684c241 | perf/arm_cspmu: nvidia: Add pmevfiltr2 support
 f8f89e8cf3d6 | perf: arm_pmuv3: Factor out PMCCNTR_EL0 use conditions
 c3d78c34ad00 | perf: arm_pmuv3: Don't use PMCCNTR_EL0 on SMT cores
+
+
+
+# Bare Metal Support: CUDA
+##########################
+
+
+
+# End of list
