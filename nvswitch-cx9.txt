@@ -1,0 +1,13 @@
+# NVIDIA ConnectX-9 NVSwitch Bridge Patches
+# Format: COMMIT_SHA | TITLE
+
+## CX-9 Enablement
+# Enable configurations
+ad4f6df4f384 | net/mlx5: Update the list of the PCI supported devices
+
+## 200Gbps Per Lane Link Modes in CX-9
+# ConnectX-9 support
+4897f9b7f8bd | ethtool: Add support for 200Gbps per lane link modes
+ee0a4fc396f1 | net/mlx5: Add support for 200Gbps per lane link modes
+4e343c11efbb | net/mlx5e: Support FEC settings for 200G per lane link modes
+d00d16bcbc25 | RDMA/mlx5: Add support for 200Gbps per lane speeds
