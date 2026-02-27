@@ -36,6 +36,17 @@ d02c2e45b1e7 | arm64: acpi: Enable ACPI CCEL support
 f75db6f7f907 | gpio: tegra186: Use generic macro for port definitions
 c87f820bc474 | soc/tegra: fuse: Do not register SoC device on ACPI boot
 67f9b828d4e5 | gpio: tegra186: Fix GPIO name collisions for Tegra410
+b53232fd220a | i2c: tegra: Do not configure DMA if not supported
+8b80b61e6f4f | i2c: tegra: Use separate variables for fast and fastplus
+81d4c5350f01 | i2c: tegra: Update Tegra256 timing parameters
+978b3ccbbac3 | i2c: tegra: Add HS mode support
+6077cfd716fb | i2c: tegra: Add support for SW mutex register
+1ac9e16dd226 | i2c: tegra: Add Tegra264 support
+eeb95c07d5fc | PCI: Add ASPEED vendor ID to pci_ids.h
+550a190494a0 | PCI: Add PCI_BRIDGE_NO_ALIAS quirk for ASPEED AST1150
+4a1cf5ed51b1 | cpufreq: CPPC: Add generic helpers for sysfs show/store
+7cb6f10ce3ed | ACPI: CPPC: Clean up cppc_perf_caps and cppc_perf_ctrls structs
+83e2908c1d42 | ACPI: CPPC: Rename EPP constants for clarity
 
 
 
@@ -49,6 +60,11 @@ c87f820bc474 | soc/tegra: fuse: Do not register SoC device on ACPI boot
 
 12f78021973a | iommu/arm-smmu-v3: Fix pgsize_bit for sva domains
 89a2d212bdb4 | dma/pool: Ensure DMA_DIRECT_REMAP allocations are decrypted
+4fe5934db4a7 | ACPI: CPPC: Detect preferred core availability on online CPUs
+6dd3b8a709a1 | ACPI: CPPC: Check _CPC validity for only the online CPUs
+8821c8e80a65 | ACPI: CPPC: Perform fast check switch only for online CPUs
+0fce75870666 | ACPI: CPPC: Limit perf ctrs in PCC check only to online CPUs
+56eb0c0ed345 | ACPI: CPPC: Fix remaining for_each_possible_cpu() to use online CPUs
 
 
 
@@ -76,6 +92,9 @@ a2573bc7908d | perf/arm_cspmu: Add callback to reset filter config
 decc3684c241 | perf/arm_cspmu: nvidia: Add pmevfiltr2 support
 f8f89e8cf3d6 | perf: arm_pmuv3: Factor out PMCCNTR_EL0 use conditions
 c3d78c34ad00 | perf: arm_pmuv3: Don't use PMCCNTR_EL0 on SMT cores
+7ab06ea41af5 | arch_topology: Provide a stub topology_core_has_smt() for !CONFIG_GENERIC_ARCH_TOPOLOGY
+d852b838eb05 | perf arm-spe: Add NVIDIA Olympus to neoverse list
+d5e4c710b54a | tools headers arm64: Add NVIDIA Olympus part
 
 
 
