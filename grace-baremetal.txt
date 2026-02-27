@@ -1,5 +1,17 @@
 # NVIDIA Grace BML Kernel Patches
 # Format: COMMIT_SHA | TITLE
+#
+# This list is organized by the same groupings found in
+# the NVIDIA Grace and Vera Platform Support Software
+# Patches and Configurations Guide.
+#
+# https://docs.nvidia.com/dccpu/patches-config-guide/index.html
+#
+
+
+
+# Bare Metal Support: Enablement
+################################
 
 4c207e7121fa | PCI: Mark some NVIDIA GPUs to avoid bus reset
 6937b7dd4349 | PCI: Add support for ACPI _RST reset method
@@ -21,12 +33,24 @@ b76134178168 | spi: tegra210-quad: Multi-cs support
 0ddf10a319f1 | arm64: tegra: Enable Tegra SPI & QSPI in deconfig
 721255b9826b | genirq: Use a maple tree for interrupt descriptor management
 47c8846a49ba | PCI: Extend ACS configurability
+
+
+
+# Bare Metal Support: Critical Fixes
+####################################
+
 5bf71889ad9a | i2c: tegra: Set ACPI node as primary fwnode
 9f855779a387 | i2c: tegra: Fix PEC support for SMBUS block read
 35727af2b15d | irqchip/gicv3: Workaround for NVIDIA erratum T241-FABRIC-4
 4327a6137ed4 | drm/ast: Fix ARM compatibility
 195aba96b854 | tpm_tis_spi: Account for SPI header when allocating TPM SPI xfer buffer
 1a596ad00ffe | PCI: Use downstream bridges for distributing resources
+
+
+
+# Bare Metal Support: Fixes
+###########################
+
 8777dd9dff40 | spi: tegra210-quad: Fix combined sequence
 ae4b3c1252f0 | spi: tegra210-quad: Don't initialise DMA if not supported
 2197aa6b0aa2 | spi: tegra210-quad: Fix duplicate resource error
@@ -78,6 +102,12 @@ c8e88de1b44e | ACPI/HMAT: Move HMAT messages to pr_debug()
 7f5704b6a143 | ACPI: PRM: Remove unnecessary strict handler address checks
 f7edb07ad7c6 | Fix mmu notifiers for range-based invalidates
 9cf8a952d57b | PCI/ACS: Fix 'pci=config_acs=' parameter
+
+
+
+# Bare Metal Support: Performance
+#################################
+
 a2ee7581afd5 | ACPI: thermal: Add Thermal fast Sampling Period (_TFP) support
 310293a2b941 | ACPI: processor: reduce CPUFREQ thermal reduction pctg for Tegra241
 ccb45b34d440 | ACPI: arm64: export acpi_arch_thermal_cpufreq_pctg()
@@ -112,6 +142,12 @@ f0c2264958e1 | arm64/mm: automatically fold contpte mappings
 ead79118dae6 | arm64/io: Provide a WC friendly __iowriteXX_copy()
 2b7a5e1fe022 | net: hns3: Remove io_stop_wc() calls after __iowrite64_copy()
 ef302283ddfc | IB/mlx5: Use __iowrite64_copy() for write combining stores
+
+
+
+# Bare Metal Support: Performance Tools
+#######################################
+
 1c5d62f5dd97 | ACPICA: Add support for ARM Performance Monitoring Unit Table.
 6251d38059ae | ACPI: ARM Performance Monitoring Unit Table (APMT) initial support
 e37dfd65731d | perf: arm_cspmu: Add support for ARM CoreSight PMU driver
@@ -179,6 +215,12 @@ fbb4a4759b54 | cpufreq: Introduce an optional cpuinfo_avg_freq sysfs entry
 16d1e27475f6 | arm64: Provide an AMU-based version of arch_freq_get_on_cpu
 39b19974982e | arm64: Update AMU-based freq scale factor on entering idle
 20711efa91e8 | arm64: Utilize for_each_cpu_wrap for reference lookup
+
+
+
+# Bare Metal Support: CUDA
+##########################
+
 18b2db3b0385 | mm: Convert page kmemcg type to a page memcg flag
 368c0159d492 | RDMA/umem: Support importing dma-buf as user memory region
 b392a1989170 | vfio/pci: remove vfio_pci_nvlink2
@@ -206,3 +248,5 @@ b4e002d8a7ce | spi: tegra210-quad: Fix timeout handling
 e403e8538359 | arm64: errata: Assume that unknown CPUs _are_ vulnerable to Spectre BHB
 a5951389e58d | arm64: errata: Add newer ARM cores to the spectre_bhb_loop_affected() lists
 fee4d171451c | arm64: errata: Add missing sentinels to Spectre-BHB MIDR arrays
+
+# End of list
