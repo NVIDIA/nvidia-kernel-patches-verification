@@ -45,6 +45,10 @@ b76134178168 | spi: tegra210-quad: Multi-cs support
 4327a6137ed4 | drm/ast: Fix ARM compatibility
 195aba96b854 | tpm_tis_spi: Account for SPI header when allocating TPM SPI xfer buffer
 1a596ad00ffe | PCI: Use downstream bridges for distributing resources
+e403e8538359 | arm64: errata: Assume that unknown CPUs _are_ vulnerable to Spectre BHB
+a5951389e58d | arm64: errata: Add newer ARM cores to the spectre_bhb_loop_affected() lists
+fee4d171451c | arm64: errata: Add missing sentinels to Spectre-BHB MIDR arrays
+d42e6c20de61 | arm64/entry: Mask DAIF in cpu_switch_to(), call_on_irq_stack()
 
 
 
@@ -95,13 +99,37 @@ eebab7e3eb4b | PCI/DOE: Support discovery version 2
 4cd7ba16a0af | mm: fix old/young bit handling in the faulting path
 14d069d92951 | i2c: tegra: Do not mark ACPI devices as irq safe
 088984c8d54c | ACPI: PRM: Find EFI_MEMORY_RUNTIME block for PRM handler and context
+aa6f8b2593b5 | mm/gup: stop leaking pinned pages in low memory conditions
+94efde1d1539 | mm/gup: avoid an unnecessary allocation call for FOLL_LONGTERM cases
+a1268be280d8 | mm/gup: handle NULL pages in unpin_user_pages()
+f3c3ccc4fe49 | PCI: Fix pci_enable_acs() support for the ACS quirks
 c47195631960 | cppc_cpufreq: Use desired perf if feedback ctrs are 0 or unchanged
 ea1829d4d413 | cppc_cpufreq: Remove HiSilicon CPPC workaround
 1bc542c6a0d1 | mm/vmscan: wake up flushers conditionally to avoid cgroup OOM
 c8e88de1b44e | ACPI/HMAT: Move HMAT messages to pr_debug()
 7f5704b6a143 | ACPI: PRM: Remove unnecessary strict handler address checks
+abc7b3f1f056 | RDMA/mlx5: Fix a WARN during dereg_mr for DM type
 f7edb07ad7c6 | Fix mmu notifiers for range-based invalidates
 9cf8a952d57b | PCI/ACS: Fix 'pci=config_acs=' parameter
+b3f6fcd8404f | iommu: Skip PASID validation for devices without PASID capability
+41c721fc0939 | spi: tegra210-quad: use WARN_ON_ONCE instead of WARN_ON for timeouts
+21f4314e66ed | spi: tegra210-quad: add rate limiting and simplify timeout error message
+a6e04f05ce0b | i2c: tegra: check msg length in SMBUS block read
+56344e241c54 | i2c: tegra: Fix reset error handling with ACPI
+d8966b654133 | spi: tegra210-quad: modify chip select (CS) deactivation
+635bf3c88533 | i2c: tegra: Use internal reset when reset property is not available
+c7c31f8dc54a | drm/ast: Use msleep instead of mdelay for edid read
+7526183cfdbe | net: aquantia: Add missing descriptor cache invalidation on ATL2
+5ffcb7b890f6 | net: atlantic: fix fragment overflow handling in RX path
+b4e002d8a7ce | spi: tegra210-quad: Fix timeout handling
+6022eacdda8b | spi: tegra210-quad: Refactor error handling into helper functions
+380fd29d57ab | spi: tegra210-quad: Check hardware status on timeout
+aabd8ea0aa25 | spi: tegra210-quad: Return IRQ_HANDLED when timeout already processed transfer
+ef13ba357656 | spi: tegra210-quad: Move curr_xfer read inside spinlock
+f5a4d7f5e32b | spi: tegra210-quad: Protect curr_xfer assignment in tegra_qspi_setup_transfer_one
+bf4528ab28e2 | spi: tegra210-quad: Protect curr_xfer in tegra_qspi_combined_seq_xfer
+6d7723e8161f | spi: tegra210-quad: Protect curr_xfer clearing in tegra_qspi_non_combined_seq_xfer
+edf9088b6e1d | spi: tegra210-quad: Protect curr_xfer check in IRQ handler
 
 
 
@@ -228,25 +256,7 @@ b392a1989170 | vfio/pci: remove vfio_pci_nvlink2
 fd35ca3d12cc | mm/migrate_device.c: copy pte dirty bit to page
 a3589e1d5fe3 | mm/migrate_device.c: add missing flush_cache_page()
 60bae7370896 | mm/migrate_device.c: flush TLB while holding PTL
-aa6f8b2593b5 | mm/gup: stop leaking pinned pages in low memory conditions
-94efde1d1539 | mm/gup: avoid an unnecessary allocation call for FOLL_LONGTERM cases
-a1268be280d8 | mm/gup: handle NULL pages in unpin_user_pages()
-f3c3ccc4fe49 | PCI: Fix pci_enable_acs() support for the ACS quirks
-abc7b3f1f056 | RDMA/mlx5: Fix a WARN during dereg_mr for DM type
-b3f6fcd8404f | iommu: Skip PASID validation for devices without PASID capability
-41c721fc0939 | spi: tegra210-quad: use WARN_ON_ONCE instead of WARN_ON for timeouts
-21f4314e66ed | spi: tegra210-quad: add rate limiting and simplify timeout error message
-a6e04f05ce0b | i2c: tegra: check msg length in SMBUS block read
-56344e241c54 | i2c: tegra: Fix reset error handling with ACPI
-d8966b654133 | spi: tegra210-quad: modify chip select (CS) deactivation
-635bf3c88533 | i2c: tegra: Use internal reset when reset property is not available
-c7c31f8dc54a | drm/ast: Use msleep instead of mdelay for edid read
-7526183cfdbe | net: aquantia: Add missing descriptor cache invalidation on ATL2
-b4e002d8a7ce | spi: tegra210-quad: Fix timeout handling
-6022eacdda8b | spi: tegra210-quad: Refactor error handling into helper functions
-380fd29d57ab | spi: tegra210-quad: Check hardware status on timeout
-e403e8538359 | arm64: errata: Assume that unknown CPUs _are_ vulnerable to Spectre BHB
-a5951389e58d | arm64: errata: Add newer ARM cores to the spectre_bhb_loop_affected() lists
-fee4d171451c | arm64: errata: Add missing sentinels to Spectre-BHB MIDR arrays
+
+
 
 # End of list
