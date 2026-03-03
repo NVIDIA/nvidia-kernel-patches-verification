@@ -31,7 +31,6 @@ e185c8a0d842 | arm64: cputype: Add NVIDIA Olympus definitions
 cc80537caaa7 | arm64: cpufeature: Add Olympus MIDR to BBML2 allow list
 fa84e534c3ec | arm64: realm: ioremap: Allow mapping memory as encrypted
 9e8a3df3e7f7 | arm64: Enable EFI secret area Securityfs support
-d02c2e45b1e7 | arm64: acpi: Enable ACPI CCEL support
 9631a10083d8 | gpio: tegra186: Add support for Tegra410
 f75db6f7f907 | gpio: tegra186: Use generic macro for port definitions
 c87f820bc474 | soc/tegra: fuse: Do not register SoC device on ACPI boot
