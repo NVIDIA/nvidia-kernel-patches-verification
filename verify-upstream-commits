@@ -204,6 +204,21 @@ while IFS= read -r line; do
                 fi
                 MATCH_FOUND=1
                 break
+            else
+                # Same title but no trailer (e.g. backported from list). Compare diffs.
+                ABBREV_LOCAL=$(git rev-parse --short=12 "$commit_hash")
+                if diff -u -w \
+                    <(git show --format= "$SHA" | grep -E '^[+-][^+-]') \
+                    <(git show --format= "$commit_hash" | grep -E '^[+-][^+-]') \
+                    >/dev/null; then
+                    output "$(printf "%-7s (%-8s) %s" "EXISTS" "$ABBREV_LOCAL" "$line")"
+                    EXISTS=$((EXISTS+1))
+                else
+                    output "$(printf "%-7s (%-8s) %s" "REVIEW" "$ABBREV_LOCAL" "$line")"
+                    REVIEW=$((REVIEW+1))
+                fi
+                MATCH_FOUND=1
+                break
             fi
         fi
     done < <(git log "$BRANCH" --format='%H %s' --grep="$TITLE_BASENAME" --fixed-strings)
