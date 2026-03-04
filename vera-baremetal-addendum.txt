@@ -1,0 +1,66 @@
+# NVIDIA Vera (Addendum) BML Kernel Patches
+# Format: COMMIT_SHA | TITLE
+#
+# This list is organized by the same groupings found
+# in the NVIDIA Vera Software Patches and Configuration
+# Guide Addendum.
+#
+# NVIDIA PID 1151136
+#
+
+
+
+# Bare Metal Support: Enablement
+################################
+e4ba61481a78 | NVIDIA: VR: SAUCE: soc/tegra: misc: Use SMCCC to get chipid
+021306fb15e5 | NVIDIA: VR: SAUCE: soc/tegra: pmc: Add PMC support for Tegra410
+eb4302049771 | NVIDIA: VR: SAUCE: i2c: tegra: Introduce tegra_i2c_variant to identify DVC and VI
+1abfd8984453 | NVIDIA: VR: SAUCE: i2c: tegra: Add logic to support different register offsets
+deff183e0354 | NVIDIA: VR: SAUCE: i2c: tegra: Add support for Tegra410
+667573e203a8 | NVIDIA: VR: SAUCE: cpufreq: CPPC: Update cached perf_ctrls on sysfs write
+6ff5ee772550 | NVIDIA: VR: SAUCE: cpufreq: CPPC: Add sysfs for min/max_perf and perf_limited
+06a992be4cb8 | NVIDIA: VR: SAUCE: ACPI: CPPC: add APIs and sysfs interface for perf_limited
+08e492e4cceb | NVIDIA: VR: SAUCE: ACPI: CPPC: add APIs and sysfs interface for min/max_perf
+c00b83c6ad29 | NVIDIA: VR: SAUCE: ACPI: CPPC: Extend cppc_set_epp_perf() for FFH/SystemMemory
+31c6c189ec3b | NVIDIA: VR: SAUCE: ACPI: CPPC: Warn on missing mandatory DESIRED_PERF register
+b9d749ff346c | NVIDIA: VR: SAUCE: ACPI: CPPC: Add cppc_get_perf() API to read performance controls
+9fa7533ed81f | NVIDIA: VR: SAUCE: PCI: Allow ATS to be always on for CXL.cache capable devices
+ef6b3ff6bdde | NVIDIA: VR: SAUCE: PCI: Allow ATS to be always on for non-CXL NVIDIA GPUs
+8ea14a368a18 | NVIDIA: VR: SAUCE: iommu/arm-smmu-v3: Allow ATS to be always on
+2ef374262a89 | NVIDIA: VR: SAUCE: firmware: smccc: add support for Live Firmware Activation (LFA)
+489f566a867c | NVIDIA: VR: SAUCE: firmware: smccc: add timeout, touch wdt
+1c86282d0357 | NVIDIA: VR: SAUCE: firmware: smccc: register as platform driver
+
+
+
+# Bare Metal Support: Fixes
+###########################
+
+
+
+# Bare Metal Support: Performance
+#################################
+
+
+
+# Bare Metal Support: Performance Tools
+#######################################
+2391f7933e73 | NVIDIA: VR: SAUCE: arm64: defconfig: Enable NVIDIA TEGRA410 PMU
+17abd8ad51c2 | NVIDIA: VR: SAUCE: perf: add NVIDIA Tegra410 C2C PMU
+d03677e17932 | NVIDIA: VR: SAUCE: perf: add NVIDIA Tegra410 CPU Memory Latency PMU
+272876893032 | NVIDIA: VR: SAUCE: perf/arm_cspmu: nvidia: Add Tegra410 PCIE-TGT PMU
+1420004d8b6f | NVIDIA: VR: SAUCE: perf/arm_cspmu: nvidia: Add Tegra410 PCIE PMU
+1f1579b0925e | NVIDIA: VR: SAUCE: perf/arm_cspmu: Add arm_cspmu_acpi_dev_get
+5a1dbd8246b0 | NVIDIA: VR: SAUCE: perf/arm_cspmu: nvidia: Add Tegra410 UCF PMU
+2c96160d6ff9 | NVIDIA: VR: SAUCE: perf/arm_cspmu: nvidia: Rename doc to Tegra241
+9ee55d5e0868 | NVIDIA: VR: SAUCE: perf vendor events arm64: Add Tegra410 Olympus PMU events
+
+
+
+# Bare Metal Support: Hardware Workarounds
+##########################################
+8fa90b6a9262 | NVIDIA: VR: SAUCE: arm64: Add workaround to convert MT_NORMAL_NC to Device-nGnRE
+
+
+
+# End of list
