@@ -9,17 +9,21 @@ A script to check if a list of upstream Linux kernel commit SHAs are present (ch
 - Checks if each upstream SHA is present in the target branch (or current branch by default).
 - Detects cherry-picked or backported commits by matching commit titles and trailers.
 - Compares patch content, ignoring commit message trailers and context-only changes.
+- **Match by title (`-t`)**: find the reference commit on upstream by title instead of list SHA; useful when the branch was rebased and list SHAs are no longer in upstream history.
 - Outputs a summary of results: EXISTS, REVIEW, ABSENT, BADSHA.
-- Supports quiet mode for summary-only output.
-- Flexible: can specify branch and upstream remote/branch.
+- Supports quiet mode, dry run, and verbose (debug) output.
+- Flexible: can specify branch and upstream (URL or remote/branch).
 
 ## Usage
 
 ```
-Usage: ./verify-upstream-commits [-b branch] [-u upstream/branch] [-q] <sha_list_file>
+Usage: ./verify-upstream-commits [-b branch] [-U upstream] [-q] [-n] [-v] [-t] <sha_list_file>
   -b branch         Branch to check (default: current branch)
-  -u upstream/branch  Upstream remote/branch (default: upstream/master)
+  -U upstream       Upstream source: URL or remote/branch (default: https://github.com/torvalds/linux, branch master)
   -q                Quiet mode (only summary)
+  -n                Dry run (show what would be checked, don't execute)
+  -v                Verbose mode (enable debug output)
+  -t                Match by title: find reference commit on upstream by title instead of list SHA
 ```
 
 ## Examples
@@ -73,11 +77,24 @@ BADSHA : 0
 Total  : 605
 ```
 
+### Example 3: Match by Title (for rebased branches)
+When your branch was rebased and list SHAs are no longer in upstream history, use `-t` so the script finds the reference commit on upstream by matching the commit title (from the list line or from the SHA if present in the repo):
+
+```
+$ ./verify-upstream-commits -t -U origin/linux-nvidia-6.18 vera-baremetal-addendum.txt
+```
+
+List lines should use the format `SHA | TITLE` so that when the list SHA is not in upstream, the title is still available for the search.
+
 ## Requirements
 - Bash
 - git
 - A Linux kernel git repository (or set the LINUX_GIT environment variable to point to one)
 
 ## Notes
-- The input file should contain a list of upstream SHAs (SHA in the first column). Blank lines and lines starting with `#` are ignored.
-- If the default upstream remote is not found, the script will prompt you to add it.
+- The input file should contain one entry per line: **SHA** in the first column, optionally followed by **` | TITLE`** (pipe and commit subject). Blank lines and lines starting with `#` are ignored. The `SHA | TITLE` format is recommended when using `-t` (match by title).
+- **EXISTS**: the patch is on the branch (directly or as a cherry-pick/backport with matching diff).
+- **REVIEW**: a commit with matching title was found but the diff differs, or the title matches and there is no backport trailer (e.g. backported from list).
+- **ABSENT**: no commit on the branch has a matching title.
+- **BADSHA**: the list SHA is not in the given upstream (and with `-t`, no commit on upstream matches the title).
+- When `-U` is a URL, the script adds a temporary remote, fetches the default branch, and removes the remote on exit.

@@ -11,12 +11,13 @@ DEFAULT_UPSTREAM_URL="https://github.com/torvalds/linux"
 DEFAULT_UPSTREAM_BRANCH="master"
 
 usage() {
-    echo "Usage: $0 [-b branch] [-U upstream] [-q] [-n] [-v] <sha_list_file>"
+    echo "Usage: $0 [-b branch] [-U upstream] [-q] [-n] [-v] [-t] <sha_list_file>"
     echo "  -b branch         Branch to check (default: current branch)"
     echo "  -U upstream       Upstream source: URL or remote/branch (default: $DEFAULT_UPSTREAM_URL)"
     echo "  -q                Quiet mode (only summary)"
     echo "  -n                Dry run (show what would be checked, don't execute)"
     echo "  -v                Verbose mode (enable debug output)"
+    echo "  -t                Match by title: find reference commit on upstream by title instead of list SHA"
     echo ""
     echo "Example:"
     echo "    ~/kernel-patches-verification/verify-upstream-commits -U https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git ~/nvidia-kernel-patches-verification/grace-baremetal.txt"
@@ -29,6 +30,7 @@ UPSTREAM_ARG=""
 QUIET=0
 DRY_RUN=0
 VERBOSE=0
+BY_TITLE=0
 
 # Support for -h and --help
 for arg in "$@"; do
@@ -37,13 +39,14 @@ for arg in "$@"; do
     fi
 done
 
-while getopts "b:U:qnv" opt; do
+while getopts "b:U:qnvt" opt; do
     case $opt in
         b) BRANCH="$OPTARG" ;;
         U) UPSTREAM_ARG="$OPTARG" ;;
         q) QUIET=1 ;;
         n) DRY_RUN=1 ;;
         v) VERBOSE=1 ;;
+        t) BY_TITLE=1 ;;
         *) usage ;;
     esac
 done
@@ -73,6 +76,7 @@ if [ "$DRY_RUN" -eq 1 ]; then
     echo "  Target branch: ${BRANCH:-<current>}"
     echo "  Upstream:      ${UPSTREAM_ARG:-$DEFAULT_UPSTREAM_URL (default)}"
     echo "  Quiet mode:    $QUIET"
+    echo "  Match by title: $BY_TITLE"
     exit 0
 fi
 
@@ -152,48 +156,83 @@ while IFS= read -r line; do
     # Skip lines that are only whitespace or comments
     [[ -z "${line//[[:space:]]/}" ]] && continue
     [[ "$line" =~ ^[[:space:]]*# ]] && continue
+    # Parse line: first field is list SHA; optional " | TITLE" used in step 1 when -t is set
     SHA=$(echo "$line" | awk '{print $1}')
     TOTAL=$((TOTAL+1))
     STATUS=""
     ABBREV="------------"
 
-    # 1. Check if SHA is present in branch
-    if git merge-base --is-ancestor "$SHA" "$BRANCH" 2>/dev/null; then
-        # Get abbreviated SHA from local branch
-        ABBREV=$(git rev-parse --short=12 "$SHA")
+    # 1. Resolve TITLE and REFERENCE_SHA (commit used for diff comparison and trailer check)
+    if [ "$BY_TITLE" -eq 1 ]; then
+        # Match by title: get title from list or from SHA, find reference commit on upstream by title
+        if [[ "$line" =~ \|[[:space:]]*(.*) ]]; then
+            TITLE="${BASH_REMATCH[1]}"
+            TITLE="${TITLE#"${TITLE%%[![:space:]]*}"}"   # trim leading whitespace
+        else
+            TITLE=""
+        fi
+        if [ -z "$TITLE" ]; then
+            # Need title from git; SHA must be in upstream or repo
+            if git merge-base --is-ancestor "$SHA" "$UPSTREAM" 2>/dev/null; then
+                TITLE=$(git log --format=%s -n 1 "$SHA")
+            elif git rev-parse --verify "$SHA" 2>/dev/null; then
+                TITLE=$(git log --format=%s -n 1 "$SHA")
+            else
+                output "$(printf "%-7s (%-8s) %s" "BADSHA" "$ABBREV" "$line")"
+                BADSHA=$((BADSHA+1))
+                continue
+            fi
+        fi
+        TITLE_BASENAME=$(echo "$TITLE" | sed 's/^[^:]*: *//')
+        REFERENCE_SHA=$(git log "$UPSTREAM" --no-merges --format='%H' --grep="$TITLE_BASENAME" --fixed-strings -n 1)
+        if [ -z "$REFERENCE_SHA" ]; then
+            output "$(printf "%-7s (%-8s) %s" "BADSHA" "$ABBREV" "$line")"
+            BADSHA=$((BADSHA+1))
+            continue
+        fi
+    else
+        # Default: SHA must be in upstream; use it as reference
+        if ! git merge-base --is-ancestor "$SHA" "$UPSTREAM" 2>/dev/null; then
+            output "$(printf "%-7s (%-8s) %s" "BADSHA" "$ABBREV" "$line")"
+            BADSHA=$((BADSHA+1))
+            continue
+        fi
+        REFERENCE_SHA="$SHA"
+        TITLE=$(git log --format=%s -n 1 "$SHA")
+        TITLE_BASENAME=$(echo "$TITLE" | sed 's/^[^:]*: *//')
+    fi
+
+    # 2. Check if reference commit is present in branch (direct ancestor)
+    if git merge-base --is-ancestor "$REFERENCE_SHA" "$BRANCH" 2>/dev/null; then
+        ABBREV=$(git rev-parse --short=12 "$REFERENCE_SHA")
         output "$(printf "%-7s (%-8s) %s" "EXISTS" "$ABBREV" "$line")"
         EXISTS=$((EXISTS+1))
         continue
     fi
 
-    # 2. Check if SHA is reachable from upstream branch and get title
-    if ! git merge-base --is-ancestor "$SHA" "$UPSTREAM" 2>/dev/null; then
-        output "$(printf "%-7s (%-8s) %s" "BADSHA" "$ABBREV" "$line")"
-        BADSHA=$((BADSHA+1))
-        continue
-    fi
-    TITLE=$(git log --format=%s -n 1 "$SHA")
-
     # 3. Search for similar title in branch (ignore tags/prefixes)
-    # Remove tags/prefixes from title for search
-    TITLE_BASENAME=$(echo "$TITLE" | sed 's/^[^:]*: *//')
     MATCH_FOUND=0
     while read -r commit_hash commit_title; do
+        # Skip merge commits; --grep matches full message so a merge can match many titles
+        if [ "$(git rev-list --parents -n 1 "$commit_hash" 2>/dev/null | wc -w)" -gt 2 ]; then
+            continue
+        fi
         commit_title_basename=$(echo "$commit_title" | sed 's/^[^:]*: *//')
         if [[ "$commit_title_basename" == *"$TITLE_BASENAME"* ]]; then
-            # Check for cherry-pick/backport/upstream note:
+            # 3a. Has cherry-pick/backport trailer? Compare diffs against reference commit.
+            #     Trailer may reference list SHA or REFERENCE_SHA (e.g. after rebase with -t).
             #
-            #    Cherry-picked from commit: $SHA
-            #    Cherry picked from commit: $SHA
-            #    Backported from commit: $SHA
-            #    commit $SHA upstream
-            #    Upstream commit $SHA
+            #    Cherry-picked from commit: $REFERENCE_SHA
+            #    Cherry picked from commit: $REFERENCE_SHA
+            #    Backported from commit: $REFERENCE_SHA
+            #    commit $REFERENCE_SHA upstream
+            #    Upstream commit $REFERENCE_SHA
 	    #
-            if git log -1 --format=%B "$commit_hash" | grep -qi -E "Cherry[- ]picked from commit:?\s*$SHA|Backported from commit:?\s*$SHA|commit\s+$SHA[0-9a-f]*\s+upstream|Upstream commit\s+$SHA"; then
-                # Compare diffs
+            if git log -1 --format=%B "$commit_hash" | grep -qi -E "Cherry[- ]picked from commit:?\s*($REFERENCE_SHA|$SHA)|Backported from commit:?\s*($REFERENCE_SHA|$SHA)|commit\s+($REFERENCE_SHA|$SHA)[0-9a-f]*\s+upstream|Upstream commit\s+($REFERENCE_SHA|$SHA)"; then
+                # Compare diffs against reference commit
                 ABBREV_LOCAL=$(git rev-parse --short=12 "$commit_hash")
                 if diff -u -w \
-                    <(git show --format= "$SHA" | grep -E '^[+-][^+-]') \
+                    <(git show --format= "$REFERENCE_SHA" | grep -E '^[+-][^+-]') \
                     <(git show --format= "$commit_hash" | grep -E '^[+-][^+-]') \
                     >/dev/null; then
                     output "$(printf "%-7s (%-8s) %s" "EXISTS" "$ABBREV_LOCAL" "$line")"
@@ -205,10 +244,10 @@ while IFS= read -r line; do
                 MATCH_FOUND=1
                 break
             else
-                # Same title but no trailer (e.g. backported from list). Compare diffs.
+                # 3b. Same title but no trailer (e.g. backported from list). Compare diffs.
                 ABBREV_LOCAL=$(git rev-parse --short=12 "$commit_hash")
                 if diff -u -w \
-                    <(git show --format= "$SHA" | grep -E '^[+-][^+-]') \
+                    <(git show --format= "$REFERENCE_SHA" | grep -E '^[+-][^+-]') \
                     <(git show --format= "$commit_hash" | grep -E '^[+-][^+-]') \
                     >/dev/null; then
                     output "$(printf "%-7s (%-8s) %s" "EXISTS" "$ABBREV_LOCAL" "$line")"
@@ -222,6 +261,7 @@ while IFS= read -r line; do
             fi
         fi
     done < <(git log "$BRANCH" --format='%H %s' --grep="$TITLE_BASENAME" --fixed-strings)
+    # No branch commit had matching title → report ABSENT
     if [ "$MATCH_FOUND" -eq 0 ]; then
         output "$(printf "%-7s (%-8s) %s" "ABSENT" "$ABBREV" "$line")"
         ABSENT=$((ABSENT+1))
@@ -232,6 +272,7 @@ done < "$SHA_LIST_FILE"
 if [ "$QUIET" -eq 0 ]; then
     echo ""
 fi
+# Summary: counts of EXISTS, REVIEW, ABSENT, BADSHA
 echo "Summary"
 echo "_______"
 printf "%-7s: %d\n" "EXISTS" "$EXISTS"
