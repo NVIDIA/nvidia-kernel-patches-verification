@@ -69,6 +69,13 @@ eeb95c07d5fc | PCI: Add ASPEED vendor ID to pci_ids.h
 
 # Bare Metal Support: Performance
 #################################
+f174a9ffcd48 | KVM: arm64: Add exit to userspace on {LD,ST}64B* outside of memslots
+902eebac8fa3 | KVM: arm64: Add documentation for KVM_EXIT_ARM_LDST64B
+2937aeec9dc5 | KVM: arm64: Handle DABT caused by LS64* instructions on unsupported memory
+dea58da4b6fe | arm64: Provide basic EL2 setup for FEAT_{LS64, LS64_V} usage at EL0/1
+151b92c92a45 | KVM: arm64: Enable FEAT_{LS64, LS64_V} in the supported guest
+58ce78667a64 | arm64: Add support for FEAT_{LS64, LS64_V}
+57a96356bb69 | kselftest/arm64: Add HWCAP test for FEAT_LS64
 
 
 
