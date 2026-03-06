@@ -30,6 +30,52 @@ ef6b3ff6bdde | NVIDIA: VR: SAUCE: PCI: Allow ATS to be always on for non-CXL NVI
 2ef374262a89 | NVIDIA: VR: SAUCE: firmware: smccc: add support for Live Firmware Activation (LFA)
 489f566a867c | NVIDIA: VR: SAUCE: firmware: smccc: add timeout, touch wdt
 1c86282d0357 | NVIDIA: VR: SAUCE: firmware: smccc: register as platform driver
+15be0b1108f6 | NVIDIA: VR: CCA: SAUCE: KVM: arm64: Expose KVM_CAP_ARM_RMI via module parameter
+40232ddc66cc | NVIDIA: VR: CCA: SAUCE: arm64: RME: Add bounds check
+5bff0713ad68 | NVIDIA: VR: CCA: SAUCE: arm64: RME: Add MECID support
+c27803b9feac | NVIDIA: VR: CCA: SAUCE: arm64: rsi: Move RSI init to fix Realm guest boot on BBML2
+4ef0cea6bd9c | NVIDIA: VR: CCA: SAUCE: KVM: arm64: Allow activating realms
+211ad71273e6 | NVIDIA: VR: CCA: SAUCE: KVM: arm64: Expose KVM_ARM_VCPU_REC to user space
+fa3fb71e29c0 | NVIDIA: VR: CCA: SAUCE: KVM: arm64: Expose support for private memory
+d4391814627f | NVIDIA: VR: CCA: SAUCE: arm64: RMI: Provide accurate register list
+27c761d6fbd4 | NVIDIA: VR: CCA: SAUCE: arm64: RMI: Provide register list for unfinalized RMI RECs
+2022200543ac | NVIDIA: VR: CCA: SAUCE: arm64: RMI: Configure max SVE vector length for a Realm
+85651369ea7f | NVIDIA: VR: CCA: SAUCE: arm64: RMI: Propagate max SVE vector length from RMM
+37332fbf2bbc | NVIDIA: VR: CCA: SAUCE: arm64: RMI: Initialize PMCR.N with number counter supported by RMM
+7a9643913694 | NVIDIA: VR: CCA: SAUCE: arm64: RMI: Set breakpoint parameters through SET_ONE_REG
+896df3403d99 | NVIDIA: VR: CCA: SAUCE: arm64: RMI: Propagate number of breakpoints and watchpoints to userspace
+6b7b6e48ad94 | NVIDIA: VR: CCA: SAUCE: arm64: RMI: Enable PMU support with a realm guest
+3728ba1e092e | NVIDIA: VR: CCA: SAUCE: arm_pmu: Provide a mechanism for disabling the physical IRQ
+444f870a936a | NVIDIA: VR: CCA: SAUCE: arm64: RMI: Prevent Device mappings for Realms
+ef5622ea45d6 | NVIDIA: VR: CCA: SAUCE: arm64: RMI: Always use 4k pages for realms
+ad7a21d8468d | NVIDIA: VR: CCA: SAUCE: arm64: RMI: Allow checking SVE on VM instance
+143f8e8b2ea4 | NVIDIA: VR: CCA: SAUCE: arm64: RMI: support RSI_HOST_CALL
+58261169dfc9 | NVIDIA: VR: CCA: SAUCE: arm64: RMI: allow userspace to inject aborts
+7dd3b98ac4ca | NVIDIA: VR: CCA: SAUCE: arm64: Don't expose stolen time for realm guests
+f01bcb6a0e66 | NVIDIA: VR: CCA: SAUCE: KVM: arm64: WARN on injected undef exceptions
+18a419990645 | NVIDIA: VR: CCA: SAUCE: KVM: arm64: Handle Realm PSCI requests
+be7b2899a345 | NVIDIA: VR: CCA: SAUCE: KVM: arm64: Validate register access for a Realm VM
+8ac52c7e6503 | NVIDIA: VR: CCA: SAUCE: KVM: arm64: Handle realm VCPU load
+ca3149fc3166 | NVIDIA: VR: CCA: SAUCE: arm64: RMI: Runtime faulting of memory
+2fe28b6aa69e | NVIDIA: VR: CCA: SAUCE: arm64: RMI: Allow populating initial contents
+610706b001c6 | NVIDIA: VR: CCA: SAUCE: KVM: arm64: Handle realm MMIO emulation
+a9c28f82cd8f | NVIDIA: VR: CCA: SAUCE: arm64: RMI: Handle RMI_EXIT_RIPAS_CHANGE
+8db3cf906186 | NVIDIA: VR: CCA: SAUCE: arm64: RMI: Handle realm enter/exit
+450cac2e6f03 | NVIDIA: VR: CCA: SAUCE: arm64: RMI: Allow VMM to set RIPAS
+b38c4adc954a | NVIDIA: VR: CCA: SAUCE: KVM: arm64: Support timers in realm RECs
+fa0d857a04db | NVIDIA: VR: CCA: SAUCE: arm64: RMI: Support for the VGIC in realms
+68ba64e88325 | NVIDIA: VR: CCA: SAUCE: KVM: arm64: vgic: Provide helper for number of list registers
+70e2daaed0e7 | NVIDIA: VR: CCA: SAUCE: arm64: RMI: Allocate/free RECs to match vCPUs
+708776a91f41 | NVIDIA: VR: CCA: SAUCE: arm64: RMI: RTT tear down
+9cf54bf6e912 | NVIDIA: VR: CCA: SAUCE: KVM: arm64: Allow passing machine type in KVM creation
+aba06f2c0e70 | NVIDIA: VR: CCA: SAUCE: kvm: arm64: Don't expose unsupported capabilities for realm guests
+6f083a05eced | NVIDIA: VR: CCA: SAUCE: arm64: RMI: ioctls to create and configure realms
+d17ea1c05651 | NVIDIA: VR: CCA: SAUCE: arm64: RMI: Define the user ABI
+66ed10c3c34d | NVIDIA: VR: CCA: SAUCE: arm64: RMI: Check for RMI support at KVM init
+ee1f7d22a36c | NVIDIA: VR: CCA: SAUCE: arm64: RMI: Add wrappers for RMI calls
+dd216457a325 | NVIDIA: VR: CCA: SAUCE: arm64: RMI: Add SMC definitions for calling the RMM
+167ae21ce3ff | NVIDIA: VR: CCA: SAUCE: arm64: RME: Handle Granule Protection Faults (GPFs)
+6120fb3e10ac | NVIDIA: VR: CCA: SAUCE: kvm: arm64: Include kvm_emulate.h in kvm/arm_psci.h
 
 
 
