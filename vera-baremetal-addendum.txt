@@ -76,6 +76,8 @@ ee1f7d22a36c | NVIDIA: VR: CCA: SAUCE: arm64: RMI: Add wrappers for RMI calls
 dd216457a325 | NVIDIA: VR: CCA: SAUCE: arm64: RMI: Add SMC definitions for calling the RMM
 167ae21ce3ff | NVIDIA: VR: CCA: SAUCE: arm64: RME: Handle Granule Protection Faults (GPFs)
 6120fb3e10ac | NVIDIA: VR: CCA: SAUCE: kvm: arm64: Include kvm_emulate.h in kvm/arm_psci.h
+ee4944138948 | gpio: tegra186: Support multi-socket devices
+a95205c3de00 | gpio: tegra186: Simplify GPIO line name prefix handling
 
 
 
