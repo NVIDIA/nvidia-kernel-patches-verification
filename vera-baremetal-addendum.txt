@@ -83,6 +83,7 @@ a95205c3de00 | gpio: tegra186: Simplify GPIO line name prefix handling
 
 # Bare Metal Support: Fixes
 ###########################
+93cd52243c1a | NVIDIA: VR: SAUCE: firmware: smccc: lfa: fix work item re-initialization race
 
 
 
