@@ -212,11 +212,8 @@ while IFS= read -r line; do
 
     # 3. Search for similar title in branch (ignore tags/prefixes)
     MATCH_FOUND=0
+    REFERENCE_DIFF=$(git show --format= "$REFERENCE_SHA" | grep -E '^[+-][^+-]')
     while read -r commit_hash commit_title; do
-        # Skip merge commits; --grep matches full message so a merge can match many titles
-        if [ "$(git rev-list --parents -n 1 "$commit_hash" 2>/dev/null | wc -w)" -gt 2 ]; then
-            continue
-        fi
         commit_title_basename=$(echo "$commit_title" | sed 's/^[^:]*: *//')
         if [[ "$commit_title_basename" == *"$TITLE_BASENAME"* ]]; then
             # 3a. Has cherry-pick/backport trailer? Compare diffs against reference commit.
@@ -227,12 +224,12 @@ while IFS= read -r line; do
             #    Backported from commit: $REFERENCE_SHA
             #    commit $REFERENCE_SHA upstream
             #    Upstream commit $REFERENCE_SHA
-	    #
+            #
             if git log -1 --format=%B "$commit_hash" | grep -qi -E "Cherry[- ]picked from commit:?\s*($REFERENCE_SHA|$SHA)|Backported from commit:?\s*($REFERENCE_SHA|$SHA)|commit\s+($REFERENCE_SHA|$SHA)[0-9a-f]*\s+upstream|Upstream commit\s+($REFERENCE_SHA|$SHA)"; then
                 # Compare diffs against reference commit
                 ABBREV_LOCAL=$(git rev-parse --short=12 "$commit_hash")
                 if diff -u -w \
-                    <(git show --format= "$REFERENCE_SHA" | grep -E '^[+-][^+-]') \
+                    <(echo "$REFERENCE_DIFF") \
                     <(git show --format= "$commit_hash" | grep -E '^[+-][^+-]') \
                     >/dev/null; then
                     output "$(printf "%-7s (%-8s) %s" "EXISTS" "$ABBREV_LOCAL" "$line")"
@@ -247,7 +244,7 @@ while IFS= read -r line; do
                 # 3b. Same title but no trailer (e.g. backported from list). Compare diffs.
                 ABBREV_LOCAL=$(git rev-parse --short=12 "$commit_hash")
                 if diff -u -w \
-                    <(git show --format= "$REFERENCE_SHA" | grep -E '^[+-][^+-]') \
+                    <(echo "$REFERENCE_DIFF") \
                     <(git show --format= "$commit_hash" | grep -E '^[+-][^+-]') \
                     >/dev/null; then
                     output "$(printf "%-7s (%-8s) %s" "EXISTS" "$ABBREV_LOCAL" "$line")"
@@ -260,7 +257,7 @@ while IFS= read -r line; do
                 break
             fi
         fi
-    done < <(git log "$BRANCH" --format='%H %s' --grep="$TITLE_BASENAME" --fixed-strings)
+    done < <(git log "$BRANCH" --no-merges --format='%H %s' --grep="$TITLE_BASENAME" --fixed-strings)
     # No branch commit had matching title → report ABSENT
     if [ "$MATCH_FOUND" -eq 0 ]; then
         output "$(printf "%-7s (%-8s) %s" "ABSENT" "$ABBREV" "$line")"
