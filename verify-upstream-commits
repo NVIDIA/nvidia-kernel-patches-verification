@@ -135,13 +135,6 @@ setup_upstream() {
 
         echo "Fetching upstream from $arg ($DEFAULT_UPSTREAM_BRANCH)..." >&2
         git remote add "$UPSTREAM_REMOTE" "$arg"
-
-        # Cleanup on exit
-        cleanup_upstream_remote() {
-            git remote remove "$UPSTREAM_REMOTE" 2>/dev/null || true
-        }
-        trap cleanup_upstream_remote EXIT
-
         git fetch --quiet "$UPSTREAM_REMOTE" "$DEFAULT_UPSTREAM_BRANCH"
         UPSTREAM="${UPSTREAM_REMOTE}/${DEFAULT_UPSTREAM_BRANCH}"
     else
@@ -151,6 +144,20 @@ setup_upstream() {
 }
 
 setup_upstream "$UPSTREAM_ARG"
+
+# Unified cleanup: remove temporary upstream remote (if any) and branch log cache
+BRANCH_LOG_CACHE=$(mktemp)
+cleanup_all() {
+    if [ -n "${UPSTREAM_REMOTE:-}" ]; then
+        git remote remove "$UPSTREAM_REMOTE" 2>/dev/null || true
+    fi
+    rm -f "$BRANCH_LOG_CACHE" 2>/dev/null || true
+}
+trap cleanup_all EXIT
+
+# Pre-cache branch commit log to avoid a full git-log scan per SHA entry
+echo "Caching branch log for $BRANCH..." >&2
+git log "$BRANCH" --no-merges --format='%H %s' > "$BRANCH_LOG_CACHE"
 
 while IFS= read -r line; do
     # Skip lines that are only whitespace or comments
@@ -257,7 +264,7 @@ while IFS= read -r line; do
                 break
             fi
         fi
-    done < <(git log "$BRANCH" --no-merges --format='%H %s' --grep="$TITLE_BASENAME" --fixed-strings)
+    done < <(grep -F "$TITLE_BASENAME" "$BRANCH_LOG_CACHE")
     # No branch commit had matching title → report ABSENT
     if [ "$MATCH_FOUND" -eq 0 ]; then
         output "$(printf "%-7s (%-8s) %s" "ABSENT" "$ABBREV" "$line")"
