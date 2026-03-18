@@ -12,7 +12,7 @@
 
 # Bare Metal Support: Enablement
 ################################
-e4ba61481a78 | NVIDIA: VR: SAUCE: soc/tegra: misc: Use SMCCC to get chipid
+579bc508cde3 | NVIDIA: VR: SAUCE: soc/tegra: misc: Use SMCCC to get chipid
 021306fb15e5 | NVIDIA: VR: SAUCE: soc/tegra: pmc: Add PMC support for Tegra410
 eb4302049771 | NVIDIA: VR: SAUCE: i2c: tegra: Introduce tegra_i2c_variant to identify DVC and VI
 1abfd8984453 | NVIDIA: VR: SAUCE: i2c: tegra: Add logic to support different register offsets
