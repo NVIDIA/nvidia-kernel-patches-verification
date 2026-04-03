@@ -190,7 +190,7 @@ while IFS= read -r line; do
                 continue
             fi
         fi
-        TITLE_BASENAME=$(echo "$TITLE" | sed 's/^[^:]*: *//')
+        TITLE_BASENAME=$(echo "$TITLE" | sed -E 's/^([A-Za-z0-9_/.-]+:[[:space:]]+)*SAUCE:[[:space:]]+//')
         REFERENCE_SHA=$(git log "$UPSTREAM" --no-merges --format='%H' --grep="$TITLE_BASENAME" --fixed-strings -n 1)
         if [ -z "$REFERENCE_SHA" ]; then
             output "$(printf "%-7s (%-8s) %s" "BADSHA" "$ABBREV" "$line")"
@@ -206,7 +206,7 @@ while IFS= read -r line; do
         fi
         REFERENCE_SHA="$SHA"
         TITLE=$(git log --format=%s -n 1 "$SHA")
-        TITLE_BASENAME=$(echo "$TITLE" | sed 's/^[^:]*: *//')
+        TITLE_BASENAME=$(echo "$TITLE" | sed -E 's/^([A-Za-z0-9_/.-]+:[[:space:]]+)*SAUCE:[[:space:]]+//')
     fi
 
     # 2. Check if reference commit is present in branch (direct ancestor)
@@ -221,7 +221,7 @@ while IFS= read -r line; do
     MATCH_FOUND=0
     REFERENCE_DIFF=$(git show --format= "$REFERENCE_SHA" | grep -E '^[+-][^+-]')
     while read -r commit_hash commit_title; do
-        commit_title_basename=$(echo "$commit_title" | sed 's/^[^:]*: *//')
+        commit_title_basename=$(echo "$commit_title" | sed -E 's/^([A-Za-z0-9_/.-]+:[[:space:]]+)*SAUCE:[[:space:]]+//')
         if [[ "$commit_title_basename" == *"$TITLE_BASENAME"* ]]; then
             # 3a. Has cherry-pick/backport trailer? Compare diffs against reference commit.
             #     Trailer may reference list SHA or REFERENCE_SHA (e.g. after rebase with -t).
