@@ -131,6 +131,7 @@ f5a4d7f5e32b | spi: tegra210-quad: Protect curr_xfer assignment in tegra_qspi_se
 bf4528ab28e2 | spi: tegra210-quad: Protect curr_xfer in tegra_qspi_combined_seq_xfer
 6d7723e8161f | spi: tegra210-quad: Protect curr_xfer clearing in tegra_qspi_non_combined_seq_xfer
 edf9088b6e1d | spi: tegra210-quad: Protect curr_xfer check in IRQ handler
+c87f820bc474 | soc/tegra: fuse: Do not register SoC device on ACPI boot
 
 
 
@@ -171,6 +172,14 @@ f0c2264958e1 | arm64/mm: automatically fold contpte mappings
 ead79118dae6 | arm64/io: Provide a WC friendly __iowriteXX_copy()
 2b7a5e1fe022 | net: hns3: Remove io_stop_wc() calls after __iowrite64_copy()
 ef302283ddfc | IB/mlx5: Use __iowrite64_copy() for write combining stores
+9dc42c907028 | workqueue: fix typo in WQ_AFFN_SMT comment
+5920d046f7ae | workqueue: add WQ_AFFN_CACHE_SHARD affinity scope
+4cdc8a7389d5 | workqueue: set WQ_AFFN_CACHE_SHARD as the default affinity scope
+738390a5321c | tools/workqueue: add CACHE_SHARD support to wq_dump.py
+24b2e73f9700 | workqueue: add test_workqueue benchmark module
+41e3ccca00b3 | docs: workqueue: document WQ_AFFN_CACHE_SHARD affinity scope
+1abaae9b38a8 | workqueue: fix parse_affn_scope() prefix matching bug
+76af54648899 | workqueue: validate cpumask_first() result in llc_populate_cpu_shard_id()
 
 
 
@@ -257,6 +266,111 @@ b392a1989170 | vfio/pci: remove vfio_pci_nvlink2
 fd35ca3d12cc | mm/migrate_device.c: copy pte dirty bit to page
 a3589e1d5fe3 | mm/migrate_device.c: add missing flush_cache_page()
 60bae7370896 | mm/migrate_device.c: flush TLB while holding PTL
+
+
+
+# Bare Metal Support: MPAM
+###########################
+
+189572bf4e00 | cpumask: Relax cpumask_any_but()
+13f0a02bf4c1 | find: Add find_first_andnot_bit()
+5da703ef4e4a | cpumask: Add cpumask_{first,next}_andnot() API
+94f753143028 | x86/resctrl: Optimize cpumask_any_housekeeping()
+dcb1d3d3b77b | x86/resctrl: Remove the limit on the number of CLOSID
+7704fb81bc87 | x86/resctrl: Rename resctrl_sched_in() to begin with "resctrl_arch_"
+8eb7ad66badc | x86/resctrl: Check all domains are offline in resctrl_exit()
+8c992e24a062 | x86/resctrl: Resctrl_exit() teardown resctrl but leave the mount point
+bc740420d7ae | x86/resctrl: Drop __init/__exit on assorted symbols
+6c72fb8d8bd7 | x86/resctrl: Move is_mba_sc() out of core.c
+d4fb6b8e4640 | x86/resctrl: Add end-marker to the resctrl_event_id enum
+2a6566038544 | x86/resctrl: Expand the width of domid by replacing mon_data_bits
+270f00bcc952 | x86/resctrl: Split trace.h
+003e86077143 | x86/resctrl: Add 'resctrl' to the title of the resctrl documentation
+bff70402d6d6 | fs/resctrl: Add boiler plate for external resctrl code
+3d95a49b365e | x86/resctrl: Move the filesystem bits to headers visible to fs/resctrl
+7bdb619c7f9f | x86/resctrl: Move enum resctrl_event_id to resctrl.h
+272ed1c28c9d | x86/resctrl: Fix types in resctrl_arch_mon_ctx_{alloc,free}() stubs
+279f225951e3 | x86/resctrl: Move pseudo lock prototypes to include/linux/resctrl.h
+556f48a5093b | x86/resctrl: Squelch whitespace anomalies in resctrl core code
+df3dc0efcc01 | x86/resctrl: Prefer alloc(sizeof(*foo)) idiom in rdt_init_fs_context()
+b7b57edbf568 | x86/resctrl: Relax some asm #includes
+f6b25be204b8 | x86/resctrl: Always initialise rid field in rdt_resources_all[]
+7168ae330e81 | x86,fs/resctrl: Move the resctrl filesystem code to live in /fs/resctrl
+54d14f25664b | MAINTAINERS: Add reviewers for fs/resctrl
+796e29b857ae | ACPI / PPTT: Add a helper to fill a cpumask from a processor container
+eeec7845e966 | ACPI / PPTT: Stop acpi_count_levels() expecting callers to clear levels
+cfc085af8398 | ACPI / PPTT: Add acpi_pptt_cache_v1_full to use pptt cache as one structure
+41a7bb39fede | ACPI / PPTT: Find cache level by cache-id
+a39a723a6f1e | ACPI / PPTT: Add a helper to fill a cpumask from a cache_id
+d8bf01d80919 | arm64: kconfig: Add Kconfig entry for MPAM
+f5915600cc4c | platform: Define platform_device_put cleanup handler
+96f4a4d53e66 | ACPI: Define acpi_put_table cleanup handler and acpi_get_table_pointer() helper
+115c5325beae | ACPI / MPAM: Parse the MPAM table
+f04046f2577a | arm_mpam: Add probe/remove for mpam msc driver and kbuild boiler plate
+01fb4b822472 | arm_mpam: Add the class and component structures for firmware described ris
+aa64b9e11051 | arm_mpam: Add MPAM MSC register layout definitions
+8f8d0ac1da78 | arm_mpam: Add cpuhp callbacks to probe MSC hardware
+bd221f9f82af | arm_mpam: Probe hardware to find the supported partid/pmg values
+d02beb06ca2a | arm_mpam: Add helpers for managing the locking around the mon_sel registers
+8c90dc68a5de | arm_mpam: Probe the hardware features resctrl supports
+c10ca83a7783 | arm_mpam: Merge supported features during mpam_enable() into mpam_class
+f188a36ca241 | arm_mpam: Reset MSC controls from cpuhp callbacks
+475228d15dd6 | arm_mpam: Add a helper to touch an MSC from any CPU
+3bd04fe7d807 | arm_mpam: Extend reset logic to allow devices to be reset any time
+49aa621c4dca | arm_mpam: Register and enable IRQs
+3796f75aa795 | arm_mpam: Use a static key to indicate when mpam is enabled
+09b89d2a72f3 | arm_mpam: Allow configuration to be applied and restored during cpu online
+880df85d8673 | arm_mpam: Probe and reset the rest of the features
+c891bae66423 | arm_mpam: Add helpers to allocate monitors
+823e7c3712c5 | arm_mpam: Add mpam_msmon_read() to read monitor value
+41e8a14950e1 | arm_mpam: Track bandwidth counter state for power management
+b35363793291 | arm_mpam: Consider overflow in bandwidth counter state
+fdc29a141d63 | arm_mpam: Probe for long/lwd mbwu counters
+9e5afb7c3283 | arm_mpam: Use long MBWU counters if supported
+201d96ca4c86 | arm_mpam: Add helper to reset saved mbwu state
+e3565d1fd4dc | arm_mpam: Add kunit test for bitmap reset
+2557e0eafec1 | arm_mpam: Add kunit tests for props_mismatch()
+ce1e1421f8d8 | MAINTAINERS: new entry for MPAM Driver
+f91e913355f4 | arm_mpam: Ensure in_reset_state is false after applying configuration
+a1cb6577f575 | arm_mpam: Reset when feature configuration bit unset
+29fa1be82b83 | arm64/sysreg: Add MPAMSM_EL1 register
+eda1cd1f9d29 | KVM: arm64: Preserve host MPAM configuration when changing traps
+2e7c684bdb50 | KVM: arm64: Make MPAMSM_EL1 accesses UNDEF
+8e06d04ff1cf | arm64: mpam: Context switch the MPAM registers
+87b78a5d70e8 | arm64: mpam: Re-initialise MPAM regs when CPU comes online
+c544f00a4732 | arm64: mpam: Drop the CONFIG_EXPERT restriction
+831a7f16728c | arm64: mpam: Advertise the CPUs MPAM limits to the driver
+735dad999905 | arm64: mpam: Add cpu_pm notifier to restore MPAM sysregs
+37fe0f984d9c | arm64: mpam: Initialise and context switch the MPAMSM_EL1 register
+2cf9ca3fae38 | arm64: mpam: Add helpers to change a task or cpu's MPAM PARTID/PMG values
+67faed4ccb4f | KVM: arm64: Force guest EL1 to use user-space's partid configuration
+09e61daf8e96 | arm_mpam: resctrl: Add boilerplate cpuhp and domain allocation
+52a4edb16121 | arm_mpam: resctrl: Pick the caches we will use as resctrl resources
+370d166d878d | arm_mpam: resctrl: Implement resctrl_arch_reset_all_ctrls()
+02cc66168788 | arm_mpam: resctrl: Add resctrl_arch_get_config()
+9cd2b522be2c | arm_mpam: resctrl: Implement helpers to update configuration
+9d2e1a99fae5 | arm_mpam: resctrl: Add plumbing against arm64 task and cpu hooks
+6789fb99282c | arm_mpam: resctrl: Add CDP emulation
+01a0021f6c39 | arm_mpam: resctrl: Hide CDP emulation behind CONFIG_EXPERT
+80d147d29313 | arm_mpam: resctrl: Convert to/from MPAMs fixed-point formats
+3e9b35823aab | arm_mpam: resctrl: Add rmid index helpers
+1c1e2968a860 | arm_mpam: resctrl: Wait for cacheinfo to be ready
+36528c7681b8 | arm_mpam: resctrl: Add support for 'MB' resource
+5dc8f73eaa5d | arm_mpam: resctrl: Add kunit test for control format conversions
+264c285999fc | arm_mpam: resctrl: Add monitor initialisation and domain boilerplate
+1458c4f05335 | arm_mpam: resctrl: Add support for csu counters
+2a3c79c61539 | arm_mpam: resctrl: Allow resctrl to allocate monitors
+fb56b29932ca | arm_mpam: resctrl: Add resctrl_arch_rmid_read()
+49b04e401825 | arm_mpam: resctrl: Update the rmid reallocation limit
+efc775eadce2 | arm_mpam: resctrl: Add empty definitions for assorted resctrl functions
+4aab135bda16 | arm64: mpam: Select ARCH_HAS_CPU_RESCTRL
+fb481ec08699 | arm_mpam: resctrl: Call resctrl_init() on platforms that can support resctrl
+fa7745218c98 | arm_mpam: Add quirk framework
+70e81fbedc65 | arm_mpam: Add workaround for T241-MPAM-1
+a7efe23ed6dd | arm_mpam: Add workaround for T241-MPAM-4
+dc48eb1ff27c | arm_mpam: Add workaround for T241-MPAM-6
+aeb8595a5f8b | arm_mpam: Quirk CMN-650's CSU NRDY behaviour
+4ce0a2ccc035 | arm64: mpam: Add initial MPAM documentation
 
 
 

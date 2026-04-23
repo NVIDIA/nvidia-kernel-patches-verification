@@ -33,7 +33,6 @@ fa84e534c3ec | arm64: realm: ioremap: Allow mapping memory as encrypted
 9e8a3df3e7f7 | arm64: Enable EFI secret area Securityfs support
 9631a10083d8 | gpio: tegra186: Add support for Tegra410
 f75db6f7f907 | gpio: tegra186: Use generic macro for port definitions
-c87f820bc474 | soc/tegra: fuse: Do not register SoC device on ACPI boot
 67f9b828d4e5 | gpio: tegra186: Fix GPIO name collisions for Tegra410
 b53232fd220a | i2c: tegra: Do not configure DMA if not supported
 8b80b61e6f4f | i2c: tegra: Use separate variables for fast and fastplus
@@ -46,6 +45,19 @@ eeb95c07d5fc | PCI: Add ASPEED vendor ID to pci_ids.h
 4a1cf5ed51b1 | cpufreq: CPPC: Add generic helpers for sysfs show/store
 7cb6f10ce3ed | ACPI: CPPC: Clean up cppc_perf_caps and cppc_perf_ctrls structs
 83e2908c1d42 | ACPI: CPPC: Rename EPP constants for clarity
+658fa7b1c47a | ACPI: CPPC: Add cppc_get_perf() API to read performance controls
+b3e45fb2db9d | ACPI: CPPC: Warn on missing mandatory DESIRED_PERF register
+38428a680026 | ACPI: CPPC: Extend cppc_set_epp_perf() for FFH/SystemMemory
+24ad4c6c136b | cpufreq: CPPC: Update cached perf_ctrls on sysfs write
+ea3db45ae476 | cpufreq: cppc: Update MIN_PERF/MAX_PERF in target callbacks
+13c45a26635f | ACPI: CPPC: add APIs and sysfs interface for perf_limited
+856250ba2e81 | cpufreq: CPPC: Add sysfs documentation for perf_limited
+0cc24977224a | ACPI: CPPC: Check cpc_read() return values consistently
+2423e336d948 | gpio: tegra186: Simplify GPIO line name prefix handling
+2c299030c681 | gpio: tegra186: Support multi-socket devices
+4eeb19aaff55 | i2c: tegra: Introduce tegra_i2c_variant to identify DVC and VI
+0c0e440b0c93 | i2c: tegra: Add logic to support different register offsets
+59717f260183 | i2c: tegra: Add support for Tegra410
 
 
 
@@ -64,6 +76,8 @@ eeb95c07d5fc | PCI: Add ASPEED vendor ID to pci_ids.h
 8821c8e80a65 | ACPI: CPPC: Perform fast check switch only for online CPUs
 0fce75870666 | ACPI: CPPC: Limit perf ctrs in PCC check only to online CPUs
 56eb0c0ed345 | ACPI: CPPC: Fix remaining for_each_possible_cpu() to use online CPUs
+16d021c878dc | PCI/NPEM: Set LED_HW_PLUGGABLE for hotplug-capable ports
+a55f80233f38 | fwctl: Fix class init ordering to avoid NULL pointer dereference on device removal
 
 
 
@@ -101,6 +115,14 @@ c3d78c34ad00 | perf: arm_pmuv3: Don't use PMCCNTR_EL0 on SMT cores
 7ab06ea41af5 | arch_topology: Provide a stub topology_core_has_smt() for !CONFIG_GENERIC_ARCH_TOPOLOGY
 d852b838eb05 | perf arm-spe: Add NVIDIA Olympus to neoverse list
 d5e4c710b54a | tools headers arm64: Add NVIDIA Olympus part
+86ff690f45cc | perf vendor events arm64: Add Tegra410 Olympus PMU events
+d332424d1d06 | perf/arm_cspmu: nvidia: Rename doc to Tegra241
+f5caf26fd6c7 | perf/arm_cspmu: nvidia: Add Tegra410 UCF PMU
+bc86281fe4bd | perf/arm_cspmu: Add arm_cspmu_acpi_dev_get
+bf585ba14726 | perf/arm_cspmu: nvidia: Add Tegra410 PCIE PMU
+3dd73022306b | perf/arm_cspmu: nvidia: Add Tegra410 PCIE-TGT PMU
+429b7638b2df | perf: add NVIDIA Tegra410 CPU Memory Latency PMU
+2f89b7f78c50 | perf: add NVIDIA Tegra410 C2C PMU
 
 
 
