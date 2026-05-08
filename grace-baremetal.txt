@@ -50,6 +50,7 @@ a5951389e58d | arm64: errata: Add newer ARM cores to the spectre_bhb_loop_affect
 fee4d171451c | arm64: errata: Add missing sentinels to Spectre-BHB MIDR arrays
 d42e6c20de61 | arm64/entry: Mask DAIF in cpu_switch_to(), call_on_irq_stack()
 97c5550b7631 | arm64: contpte: fix set_access_flags() no-op check for SMMU/ATS faults
+e5f72cb9cea5 | PCI: Validate window resource type in pbus_select_window_for_type()
 
 
 
