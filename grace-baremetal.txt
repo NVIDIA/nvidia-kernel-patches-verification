@@ -132,6 +132,7 @@ bf4528ab28e2 | spi: tegra210-quad: Protect curr_xfer in tegra_qspi_combined_seq_
 6d7723e8161f | spi: tegra210-quad: Protect curr_xfer clearing in tegra_qspi_non_combined_seq_xfer
 edf9088b6e1d | spi: tegra210-quad: Protect curr_xfer check in IRQ handler
 c87f820bc474 | soc/tegra: fuse: Do not register SoC device on ACPI boot
+e5f72cb9cea5 | PCI: Validate window resource type in pbus_select_window_for_type()
 
 
 
