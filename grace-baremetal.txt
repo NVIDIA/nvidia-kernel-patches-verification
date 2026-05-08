@@ -180,6 +180,7 @@ ef302283ddfc | IB/mlx5: Use __iowrite64_copy() for write combining stores
 41e3ccca00b3 | docs: workqueue: document WQ_AFFN_CACHE_SHARD affinity scope
 1abaae9b38a8 | workqueue: fix parse_affn_scope() prefix matching bug
 76af54648899 | workqueue: validate cpumask_first() result in llc_populate_cpu_shard_id()
+c6890f36fc49 | workqueue: avoid unguarded 64-bit division
 
 
 
