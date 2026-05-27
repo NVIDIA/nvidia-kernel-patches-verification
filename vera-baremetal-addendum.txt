@@ -17,9 +17,15 @@
 9fa7533ed81f | NVIDIA: VR: SAUCE: PCI: Allow ATS to be always on for CXL.cache capable devices
 ef6b3ff6bdde | NVIDIA: VR: SAUCE: PCI: Allow ATS to be always on for non-CXL NVIDIA GPUs
 8ea14a368a18 | NVIDIA: VR: SAUCE: iommu/arm-smmu-v3: Allow ATS to be always on
-2ef374262a89 | NVIDIA: VR: SAUCE: firmware: smccc: add support for Live Firmware Activation (LFA)
-489f566a867c | NVIDIA: VR: SAUCE: firmware: smccc: add timeout, touch wdt
-1c86282d0357 | NVIDIA: VR: SAUCE: firmware: smccc: register as platform driver
+a02b6067b1a3 | NVIDIA: VR: SAUCE: firmware: smccc: Add support for Live Firmware Activation (LFA)
+da6c9c5f96de | NVIDIA: VR: SAUCE: firmware: smccc: lfa: Move image rescanning
+3787f08d8bbd | NVIDIA: VR: SAUCE: firmware: smccc: lfa: Add timeout and trigger watchdog
+b493759ae44b | NVIDIA: VR: SAUCE: firmware: smccc: lfa: Register ACPI notification
+1b668004115b | NVIDIA: VR: SAUCE: firmware: smccc: lfa: Add auto_activate sysfs file
+6e232a12317d | NVIDIA: VR: SAUCE: firmware: smccc: lfa: Register DT interrupt
+efad0bf61bfe | NVIDIA: VR: SAUCE: firmware: smccc: lfa: introduce SMC access lock
+c243a41c487b | NVIDIA: VR: SAUCE: firmware: smccc: lfa: handle LFA_BUSY in PRIME and ACTIVATE
+25680d9cccd2 | NVIDIA: VR: SAUCE: firmware: smccc: lfa: Emit a uevent on inventory updates
 15be0b1108f6 | NVIDIA: VR: CCA: SAUCE: KVM: arm64: Expose KVM_CAP_ARM_RMI via module parameter
 40232ddc66cc | NVIDIA: VR: CCA: SAUCE: arm64: RME: Add bounds check
 5bff0713ad68 | NVIDIA: VR: CCA: SAUCE: arm64: RME: Add MECID support
@@ -66,13 +72,12 @@ ee1f7d22a36c | NVIDIA: VR: CCA: SAUCE: arm64: RMI: Add wrappers for RMI calls
 dd216457a325 | NVIDIA: VR: CCA: SAUCE: arm64: RMI: Add SMC definitions for calling the RMM
 167ae21ce3ff | NVIDIA: VR: CCA: SAUCE: arm64: RME: Handle Granule Protection Faults (GPFs)
 6120fb3e10ac | NVIDIA: VR: CCA: SAUCE: kvm: arm64: Include kvm_emulate.h in kvm/arm_psci.h
-8e41bfac87ea | NVIDIA: VR: SAUCE: firmware: smccc: lfa: handle LFA_BUSY and improve SMC retry pacing
 
 
 
 # Bare Metal Support: Fixes
 ###########################
-93cd52243c1a | NVIDIA: VR: SAUCE: firmware: smccc: lfa: fix work item re-initialization race
+11feb0fce275 | NVIDIA: VR: SAUCE: firmware: smccc: lfa: fix image names and init cleanup
 
 
 
