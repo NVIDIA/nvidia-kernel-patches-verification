@@ -84,6 +84,7 @@ dd216457a325 | NVIDIA: VR: CCA: SAUCE: arm64: RMI: Add SMC definitions for calli
 # Bare Metal Support: Performance Tools
 #######################################
 2391f7933e73 | NVIDIA: VR: SAUCE: arm64: defconfig: Enable NVIDIA TEGRA410 PMU
+e814f17ed157 | NVIDIA: VR: SAUCE: perf/arm_pmu: Skip PMCCNTR_EL0 on NVIDIA Olympus
 
 
 
