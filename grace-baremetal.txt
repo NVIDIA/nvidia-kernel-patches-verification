@@ -305,6 +305,16 @@ b7b57edbf568 | x86/resctrl: Relax some asm #includes
 f6b25be204b8 | x86/resctrl: Always initialise rid field in rdt_resources_all[]
 7168ae330e81 | x86,fs/resctrl: Move the resctrl filesystem code to live in /fs/resctrl
 54d14f25664b | MAINTAINERS: Add reviewers for fs/resctrl
+3767def18f4c | x86/cpufeatures: Add support for L3 Smart Data Cache Injection Allocation Enforcement
+4d4840b1251a | x86/resctrl: Add SDCIAE feature in the command line options
+7923ae7698cf | x86,fs/resctrl: Detect io_alloc feature
+556d2892aa71 | x86,fs/resctrl: Implement "io_alloc" enable/disable handlers
+48068e565045 | fs/resctrl: Introduce interface to display "io_alloc" support
+9445c7059c1c | fs/resctrl: Add user interface to enable/disable io_alloc feature
+77b662326200 | fs/resctrl: Introduce interface to display io_alloc CBMs
+af1242eeca50 | fs/resctrl: Modify struct rdt_parse_data to pass mode and CLOSID
+28fa2cce7a83 | fs/resctrl: Introduce interface to modify io_alloc capacity bitmasks
+ac7de456a37f | fs/resctrl: Update bit_usage to reflect io_alloc
 796e29b857ae | ACPI / PPTT: Add a helper to fill a cpumask from a processor container
 eeec7845e966 | ACPI / PPTT: Stop acpi_count_levels() expecting callers to clear levels
 cfc085af8398 | ACPI / PPTT: Add acpi_pptt_cache_v1_full to use pptt cache as one structure
@@ -339,6 +349,37 @@ fdc29a141d63 | arm_mpam: Probe for long/lwd mbwu counters
 e3565d1fd4dc | arm_mpam: Add kunit test for bitmap reset
 2557e0eafec1 | arm_mpam: Add kunit tests for props_mismatch()
 ce1e1421f8d8 | MAINTAINERS: new entry for MPAM Driver
+b56651007fc0 | cpumask: Add initialiser to use cleanup helpers
+03eb578b3765 | x86,fs/resctrl: Improve domain type checking
+0d6447623d78 | x86/resctrl: Move L3 initialization into new helper function
+6396fc5351ea | x86/resctrl: Refactor domain_remove_cpu_mon() ready for new domain types
+c1b630573c8c | x86/resctrl: Clean up domain_remove_cpu_ctrl()
+97fec06d35b2 | x86,fs/resctrl: Refactor domain create/remove using struct rdt_domain_hdr
+ad5c2ff75e0c | fs/resctrl: Split L3 dependent parts out of __mon_event_count()
+6b10cf7b6ea8 | x86,fs/resctrl: Use struct rdt_domain_hdr when reading counters
+4bc3ef46ff41 | x86,fs/resctrl: Rename struct rdt_mon_domain and rdt_hw_mon_domain
+9c214d10c509 | x86,fs/resctrl: Rename some L3 specific functions
+dd110880e80d | fs/resctrl: Make event details accessible to functions when reading events
+ab0308aee381 | x86,fs/resctrl: Handle events that can be read from any CPU
+e37c9a3dc9f9 | x86,fs/resctrl: Support binary fixed point event counters
+39208e73a40e | x86,fs/resctrl: Add an architectural hook called for first mount
+2e53ad66686a | x86,fs/resctrl: Add and initialize a resource for package scope monitoring
+db64994d115e | fs/resctrl: Emphasize that L3 monitoring resource is required for summing domains
+1fb2daa60de6 | x86/resctrl: Discover hardware telemetry events
+8f6b6ad69b50 | x86,fs/resctrl: Fill in details of events for performance and energy GUIDs
+8ccb1f8fa6a3 | x86,fs/resctrl: Add architectural event pointer
+7e6df9614546 | x86/resctrl: Find and enable usable telemetry events
+51541f6ca771 | x86/resctrl: Read telemetry events
+0ec1db4cac82 | fs/resctrl: Refactor mkdir_mondata_subdir()
+93d9fd899951 | fs/resctrl: Refactor rmdir_mondata_subdir_allrdtgrp()
+f4e0cd80d3e7 | x86,fs/resctrl: Handle domain creation/deletion for RDT_RESOURCE_PERF_PKG
+842e7f97d71a | x86/resctrl: Add energy/perf choices to rdt boot option
+67640e333b98 | x86/resctrl: Handle number of RMIDs supported by RDT_RESOURCE_PERF_PKG
+ee7f6af79f09 | fs/resctrl: Move allocation/free of closid_num_dirty_rmid[]
+0ecc988b0232 | x86,fs/resctrl: Compute number of RMIDs as minimum across resources
+d0891647fbc6 | fs/resctrl: Move RMID initialization to first mount
+4bbfc90122e9 | x86/resctrl: Enable RDT_RESOURCE_PERF_PKG
+a8848c4b43ad | x86,fs/resctrl: Update documentation for telemetry events
 f91e913355f4 | arm_mpam: Ensure in_reset_state is false after applying configuration
 a1cb6577f575 | arm_mpam: Reset when feature configuration bit unset
 29fa1be82b83 | arm64/sysreg: Add MPAMSM_EL1 register

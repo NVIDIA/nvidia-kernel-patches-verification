@@ -77,6 +77,7 @@ ec7216f92e4e | arm64: errata: Mitigate TLBI errata on NVIDIA Olympus CPU
 8821c8e80a65 | ACPI: CPPC: Perform fast check switch only for online CPUs
 0fce75870666 | ACPI: CPPC: Limit perf ctrs in PCC check only to online CPUs
 56eb0c0ed345 | ACPI: CPPC: Fix remaining for_each_possible_cpu() to use online CPUs
+7c29ba02210c | PCI: Introduce pcie_is_cxl()
 16d021c878dc | PCI/NPEM: Set LED_HW_PLUGGABLE for hotplug-capable ports
 a55f80233f38 | fwctl: Fix class init ordering to avoid NULL pointer dereference on device removal
 702c1d56c717 | PCI/CXL: Hide SBR from reset_methods if masked by CXL
