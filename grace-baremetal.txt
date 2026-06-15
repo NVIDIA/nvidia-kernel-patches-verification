@@ -133,6 +133,7 @@ bf4528ab28e2 | spi: tegra210-quad: Protect curr_xfer in tegra_qspi_combined_seq_
 6d7723e8161f | spi: tegra210-quad: Protect curr_xfer clearing in tegra_qspi_non_combined_seq_xfer
 edf9088b6e1d | spi: tegra210-quad: Protect curr_xfer check in IRQ handler
 c87f820bc474 | soc/tegra: fuse: Do not register SoC device on ACPI boot
+48478b9f7913 | arm64/mm: Enable batched TLB flush in unmap_hotplug_range()
 01b9cae70616 | firmware: arm_ffa: Honor partition info descriptor size
 
 
