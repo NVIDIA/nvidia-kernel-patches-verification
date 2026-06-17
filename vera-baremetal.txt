@@ -80,6 +80,7 @@ ec7216f92e4e | arm64: errata: Mitigate TLBI errata on NVIDIA Olympus CPU
 16d021c878dc | PCI/NPEM: Set LED_HW_PLUGGABLE for hotplug-capable ports
 a55f80233f38 | fwctl: Fix class init ordering to avoid NULL pointer dereference on device removal
 702c1d56c717 | PCI/CXL: Hide SBR from reset_methods if masked by CXL
+97d0a9c6e809 | i2c: tegra: Update Tegra410 I2C timing parameters
 
 
 
