@@ -31,7 +31,6 @@ c034ec84e879 | KVM: arm64: Introduce new flag for non-cacheable IO memory
 5c656fcdd6c6 | mm: Introduce new flag to indicate wc safe
 8c47ce3e1d2c | KVM: arm64: Set io memory s2 pte as normalnc for vfio pci device
 a39d3a966a09 | vfio: Convey kvm that the vfio-pci device is wc safe
-81617c17bf58 | vfio/nvgrace-gpu: Convey kvm to map device memory region as noncached
 12cd88a9116a | vfio/nvgrace-gpu: Add a new GH200 SKU to the devid table
 bd53764a60ad | vfio/nvgrace-gpu: Read dvsec register to determine need for uncached resmem
 6a9eb2d125ba | vfio/nvgrace-gpu: Expose the blackwell device PF BAR1 to the VM
@@ -48,15 +47,16 @@ feee9ef7ac16 | KVM: selftests: Test for KVM_EXIT_ARM_SEA
 4debb5e8952e | Documentation: kvm: new UAPI for handling SEA
 30d0a1291046 | mm: change ghes code to allow poison of non-struct pfn
 2ec41967189c | mm: handle poisoning of pfn without struct pages
-9b92bc7554b5 | vfio: refactor vfio_pci_mmap_huge_fault function
 9db65489b872 | vfio/nvgrace-gpu: Add support for huge pfnmap
+9b92bc7554b5 | vfio: refactor vfio_pci_mmap_huge_fault function
 7f5764e179c6 | vfio: use vfio_pci_core_setup_barmap to map bar in mmap
 7d055071d73b | vfio/nvgrace-gpu: split the code to wait for GPU ready
 dfe765499abf | vfio/nvgrace-gpu: Inform devmem unmapped after reset
 a23b10608d42 | vfio/nvgrace-gpu: wait for the GPU mem to be ready
 e6dbcb7c0e7b | mm: fixup pfnmap memory failure handling to use pgoff
-e5f19b619fa0 | vfio/nvgrace-gpu: register device memory for poison handling
 205e6d17cdf5 | mm: add stubs for PFNMAP memory failure registration functions
+e5f19b619fa0 | vfio/nvgrace-gpu: register device memory for poison handling
+81617c17bf58 | vfio/nvgrace-gpu: Convey kvm to map device memory region as noncached
 
 
 # Guest Kernel I/O Virtualization: Core SMMU
@@ -85,7 +85,6 @@ f7edb07ad7c6 | Fix mmu notifiers for range-based invalidates
 # Host Kernel I/O Virtualization: Core SMMU
 #############################################
 
-95d4782c34a6 | iommu/arm-smmu-v3: Fix size calculation in arm_smmu_mm_invalidate_range()
 6043257b1de0 | iommu: Introduce the domain op enforce_cache_coherency()
 71cfafda9c9b | vfio: Move the Intel no-snoop control off of IOMMU_CACHE
 f78dc1dad829 | iommu: Redefine IOMMU_CAP_CACHE_COHERENCY as the cap flag for IOMMU_CACHE
@@ -101,14 +100,8 @@ c7d469849747 | PCI: portdrv: Set driver_managed_dma
 93219ea94388 | vfio: Delete the unbound_list
 3b86f317c9c7 | vfio: Remove iommu group notifier
 a5f1bd1afacd | iommu: Remove iommu group changes notifier
+95d4782c34a6 | iommu/arm-smmu-v3: Fix size calculation in arm_smmu_mm_invalidate_range()
 dc15f82f5329 | vfio: Delete container_q
-09ea48efffa3 | vfio: Make vfio_(un)register_notifier accept a vfio_device
-0a58795647cd | vfio/ccw: Remove mdev from struct channel_program
-8e432bb015b6 | vfio/mdev: Pass in a struct vfio_device * to vfio_pin/unpin_pages()
-c6250ffbacc5 | vfio/mdev: Pass in a struct vfio_device * to vfio_dma_rw()
-5eb20a78c032 | drm/i915/gvt: Change from vfio_group_(un)pin_pages to vfio_(un)pin_pages
-231657b34504 | vfio: Remove dead code
-eadd86f835c6 | vfio: Remove calls to vfio_group_add_container_user()
 73b0565f19a8 | kvm/vfio: Move KVM_DEV_VFIO_GROUP_* ioctls into functions
 d55d9e7a4572 | kvm/vfio: Store the struct file in the kvm_vfio_group
 50d63b5bbfd1 | vfio: Change vfio_external_user_iommu_id() to vfio_file_iommu_group()
@@ -117,6 +110,13 @@ a905ad043f32 | vfio: Change vfio_external_check_extension() to vfio_file_enforce
 ba70a89f3c2a | vfio: Change vfio_group_set_kvm() to vfio_file_set_kvm()
 3e5449d5f954 | kvm/vfio: Remove vfio_group from kvm
 6a985ae80bef | vfio/pci: Use the struct file as the handle not the vfio_group
+09ea48efffa3 | vfio: Make vfio_(un)register_notifier accept a vfio_device
+0a58795647cd | vfio/ccw: Remove mdev from struct channel_program
+8e432bb015b6 | vfio/mdev: Pass in a struct vfio_device * to vfio_pin/unpin_pages()
+c6250ffbacc5 | vfio/mdev: Pass in a struct vfio_device * to vfio_dma_rw()
+5eb20a78c032 | drm/i915/gvt: Change from vfio_group_(un)pin_pages to vfio_(un)pin_pages
+231657b34504 | vfio: Remove dead code
+eadd86f835c6 | vfio: Remove calls to vfio_group_add_container_user()
 be8d3adae65c | vfio: Add missing locking for struct vfio_group::kvm
 c6f4860ef938 | vfio: Change struct vfio_group::opened from an atomic to bool
 805bb6c1bd90 | vfio: Split up vfio_group_get_device_fd()
@@ -171,6 +171,14 @@ ac1237912fbd | vfio/amba: Use the new device life cycle helpers
 ebb72b765fb4 | vfio/ccw: Use the new device life cycle helpers
 4a725b8de4cc | vfio: Rename vfio_device_put() and vfio_device_try_get()
 3c28a76124b2 | vfio: Add struct device to vfio_device
+e3bb4de0a038 | vfio: Add header guards and includes to drivers/vfio/vfio.h
+429a781c8e01 | vfio: Rename __vfio_group_unset_container()
+03e650f66115 | vfio: Split the container logic into vfio_container_attach_group()
+444d43ecd010 | vfio: Remove #ifdefs around CONFIG_VFIO_NOIOMMU
+c41da4622e08 | vfio: Split out container code from the init/cleanup functions
+1408640d5788 | vfio: Rename vfio_ioctl_check_extension()
+9446162e740a | vfio: Split the register_device ops call into functions
+cdc71fe4ecbf | vfio: Move container code into drivers/vfio/container.c
 988289559713 | drm/i915/gvt: fix a memory leak in intel_gvt_init_vgpu_types
 1aa3834f510c | drm/i915/gvt: simplify vgpu configuration management
 bdef2b7896df | vfio/mdev: make mdev.h standalone includable
@@ -187,14 +195,6 @@ f2fbc72e6da4 | vfio/mdev: consolidate all the available_instance sysfs into the 
 9c799c224d6e | vfio/mdev: add mdev available instance checking to the core
 912b74d26c7d | vfio: Remove the vfio_group->users and users_comp
 c82e81ab2569 | vfio: Change vfio_group->group_rwsem to a mutex
-e3bb4de0a038 | vfio: Add header guards and includes to drivers/vfio/vfio.h
-429a781c8e01 | vfio: Rename __vfio_group_unset_container()
-03e650f66115 | vfio: Split the container logic into vfio_container_attach_group()
-444d43ecd010 | vfio: Remove #ifdefs around CONFIG_VFIO_NOIOMMU
-c41da4622e08 | vfio: Split out container code from the init/cleanup functions
-1408640d5788 | vfio: Rename vfio_ioctl_check_extension()
-9446162e740a | vfio: Split the register_device ops call into functions
-cdc71fe4ecbf | vfio: Move container code into drivers/vfio/container.c
 79218fd0b38b | iommu/amd: Drop unnecessary checks in amd_iommu_attach_device()
 00208852d351 | iommu: Add return value rules to attach_dev op and APIs
 bd7ebb771935 | iommu: Regulate EINVAL in ->attach_dev callback functions
@@ -213,6 +213,11 @@ be51b1d6bbff | iommu/sva: Refactoring iommu_sva_bind/unbind_device()
 8cc93159f919 | iommu: Prepare IOMMU domain for IOPF
 4bb4211e48fb | iommu: Per-domain I/O page fault handling
 757636ed2607 | iommu: Rename iommu-sva-lib.{c,h}
+17cde5e601b1 | genirq/msi: Add msi_device_has_isolated_msi()
+dcb83f6ec1bf | genirq/msi: Rename IRQ_DOMAIN_MSI_REMAP to IRQ_DOMAIN_ISOLATED_MSI
+f188bdb5f1df | iommu/x86: Replace IOMMU_CAP_INTR_REMAP with IRQ_DOMAIN_FLAG_ISOLATED_MSI
+bf210f793937 | irq/s390: Add arch_is_isolated_msi() for s390
+b062007c63eb | iommu: Remove IOMMU_CAP_INTR_REMAP
 4989764d8ed3 | iommu: Add IOMMU_CAP_ENFORCE_CACHE_COHERENCY
 89395ccedbc1 | iommu: Add device-centric DMA ownership interfaces
 5fe937862c84 | interval-tree: Add a utility to iterate over spans in an interval tree
@@ -242,6 +247,11 @@ a4d1f91db502 | vfio-iommufd: Support iommufd for physical VFIO devices
 81ab9890da97 | vfio: Move container related MODULE_ALIAS statements into container.c
 e5a9ec7e096a | vfio: Make vfio_container optionally compiled
 01f70cbb26ea | iommufd: Allow iommufd to supply /dev/vfio/vfio
+25fc417f7938 | iommufd: Convert to msi_device_has_isolated_msi()
+a5e72a6bac14 | genirq/irqdomain: Remove unused irq_domain_check_msi_remap() code
+6b1a7a00427c | vfio/type1: Convert to iommu_group_has_isolated_msi()
+efc30a8f15a7 | iommu: Add iommu_group_has_isolated_msi()
+c9a397cee9f5 | vfio: Support VFIO_NOIOMMU with iommufd
 1369459b2e21 | iommu: Add a gfp parameter to iommu_map()
 4dc6376af596 | iommu: Remove iommu_map_atomic()
 f2b2c051be62 | iommu: Add a gfp parameter to iommu_map_sg()
@@ -252,24 +262,10 @@ e787a38e31e5 | iommufd: Use GFP_KERNEL_ACCOUNT for iommu_map()
 4951eb262384 | iommu/intel: Use GFP_KERNEL in sleepable contexts
 d3b82825217a | iommu/s390: Push the gfp parameter to the kmem_cache_alloc()'s
 429f27e36874 | iommu/s390: Use GFP_KERNEL in sleepable contexts
-c9a397cee9f5 | vfio: Support VFIO_NOIOMMU with iommufd
-17cde5e601b1 | genirq/msi: Add msi_device_has_isolated_msi()
-efc30a8f15a7 | iommu: Add iommu_group_has_isolated_msi()
-6b1a7a00427c | vfio/type1: Convert to iommu_group_has_isolated_msi()
-25fc417f7938 | iommufd: Convert to msi_device_has_isolated_msi()
-a5e72a6bac14 | genirq/irqdomain: Remove unused irq_domain_check_msi_remap() code
-dcb83f6ec1bf | genirq/msi: Rename IRQ_DOMAIN_MSI_REMAP to IRQ_DOMAIN_ISOLATED_MSI
-f188bdb5f1df | iommu/x86: Replace IOMMU_CAP_INTR_REMAP with IRQ_DOMAIN_FLAG_ISOLATED_MSI
-bf210f793937 | irq/s390: Add arch_is_isolated_msi() for s390
-b062007c63eb | iommu: Remove IOMMU_CAP_INTR_REMAP
 b3551ead6163 | iommufd: Make sure to zero vfio_iommu_type1_info before copying to user
 b4ff830eca09 | iommufd: Do not add the same hwpt to the ioas->hwpt_list twice
 085fcc7eb759 | iommufd: Assert devices_lock for iommufd_hw_pagetable_has_group()
 7214c1c85fe4 | iommufd: Add iommufd_lock_obj() around the auto-domains hwpts
-e4395701330f | iommufd: Check for uptr overflow
-727c28c1cef2 | iommufd: Fix unpinning of pages when an access is present
-13a0d1ae7ee6 | iommufd: Do not corrupt the pfn list when doing batch carry
-62e37c86bf07 | iommufd/selftest: Cover domain unmap with huge pages and access
 342b9cab8e0c | iommufd: Consistently manage hwpt_item
 25cde97d9532 | iommufd: Move ioas related HWPT destruction into iommufd_hw_pagetable_destroy()
 7e7ec8a56921 | iommufd: Move iommufd_device to iommufd_private.h
@@ -287,7 +283,30 @@ fd8c1a4aee97 | iommufd/selftest: Catch overflow of uptr and length
 632fda7f912c | vfio-iommufd: Make vfio_iommufd_emulated_bind() return iommufd_access ID
 0a782d15e1d4 | vfio/mdev: Uses the vfio emulated iommufd ops set in the mdev sample drivers
 7d12578c5d50 | vfio: Check the presence for iommufd callbacks in __vfio_register_dev()
+e4395701330f | iommufd: Check for uptr overflow
+727c28c1cef2 | iommufd: Fix unpinning of pages when an access is present
+13a0d1ae7ee6 | iommufd: Do not corrupt the pfn list when doing batch carry
+62e37c86bf07 | iommufd/selftest: Cover domain unmap with huge pages and access
 c52159b5be78 | iommufd/selftest: Set varaiable mock_iommu_device storage-class-specifier to static
+d525a5b8cf39 | iommufd: Move isolated msi enforcement to iommufd_device_bind()
+3a3329a7f14a | iommufd: Add iommufd_group
+91a2e17e243f | iommufd: Replace the hwpt->devices list with iommufd_group
+8d0e2e9d93d2 | iommu: Export iommu_get_resv_regions()
+34f327a985ff | iommufd: Keep track of each device's reserved regions instead of groups
+269c5238c5b1 | iommufd: Use the iommufd_group to avoid duplicate MSI setup
+1d149ab2e006 | iommufd: Make sw_msi_start a group global
+d03f1336fd91 | iommufd: Move putting a hwpt to a helper function
+17bad52708b4 | iommufd: Add enforced_cache_coherency to iommufd_hw_pagetable_alloc()
+70eadc7fc7ef | iommufd: Allow a hwpt to be aborted after allocation
+31422dff187b | iommufd: Fix locking around hwpt allocation
+ea2d6124b523 | iommufd: Reorganize iommufd_device_attach into iommufd_device_change_pt
+addb665924f3 | iommu: Introduce a new iommu_group_replace_domain() API
+e88d4ec154a8 | iommufd: Add iommufd_device_replace()
+83f7bc6fdfd2 | iommufd: Make destroy_rwsem use a lock class per object type
+fa1ffdb9e293 | iommufd/selftest: Test iommufd_device_replace()
+7074d7bd67d4 | iommufd: Add IOMMU_HWPT_ALLOC
+7a467e02b339 | iommufd/selftest: Return the real idev id from selftest mock_domain
+6583c865dec5 | iommufd/selftest: Add a selftest for IOMMU_HWPT_ALLOC
 c60f93204330 | vfio/pci: Update comment around group_fd get in vfio_pci_ioctl_pci_hot_reset()
 6e6c513fe1d8 | vfio/pci: Move the existing hot reset logic to be a helper
 eda175dfe248 | iommufd: Reserve all negative IDs in the iommufd xarray
@@ -324,25 +343,6 @@ b290a05fd858 | vfio: Add VFIO_DEVICE_[AT|DE]TACH_IOMMUFD_PT
 5398be2564eb | vfio: Move the IOMMU_CAP_CACHE_COHERENCY check in __vfio_register_dev()
 c1cce6d079b8 | vfio: Compile vfio_group infrastructure optionally
 094671300fea | docs: vfio: Add vfio device cdev description
-d525a5b8cf39 | iommufd: Move isolated msi enforcement to iommufd_device_bind()
-3a3329a7f14a | iommufd: Add iommufd_group
-91a2e17e243f | iommufd: Replace the hwpt->devices list with iommufd_group
-8d0e2e9d93d2 | iommu: Export iommu_get_resv_regions()
-34f327a985ff | iommufd: Keep track of each device's reserved regions instead of groups
-269c5238c5b1 | iommufd: Use the iommufd_group to avoid duplicate MSI setup
-1d149ab2e006 | iommufd: Make sw_msi_start a group global
-d03f1336fd91 | iommufd: Move putting a hwpt to a helper function
-17bad52708b4 | iommufd: Add enforced_cache_coherency to iommufd_hw_pagetable_alloc()
-70eadc7fc7ef | iommufd: Allow a hwpt to be aborted after allocation
-31422dff187b | iommufd: Fix locking around hwpt allocation
-ea2d6124b523 | iommufd: Reorganize iommufd_device_attach into iommufd_device_change_pt
-addb665924f3 | iommu: Introduce a new iommu_group_replace_domain() API
-e88d4ec154a8 | iommufd: Add iommufd_device_replace()
-83f7bc6fdfd2 | iommufd: Make destroy_rwsem use a lock class per object type
-fa1ffdb9e293 | iommufd/selftest: Test iommufd_device_replace()
-7074d7bd67d4 | iommufd: Add IOMMU_HWPT_ALLOC
-7a467e02b339 | iommufd/selftest: Return the real idev id from selftest mock_domain
-6583c865dec5 | iommufd/selftest: Add a selftest for IOMMU_HWPT_ALLOC
 89e07fd46809 | vfio: Do not allow !ops->dma_unmap in vfio_pin/unpin_pages()
 5d5c85ff6246 | iommufd: Allow passing in iopt_access_list_id to iopt_remove_access()
 9227da7816dd | iommufd: Add iommufd_access_change_ioas(_id) helpers
@@ -355,16 +355,6 @@ c157fd886199 | vfio: Support IO page table replacement
 55dd4023cead | iommufd: Add IOMMU_GET_HW_INFO
 af4fde93c319 | iommufd/selftest: Add coverage for IOMMU_GET_HW_INFO ioctl
 55243393b06c | iommu/vt-d: Implement hw_info for iommu capability query
-54d606816b32 | iommu: Add IOMMU_DOMAIN_NESTED
-9744a7ab62cc | iommufd: Rename IOMMUFD_OBJ_HW_PAGETABLE to IOMMUFD_OBJ_HWPT_PAGING
-58d84f430dc7 | iommufd/device: Wrap IOMMUFD_OBJ_HWPT_PAGING-only configurations
-89db31635c87 | iommufd: Derive iommufd_hwpt_paging from iommufd_hw_pagetable
-b5021cb264e6 | iommufd: Share iommufd_hwpt_alloc with IOMMUFD_OBJ_HWPT_NESTED
-2bdabb8e82f5 | iommu: Pass in parent domain with user_data to domain_alloc_user op
-bd529dbb661d | iommufd: Add a nested HW pagetable object
-e9d36c07bb78 | iommu: Add iommu_copy_struct_from_user helper
-65fe32f7a447 | iommufd/selftest: Add nested domain allocation for mock domain
-55a01657cbee | iommufd/selftest: Add coverage for IOMMU_HWPT_ALLOC with nested HWPTs
 987a878e09c6 | iommu/arm-smmu-v3: Move ctx_desc out of s1_cfg
 1f8588834016 | iommu/arm-smmu-v3: Replace s1_cfg with cdtab_cfg
 e3aad74c51a7 | iommu/arm-smmu-v3: Encapsulate ctx_desc_cfg init in alloc_cd_tables
@@ -380,7 +370,6 @@ e3aad74c51a7 | iommu/arm-smmu-v3: Encapsulate ctx_desc_cfg init in alloc_cd_tabl
 4ff542163397 | iommufd: Support allocating nested parent domain
 408663619fcf | iommufd/selftest: Add domain_alloc_user() support in iommu mock
 c97d1b20d383 | iommu/vt-d: Add domain_alloc_user op
-a2cdecdf9d23 | iommu/vt-d: Enhance capability check for nested parent domain allocation
 b5f9e63278d6 | iommufd: Correct IOMMU_HWPT_ALLOC_NEST_PARENT description
 53f0b020218f | vfio/iova_bitmap: Export more API symbols
 8c9c727b6142 | vfio: Move iova_bitmap into iommufd
@@ -400,6 +389,23 @@ e04b23c8d4ed | iommufd/selftest: Expand mock_domain with dev_flags
 a9af47e382a4 | iommufd/selftest: Test IOMMU_HWPT_GET_DIRTY_BITMAP
 ae36fe70cea4 | iommufd/selftest: Test out_capabilities in IOMMU_GET_HW_INFO
 0795b305da89 | iommufd/selftest: Test IOMMU_HWPT_GET_DIRTY_BITMAP_NO_CLEAR flag
+a2cdecdf9d23 | iommu/vt-d: Enhance capability check for nested parent domain allocation
+54d606816b32 | iommu: Add IOMMU_DOMAIN_NESTED
+9744a7ab62cc | iommufd: Rename IOMMUFD_OBJ_HW_PAGETABLE to IOMMUFD_OBJ_HWPT_PAGING
+58d84f430dc7 | iommufd/device: Wrap IOMMUFD_OBJ_HWPT_PAGING-only configurations
+89db31635c87 | iommufd: Derive iommufd_hwpt_paging from iommufd_hw_pagetable
+b5021cb264e6 | iommufd: Share iommufd_hwpt_alloc with IOMMUFD_OBJ_HWPT_NESTED
+2bdabb8e82f5 | iommu: Pass in parent domain with user_data to domain_alloc_user op
+bd529dbb661d | iommufd: Add a nested HW pagetable object
+e9d36c07bb78 | iommu: Add iommu_copy_struct_from_user helper
+65fe32f7a447 | iommufd/selftest: Add nested domain allocation for mock domain
+55a01657cbee | iommufd/selftest: Add coverage for IOMMU_HWPT_ALLOC with nested HWPTs
+8f23f5dba6b4 | iommu: Change kconfig around IOMMU_SVA
+5c79705d7ce8 | iommu/vt-d: Remove mm->pasid in intel_sva_bind_mm()
+2396046d75d3 | iommu: Add mm_get_enqcmd_pasid() helper function
+541a3e257d48 | mm: Add structure to keep sva information
+092edaddb660 | iommu: Support mm PASID 1:n with sva domains
+1fa05c932dc7 | mm: Deprecate pasid field
 2e22aac3ea9c | iommufd/selftest: Fix page-size check in iommufd_test_dirty()
 f35b88b66fbb | iommu: Add cache_invalidate_user op
 8c6eabae3807 | iommufd: Add IOMMU_HWPT_INVALIDATE
@@ -409,12 +415,6 @@ e1fa6640d58e | iommufd/selftest: Add IOMMU_TEST_OP_MD_CHECK_IOTLB test op
 bf26eb83fd3b | iommufd/selftest: Add coverage for IOMMU_HWPT_INVALIDATE ioctl
 393a5778b72a | iommufd: Add data structure for Intel VT-d stage-1 cache invalidation
 f6f3721244a8 | iommu/vt-d: Add iotlb flush for nested domain
-8f23f5dba6b4 | iommu: Change kconfig around IOMMU_SVA
-5c79705d7ce8 | iommu/vt-d: Remove mm->pasid in intel_sva_bind_mm()
-2396046d75d3 | iommu: Add mm_get_enqcmd_pasid() helper function
-541a3e257d48 | mm: Add structure to keep sva information
-092edaddb660 | iommu: Support mm PASID 1:n with sva domains
-1fa05c932dc7 | mm: Deprecate pasid field
 00a9bc607043 | iommu: Move iommu fault data to linux/iommu.h
 66014df73b30 | iommu/arm-smmu-v3: Remove unrecoverable faults reporting
 0edeab66eba8 | iommu: Remove unrecoverable fault data
@@ -447,6 +447,9 @@ ae91f6552c30 | iommu/arm-smmu-v3: Check that the RID domain is S1 in SVA
 d36464f40f29 | iommu/arm-smmu-v3: Use the identity/blocked domain during release
 d8cd200609cf | iommu/arm-smmu-v3: Pass arm_smmu_domain and arm_smmu_device to finalize
 327e10b47ae9 | iommu/arm-smmu-v3: Convert to domain_alloc_paging()
+fdc69d39e77f | iommu/arm-smmu-v3: Do not allow a SVA domain to be set on the wrong PASID
+86e5ca098dd9 | iommu/arm-smmu-v3: Do not ATC invalidate the entire domain
+e8e4398d53f9 | iommu/arm-smmu-v3: Add a type for the CD entry
 de31c3555412 | iommu/arm-smmu-v3: Add an ops indirection to the STE code
 78a5fbe8395b | iommu/arm-smmu-v3: Make CD programming use arm_smmu_write_entry()
 e9d1e4ff74b9 | iommu/arm-smmu-v3: Move the CD generation for S1 domains into a function
@@ -456,9 +459,19 @@ b2f4c0fcf094 | iommu/arm-smmu-v3: Make arm_smmu_alloc_cd_ptr()
 7b87c93c8b86 | iommu/arm-smmu-v3: Move the CD generation for SVA into a function
 04905c17f648 | iommu/arm-smmu-v3: Build the whole CD in arm_smmu_make_s1_cd()
 56e1a4cc2588 | iommu/arm-smmu-v3: Add unit tests for arm_smmu_write_entry
-e8e4398d53f9 | iommu/arm-smmu-v3: Add a type for the CD entry
-86e5ca098dd9 | iommu/arm-smmu-v3: Do not ATC invalidate the entire domain
-fdc69d39e77f | iommu/arm-smmu-v3: Do not allow a SVA domain to be set on the wrong PASID
+c84c5ab76c9c | iommu/arm-smmu-v3: Do not zero the strtab twice
+a4d75360f7a6 | iommu/arm-smmu-v3: Shrink the strtab l1_desc array
+ec61f820a2ff | iommufd/selftest: Fix dirty bitmap tests with u8 bitmaps
+9560393b830b | iommufd/selftest: Fix iommufd_test_dirty() to handle <u8 bitmaps
+33335584eb78 | iommufd/selftest: Add tests for <= u8 bitmap sizes
+ffa3c799ce15 | iommufd/selftest: Fix tests to use MOCK_PAGE_SIZE based buffer sizes
+dceb5304d726 | iommufd/selftest: Do not record head iova to better match iommu drivers
+792583656f55 | iommufd/iova_bitmap: Check iova_bitmap_done() after set ahead
+a84c690e10ae | iommufd/iova_bitmap: Cache mapped length in iova_bitmap_map struct
+781bc08797a2 | iommufd/iova_bitmap: Move initial pinning to iova_bitmap_for_each()
+00fa1a89917f | iommufd/iova_bitmap: Consolidate iova_bitmap_set exit conditionals
+7a7bba16244a | iommufd/iova_bitmap: Dynamic pinning on iova_bitmap_set()
+53e6b65693b6 | iommufd/iova_bitmap: Remove iterator logic
 14678219cf40 | iommu: Introduce domain attachment handle
 3e7f57d1ef3f | iommu: Remove sva handle list
 06cdcc32d657 | iommu: Add attach handle to struct iopf_group
@@ -474,19 +487,13 @@ d1211768b62d | iommufd/selftest: Add coverage for IOPF test
 4fe88fd8b4ae | iommu/io-pgtable-arm: Add read_and_clear_dirty() support
 eb054d67b21a | iommu/arm-smmu-v3: Add support for dirty tracking in domain alloc
 25c776dd03b3 | iommu/arm-smmu-v3: Enable HTTU for stage1 with io-pgtable mapping
-ec61f820a2ff | iommufd/selftest: Fix dirty bitmap tests with u8 bitmaps
-9560393b830b | iommufd/selftest: Fix iommufd_test_dirty() to handle <u8 bitmaps
-33335584eb78 | iommufd/selftest: Add tests for <= u8 bitmap sizes
-ffa3c799ce15 | iommufd/selftest: Fix tests to use MOCK_PAGE_SIZE based buffer sizes
-dceb5304d726 | iommufd/selftest: Do not record head iova to better match iommu drivers
-792583656f55 | iommufd/iova_bitmap: Check iova_bitmap_done() after set ahead
-a84c690e10ae | iommufd/iova_bitmap: Cache mapped length in iova_bitmap_map struct
-781bc08797a2 | iommufd/iova_bitmap: Move initial pinning to iova_bitmap_for_each()
-00fa1a89917f | iommufd/iova_bitmap: Consolidate iova_bitmap_set exit conditionals
-7a7bba16244a | iommufd/iova_bitmap: Dynamic pinning on iova_bitmap_set()
-53e6b65693b6 | iommufd/iova_bitmap: Remove iterator logic
-c84c5ab76c9c | iommu/arm-smmu-v3: Do not zero the strtab twice
-a4d75360f7a6 | iommu/arm-smmu-v3: Shrink the strtab l1_desc array
+1d4684fbe88d | iommufd: Reorder include files
+a2bb820e862d | iommu/arm-smmu-v3: Use the new rb tree helpers
+b2f44814680b | iommufd/device: Enforce reserved IOVA also when attached to hwpt_nested
+af048ec9c051 | iommu/arm-smmu-v3: Fix a NULL vs IS_ERR() check
+79ea4a496ab5 | iommufd/selftest: Fix buffer read overrrun in the dirty test
+8f6887349b2f | iommufd: Protect against overflow of ALIGN() during iova allocation
+73183ad6ea51 | iommufd: Check the domain owner of the parent before creating a nesting domain
 ce410410f1a7 | iommu/arm-smmu-v3: Add arm_smmu_strtab_l1/2_idx()
 abb4f9d323a8 | iommu/arm-smmu-v3: Add types for each level of the 2 level stream table
 85196f54743d | iommu/arm-smmu-v3: Reorganize struct arm_smmu_strtab_cfg
@@ -495,15 +502,20 @@ abb4f9d323a8 | iommu/arm-smmu-v3: Add types for each level of the 2 level stream
 c0a25a96dee9 | iommu/arm-smmu-v3: Shrink the cdtab l1_desc array
 7c567eb1e1d2 | iommu/arm-smmu-v3: Add types for each level of the CD table
 e3b1be2e73db | iommu/arm-smmu-v3: Reorganize struct arm_smmu_ctx_desc_cfg
-a2bb820e862d | iommu/arm-smmu-v3: Use the new rb tree helpers
-b2f44814680b | iommufd/device: Enforce reserved IOVA also when attached to hwpt_nested
-af048ec9c051 | iommu/arm-smmu-v3: Fix a NULL vs IS_ERR() check
-1d4684fbe88d | iommufd: Reorder include files
-79ea4a496ab5 | iommufd/selftest: Fix buffer read overrrun in the dirty test
-8f6887349b2f | iommufd: Protect against overflow of ALIGN() during iova allocation
-73183ad6ea51 | iommufd: Check the domain owner of the parent before creating a nesting domain
-f63237f54cf1 | iommu/arm-smmu-v3: Fix last_sid_idx calculation for sid_bits==32
 7de7d35429aa | iommu/arm-smmu-v3: Convert comma to semicolon
+f63237f54cf1 | iommu/arm-smmu-v3: Fix last_sid_idx calculation for sid_bits==32
+541b967f5a91 | iommu: Refactor __iommu_domain_alloc()
+20858d4ebb42 | iommu: Introduce iommu_paging_domain_alloc_flags()
+b7a0855eb95f | iommu: Add new flag to explictly request PASID capable domain
+60c30aa6afa2 | iommu/arm-smmu-v3: Enhance domain_alloc_user() to allocate PASID capable domain
+b0ffdb23e94f | iommu/amd: Add helper function to check GIOSUP/GTSUP
+d15f55d645a8 | iommu/amd: Move V2 page table support check to early_amd_iommu_init()
+b3c989083dab | iommu/amd: Separate page table setup from domain allocation
+a005ef62f992 | iommu/amd: Pass page table type as param to pdom_setup_pgtable()
+ce2cd175469f | iommu/amd: Enhance amd_iommu_domain_alloc_user()
+4402f2627d30 | iommu/amd: Implement global identity domain
+4208849ec7a6 | iommu: Put domain allocation in __iommu_group_alloc_blocking_domain()
+4490ccc45fb7 | iommu: Create __iommu_alloc_identity_domain()
 35890f85573c | vfio: Remove VFIO_TYPE1_NESTING_IOMMU
 1b8655bb8d97 | ACPICA: IORT: Update for revision E.f
 807404d66fcf | ACPI/IORT: Support CANWBS memory access flag
@@ -552,34 +564,13 @@ cfb31f194a1c | iommu/vt-d: Make intel_svm_set_dev_pasid() support domain replace
 67f6f56b5912 | iommu/vt-d: Add set_dev_pasid callback for nested domain
 e9f1f727e63a | iommu/arm-smmu-v3: Make set_dev_pasid() op support replace
 980e3016ebcc | iommu: Make set_dev_pasid op support domain replacement
+6d026e6d48cd | iommu/arm-smmu-v3: Import IOMMUFD module namespace
 64214c2b9536 | iommu: Add ops->domain_alloc_nested()
 d53764723ecd | iommu: Rename ops->domain_alloc_user() to domain_alloc_paging_flags()
-6d026e6d48cd | iommu/arm-smmu-v3: Import IOMMUFD module namespace
 af7f4780514f | iommufd: Fix out_fput in iommufd_fault_alloc()
 a8c9df25f90e | iommufd/selftest: Cover IOMMU_FAULT_QUEUE_ALLOC in iommufd_fail_nth
-541b967f5a91 | iommu: Refactor __iommu_domain_alloc()
-20858d4ebb42 | iommu: Introduce iommu_paging_domain_alloc_flags()
-b7a0855eb95f | iommu: Add new flag to explictly request PASID capable domain
-60c30aa6afa2 | iommu/arm-smmu-v3: Enhance domain_alloc_user() to allocate PASID capable domain
-b0ffdb23e94f | iommu/amd: Add helper function to check GIOSUP/GTSUP
-d15f55d645a8 | iommu/amd: Move V2 page table support check to early_amd_iommu_init()
-b3c989083dab | iommu/amd: Separate page table setup from domain allocation
-a005ef62f992 | iommu/amd: Pass page table type as param to pdom_setup_pgtable()
-ce2cd175469f | iommu/amd: Enhance amd_iommu_domain_alloc_user()
-4402f2627d30 | iommu/amd: Implement global identity domain
-4208849ec7a6 | iommu: Put domain allocation in __iommu_group_alloc_blocking_domain()
-4490ccc45fb7 | iommu: Create __iommu_alloc_identity_domain()
 43ca55f5555b | iommu/arm-smmu-v3: Introduce struct arm_smmu_event
 d814b70b9b90 | iommu/arm-smmu-v3: Log better event records
-48e7b8e284e5 | iommu/arm-smmu-v3: Remove arm_smmu_domain_finalise() during attach
-bb857c5c0150 | iommu/arm-smmu-v3: Make domain_alloc_paging_flags() directly determine the S1/S2
-cdfb9840fcc6 | iommu/arm-smmu-v3: Remove domain_alloc_paging()
-d61927d784e2 | iommufd/selftest: Remove domain_alloc_paging()
-11534b4de2a1 | iommufd: Deal with IOMMU_HWPT_FAULT_ID_VALID in iommufd core
-442003f3a842 | iommufd: Keep OBJ/IOCTL lists in an alphabetical order
-3f4818ec1390 | iommufd/fault: Destroy response and mutex in iommufd_fault_destroy()
-3d49020a327c | iommufd/fault: Use a separate spinlock to protect fault->deliver list
-e721f619e3ec | iommufd: Fix struct iommu_hwpt_pgfault init and padding
 fb3de9f9b085 | iommu: Prevent pasid attach if no ops->remove_dev_pasid
 1fbf73425f51 | iommu: Consolidate the ops->remove_dev_pasid usage into a helper
 b18301b9156a | iommu: Detaching pasid by attaching to the blocked_domain
@@ -587,17 +578,23 @@ ef181762cb54 | iommu/arm-smmu-v3: Make the blocked domain support PASID
 4f0bdab175d6 | iommu/vt-d: Make the blocked domain support PASID
 5f5363888239 | iommu/amd: Make the blocked domain support PASID
 647b7aad1949 | iommu: Remove the remove_dev_pasid op
+d61927d784e2 | iommufd/selftest: Remove domain_alloc_paging()
+48e7b8e284e5 | iommu/arm-smmu-v3: Remove arm_smmu_domain_finalise() during attach
+bb857c5c0150 | iommu/arm-smmu-v3: Make domain_alloc_paging_flags() directly determine the S1/S2
+cdfb9840fcc6 | iommu/arm-smmu-v3: Remove domain_alloc_paging()
+11534b4de2a1 | iommufd: Deal with IOMMU_HWPT_FAULT_ID_VALID in iommufd core
+442003f3a842 | iommufd: Keep OBJ/IOCTL lists in an alphabetical order
+3f4818ec1390 | iommufd/fault: Destroy response and mutex in iommufd_fault_destroy()
+3d49020a327c | iommufd/fault: Use a separate spinlock to protect fault->deliver list
+e721f619e3ec | iommufd: Fix struct iommu_hwpt_pgfault init and padding
+fb21b1568ada | iommufd: Make attach_handle generic than fault specific
+dc10ba25d43f | iommufd/fault: Remove iommufd_fault_domain_attach/detach/replace_dev()
 1f7df3a69174 | genirq/msi: Store the IOMMU IOVA directly in msi_desc instead of iommu_cookie
 9349887e9300 | genirq/msi: Refactor iommu_dma_compose_msi_msg()
 288683c92b1a | iommu: Make iommu_dma_prepare_msi() into a generic operation
 96093fe54f48 | irqchip: Have CONFIG_IRQ_MSI_IOMMU be selected by irqchips that need it
 748706d7ca06 | iommu: Turn fault_data to iommufd private pointer
 40f5175d0eb7 | iommufd: Implement sw_msi support natively
-fb21b1568ada | iommufd: Make attach_handle generic than fault specific
-dc10ba25d43f | iommufd/fault: Remove iommufd_fault_domain_attach/detach/replace_dev()
-6aa63a4ec947 | iommu: Sort out domain user data
-ec031e1b35de | iommufd: Move iommufd_sw_msi and related functions to driver.c
-06d54f00f3f5 | iommu: Drop sw_msi from iommu_domain
 ada14b9f1aab | iommu: Require passing new handles to APIs supporting handle
 8a9e1e773f60 | iommu: Introduce a replace API for device pasid
 03c9b102bea6 | iommufd: Pass @pasid through the device attach/replace path
@@ -621,6 +618,9 @@ d57a1fb34255 | iommufd/selftest: Add coverage for iommufd pasid attach/detach
 ad744ed5dd8b | vfio: VFIO_DEVICE_[AT|DE]TACH_IOMMUFD_PT support pasid
 803f97298e7d | iommufd: Extend IOMMU_GET_HW_INFO to report PASID capability
 6d9500bb1ff8 | iommufd/selftest: Add coverage for reporting max_pasid_log2 via IOMMU_HW_INFO
+6aa63a4ec947 | iommu: Sort out domain user data
+ec031e1b35de | iommufd: Move iommufd_sw_msi and related functions to driver.c
+06d54f00f3f5 | iommu: Drop sw_msi from iommu_domain
 b00d24997a11 | iommu/arm-smmu-v3: Fix iommu_device_probe bug due to duplicated stream ids
 be5a2d3f8f97 | iommu/arm-smmu-v3: Fix incorrect return in arm_smmu_attach_dev
 a25e7962db0d | PCI/P2PDMA: Refactor the p2pdma mapping helpers
@@ -645,6 +645,7 @@ bf0ecb3c3239 | xen: swiotlb: Open code map_resource callback
 f7326196a781 | dma-mapping: export new dma_*map_phys() interface
 e1d69da24fb8 | mm/hmm: migrate to physical address-based DMA mapping API
 ec818caebc08 | mm/hmm: properly take MMIO path
+81c45c62dc3e | iommu/arm-smmu-v3-iommufd: Allow attaching nested domain for GBPA cases
 f58ef9d1d135 | PCI/P2PDMA: Separate the mmap() support from the core logic
 d4504262f745 | PCI/P2PDMA: Simplify bus address mapping API
 372d6d1b8ae3 | PCI/P2PDMA: Refactor to separate core P2P functionality from memory allocation
@@ -656,7 +657,6 @@ d4504262f745 | PCI/P2PDMA: Simplify bus address mapping API
 35c3503908d3 | vfio/pci: Enable peer-to-peer DMA transactions by default
 5d74781ebc86 | vfio/pci: Add dma-buf export support for MMIO regions
 5415d887db0e | vfio/nvgrace: Support get_dmabuf_phys
-590d74568030 | dma-buf: fix integer overflow in fill_sg_entry() for buffers >= 8GiB
 96ce2aeb15bd | vfio/pci: Add vfio_pci_dma_buf_iommufd_map()
 71db84a092c3 | iommufd: Add DMABUF to iopt_pages
 71e2409a0c85 | iommufd: Do not map/unmap revoked DMABUFs
@@ -666,13 +666,13 @@ fc7063abd98e | iommufd: Allow a DMABUF to be revoked
 217725f0b2c3 | iommufd: Have iopt_map_file_pages convert the fd to a file
 44ebaa1744fd | iommufd: Accept a DMABUF through IOMMU_IOAS_MAP_FILE
 d2041f1f11dd | iommufd/selftest: Add some tests for the dmabuf flow
-81c45c62dc3e | iommu/arm-smmu-v3-iommufd: Allow attaching nested domain for GBPA cases
 9ee5d1766c8b | mm/hugetlb: fix incorrect error return from hugetlb_reserve_pages()
+590d74568030 | dma-buf: fix integer overflow in fill_sg_entry() for buffers >= 8GiB
+a45dd3466302 | iommu/arm-smmu-v3: Do not set disable_ats unless vSTE is Translate
 2781f2a930ab | iommu/arm-smmu-v3: Add update_safe bits to fix STE update sequence
 f3c1d372dbb8 | iommu/arm-smmu-v3: Mark STE MEV safe when computing the update sequence
 7cad80048595 | iommu/arm-smmu-v3: Mark EATS_TRANS safe when computing the update sequence
 a4f976edcb87 | iommu/arm-smmu-v3-test: Add nested s1bypass/s1dssbypass coverage
-a45dd3466302 | iommu/arm-smmu-v3: Do not set disable_ats unless vSTE is Translate
 a82efb8747d1 | iommu: Add device ATS supported capability
 a11661a58c06 | iommufd: Report ATS not supported status via IOMMU_GET_HW_INFO
 
@@ -692,12 +692,12 @@ f59e85490712 | iommu/arm-smmu-v3: Start a new batch if new command is not suppor
 a9d40285bdef | iommu/tegra241-cmdqv: Limit CMDs for VCMDQs of a guest owned VINTF
 db184a1ced56 | iommu/tegra241-cmdqv: Fix -Wformat-truncation warnings in lvcmdq_error_header
 086a3c40ebd0 | iommu/tegra241-cmdqv: Fix ioremap() error handling in probe()
-483e0bd8883a | iommu/tegra241-cmdqv: Do not allocate vcmdq until dma_set_mask_and_coherent
 2408b81f817b | iommu/tegra241-cmdqv: Drop static at local variable
-a3799717b881 | iommu/tegra241-cmdqv: Fix alignment failure at max_n_shift
-1f806218164d | iommu/tegra241-cmdqv: do not use smp_processor_id in preemptible context
+483e0bd8883a | iommu/tegra241-cmdqv: Do not allocate vcmdq until dma_set_mask_and_coherent
 89edbe88db28 | iommu/tegra241-cmdqv: Staticize cmdqv_debugfs_dir
 5492f0c4085a | iommu/tegra241-cmdqv: Fix unused variable warning
+a3799717b881 | iommu/tegra241-cmdqv: Fix alignment failure at max_n_shift
+1f806218164d | iommu/tegra241-cmdqv: do not use smp_processor_id in preemptible context
 e94dc6ddda8d | iommu/tegra241-cmdqv: Read SMMU IDR1.CMDQS instead of hardcoding
 
 
@@ -749,8 +749,8 @@ a9f10bab2e50 | iommufd: Allow an input data_type via iommu_hw_info
 81f81db6328b | iommu/tegra241-cmdqv: Do not statically map LVCMDQs
 4dc0d12474f9 | iommu/tegra241-cmdqv: Add user-space use support
 32b2d3a57e26 | iommu/tegra241-cmdqv: Add IOMMU_VEVENTQ_TYPE_TEGRA241_CMDQV support
-601b1d0d9395 | iommu/tegra241-cmdqv: import IOMMUFD module namespace
 5510bd89da24 | iommufd: Do not allow _iommufd_object_alloc_ucmd if abort op is set
+601b1d0d9395 | iommu/tegra241-cmdqv: import IOMMUFD module namespace
 80f1a2c2332f | iommu/tegra241-cmdqv: Reset VCMDQ in tegra241_vcmdq_hw_init_user()
 803e41f36d22 | iommu/tegra241-cmdqv: Set supports_cmd op in tegra241_vcmdq_hw_init()
 9dcef98dbee3 | iommu/tegra241-cmdqv: Update uAPI to clarify HYP_OWN requirement
