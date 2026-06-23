@@ -1,0 +1,344 @@
+#!/usr/bin/env python3
+"""Sort patches in a .txt file by commit date, preserving section structure.
+
+Usage: sort-patches <kernel_dir> <patches_file>
+
+Rules:
+- Comment/blank lines define sections; commits stay within their section.
+- Commits sharing a lore.kernel.org message-id series prefix are grouped and
+  ordered by patch number.
+- Series (and standalone commits) are sorted by date within each section.
+- Series date = date of the lowest-numbered patch in that series.
+- Commits not found in the kernel tree are placed last (preserving relative order).
+"""
+
+import argparse
+import re
+import subprocess
+import sys
+from datetime import datetime, timezone
+
+_EPOCH = datetime(1970, 1, 1, tzinfo=timezone.utc)
+_DISTANT_FUTURE = datetime(9999, 12, 31, tzinfo=timezone.utc)
+
+# Prefixes that indicate a lore/lkml message URL containing a patch series ID.
+_LORE_PREFIXES = (
+    "https://lore.kernel.org/r/",
+    "https://lore.kernel.org/all/",
+    "https://lkml.kernel.org/r/",
+)
+
+
+def git_show(kernel_dir, sha):
+    """Return (date, series_key, patch_num) for a commit via git show.
+
+    Returns (None, None, None) if the SHA is not found.
+    """
+    result = subprocess.run(
+        ["git", "show", sha, "--format=%ai\n%b", "--no-patch"],
+        cwd=kernel_dir,
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode != 0:
+        return None, None, None
+
+    lines = result.stdout.split("\n")
+    date = None
+    series_key = None
+    patch_num = None
+
+    if lines:
+        try:
+            date = datetime.strptime(lines[0].strip(), "%Y-%m-%d %H:%M:%S %z")
+        except ValueError:
+            pass
+
+        for line in lines[1:]:
+            if not line.startswith("Link:"):
+                continue
+            url = line[5:].strip()
+            sk, pn = _parse_lore_url(url)
+            if sk and series_key is None:
+                series_key = sk
+                patch_num = pn
+
+    return date, series_key, patch_num
+
+
+def _parse_lore_url(url):
+    """Parse a lore/lkml URL and return (series_key, patch_num), or (None, None).
+
+    Standard patch email message-id format:
+        YYYYMMDDHHMMSS[.SEQNUM]-PATCHNUM-author@domain
+    The series key is everything except -PATCHNUM-, i.e.
+        YYYYMMDDHHMMSS[.SEQNUM]-author@domain
+    """
+    for prefix in _LORE_PREFIXES:
+        if url.startswith(prefix):
+            msg_id = url[len(prefix) :].rstrip("/")
+            m = re.match(r"^(\d{14}(?:\.\d+)?)-(\d+)-(.+@.+)$", msg_id)
+            if m:
+                series_key = f"{m.group(1)}-{m.group(3)}"
+                return series_key, int(m.group(2))
+            break
+    return None, None
+
+
+def _sort_key(date):
+    return date if date is not None else _DISTANT_FUTURE
+
+
+def sort_commit_block(kernel_dir, commit_lines):
+    """Return commit_lines sorted by date, keeping patch series together."""
+    entries = []
+    for line in commit_lines:
+        m = re.match(r"^([0-9a-f]+)\s*\|", line, re.IGNORECASE)
+        if not m:
+            # Blank line or non-commit line within a block; treat as standalone.
+            entries.append(
+                {"line": line, "date": None, "series_key": None, "patch_num": 0}
+            )
+            continue
+        sha = m.group(1)
+        date, series_key, patch_num = git_show(kernel_dir, sha)
+        entries.append(
+            {
+                "line": line,
+                "date": date,
+                "series_key": series_key,
+                "patch_num": patch_num or 0,
+            }
+        )
+
+    # Group by series_key; standalone commits each form a group of one.
+    series_groups = {}  # series_key -> list of entries (in original order)
+    series_order = []  # series keys in first-seen order (for stable sort)
+    standalone = []
+
+    for e in entries:
+        sk = e["series_key"]
+        if sk:
+            if sk not in series_groups:
+                series_groups[sk] = []
+                series_order.append(sk)
+            series_groups[sk].append(e)
+        else:
+            standalone.append(e)
+
+    # Sort each series by patch number.
+    for sk in series_order:
+        series_groups[sk].sort(key=lambda e: e["patch_num"])
+
+    # Build sortable items: (sort_date, group_of_entries).
+    # For a series: sort_date = date of patch with the lowest patch_num.
+    # For standalone: sort_date = the commit's own date.
+    items = []
+    for sk in series_order:
+        group = series_groups[sk]
+        items.append((_sort_key(group[0]["date"]), group))
+    for e in standalone:
+        items.append((_sort_key(e["date"]), [e]))
+
+    # Stable sort by date.
+    items.sort(key=lambda x: x[0])
+
+    return [e["line"] for _, group in items for e in group]
+
+
+def split_into_groups(content):
+    """Split file content into [(header_lines, commit_lines), ...].
+
+    header_lines: comment/blank lines that precede this commit block.
+    commit_lines: the commit (non-comment, non-blank) lines.
+
+    Blank lines that appear after the last commit and before the next comment
+    header end up in the next group's header_lines, preserving spacing.
+    """
+    lines = content.split("\n")
+    # split('\n') on "a\nb\n" gives ['a', 'b', ''] – drop the trailing empty.
+    if lines and lines[-1] == "":
+        lines = lines[:-1]
+
+    groups = []
+    current_header = []
+    current_commits = []
+
+    for line in lines:
+        is_commit = bool(line.strip() and not line.startswith("#"))
+        if is_commit:
+            current_commits.append(line)
+        else:
+            if current_commits:
+                # Transition: commit block ended; save it and start fresh header.
+                groups.append((list(current_header), list(current_commits)))
+                current_header = [line]
+                current_commits = []
+            else:
+                current_header.append(line)
+
+    # Handle the final group.
+    if current_commits:
+        groups.append((current_header, current_commits))
+    elif current_header:
+        groups.append((current_header, []))
+
+    return groups
+
+
+_COMMIT_LINE_RE = re.compile(r"^([0-9a-fA-F]+) \| (.+)$")
+
+
+def check_format(kernel_dir, content, ignore_invalid=False):
+    """Validate line formatting and commit titles.
+
+    If a SHA is the wrong length but the title matches, the line is silently
+    fixed to use the canonical 12-character SHA prefix.
+
+    Prints errors (or warnings when ignore_invalid=True) to stderr.
+    Returns (error_count, fixed_content); error_count is 0 when ignore_invalid=True.
+    """
+    errors = 0
+    label = "warning" if ignore_invalid else "error"
+    lines = content.split("\n")
+    trailing_newline = lines and lines[-1] == ""
+    if trailing_newline:
+        lines = lines[:-1]
+
+    fixed_lines = []
+
+    for lineno, line in enumerate(lines, 1):
+        if line.startswith("#") or line == "":
+            fixed_lines.append(line)
+            continue
+
+        m = _COMMIT_LINE_RE.match(line)
+        if not m:
+            print(f"{lineno}: {label}: invalid format: {line!r}", file=sys.stderr)
+            if not ignore_invalid:
+                errors += 1
+            fixed_lines.append(line)
+            continue
+
+        sha, title = m.group(1), m.group(2)
+        result = subprocess.run(
+            ["git", "show", sha, "--format=%H%n%s", "--no-patch"],
+            cwd=kernel_dir,
+            capture_output=True,
+            text=True,
+        )
+        if result.returncode != 0:
+            if len(sha) != 12:
+                print(
+                    f"{lineno}: {label}: SHA must be 12 characters and {sha!r} not found in kernel tree",
+                    file=sys.stderr,
+                )
+            else:
+                print(
+                    f"{lineno}: {sha}: {label}: not found in kernel tree",
+                    file=sys.stderr,
+                )
+            if not ignore_invalid:
+                errors += 1
+            fixed_lines.append(line)
+            continue
+
+        out = result.stdout.strip().split("\n")
+        full_sha, actual = out[0], out[1] if len(out) > 1 else ""
+        canonical = full_sha[:12]
+
+        if len(sha) != 12:
+            if actual == title:
+                fixed_lines.append(f"{canonical} | {title}")
+            else:
+                print(
+                    f"{lineno}: {sha}: {label}: SHA must be 12 characters and title mismatch",
+                    file=sys.stderr,
+                )
+                print(f"       file:   {title!r}", file=sys.stderr)
+                print(f"       commit: {actual!r}", file=sys.stderr)
+                if not ignore_invalid:
+                    errors += 1
+                fixed_lines.append(line)
+        else:
+            if actual != title:
+                print(f"{lineno}: {sha}: {label}: title mismatch", file=sys.stderr)
+                print(f"       file:   {title!r}", file=sys.stderr)
+                print(f"       commit: {actual!r}", file=sys.stderr)
+                if not ignore_invalid:
+                    errors += 1
+            fixed_lines.append(line)
+
+    fixed_content = "\n".join(fixed_lines)
+    if trailing_newline:
+        fixed_content += "\n"
+    return errors, fixed_content
+
+
+def validate(original_content, sorted_lines):
+    """Verify that sorting preserved every commit line exactly once."""
+
+    def extract_commits(text_or_lines):
+        if isinstance(text_or_lines, str):
+            lines = text_or_lines.split("\n")
+        else:
+            lines = text_or_lines
+        return sorted(l for l in lines if l.strip() and not l.startswith("#"))
+
+    orig = extract_commits(original_content)
+    result = extract_commits(sorted_lines)
+    if orig != result:
+        missing = set(orig) - set(result)
+        extra = set(result) - set(orig)
+        msg = "Validation failed: commit lines changed during sort."
+        if missing:
+            msg += f"\n  Missing: {missing}"
+        if extra:
+            msg += f"\n  Extra:   {extra}"
+        raise RuntimeError(msg)
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Sort patches in a .txt file by commit date, preserving section structure."
+    )
+    parser.add_argument("kernel_dir", help="Path to a git checkout of the Linux kernel")
+    parser.add_argument(
+        "patches_file", help="Patch list .txt file to sort (modified in place)"
+    )
+    parser.add_argument(
+        "--ignore-invalid-sha",
+        action="store_true",
+        help="Warn about invalid or unrecognised SHAs instead of aborting; still sorts valid entries",
+    )
+    args = parser.parse_args()
+
+    kernel_dir = args.kernel_dir
+    patches_file = args.patches_file
+
+    with open(patches_file) as f:
+        content = f.read()
+
+    errors, content = check_format(
+        kernel_dir, content, ignore_invalid=args.ignore_invalid_sha
+    )
+    if errors:
+        sys.exit(1)
+
+    groups = split_into_groups(content)
+
+    output_lines = []
+    for header_lines, commit_lines in groups:
+        output_lines.extend(header_lines)
+        if commit_lines:
+            sorted_commits = sort_commit_block(kernel_dir, commit_lines)
+            output_lines.extend(sorted_commits)
+
+    validate(content, output_lines)
+
+    with open(patches_file, "w") as f:
+        f.write("\n".join(output_lines) + "\n")
+
+
+if __name__ == "__main__":
+    main()
