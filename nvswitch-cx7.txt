@@ -26,8 +26,8 @@ c70f51de8530 | RDMA/mlx5: Support 400Gbps IB rate in mlx5 driver
 
 # NDR (Next Data Rate) Support - Core
 # NDR link speed support (400Gbps for InfiniBand)
-f946e45f59ef | IB/mlx5: Add support for NDR link speed
 c7adf7717301 | IB/core: Add support for NDR link speed
+f946e45f59ef | IB/mlx5: Add support for NDR link speed
 fbdb0ba7051e | IB/mlx5: Expose NDR speed through MAD
 
 # NDR Support - IPoIB
