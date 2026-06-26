@@ -74,6 +74,7 @@ dd216457a325 | NVIDIA: VR: CCA: SAUCE: arm64: RMI: Add SMC definitions for calli
 # Bare Metal Support: Fixes
 ###########################
 11feb0fce275 | NVIDIA: VR: SAUCE: firmware: smccc: lfa: fix image names and init cleanup
+86c39e684714 | NVIDIA: SAUCE: PCI/MSI: Enable memory decoding before restoring MSI-X messages
 
 
 
