@@ -67,6 +67,10 @@ ea3db45ae476 | cpufreq: cppc: Update MIN_PERF/MAX_PERF in target callbacks
 073e63812525 | PCI: Allow ATS to be always on for pre-CXL devices
 5ff98a0da6b4 | iommu/arm-smmu-v3: Allow ATS to be always on
 71e1815113f7 | ACPI: CPPC: Add support for CPPC v4
+70fa8a1860ed | cpufreq: Extract cpufreq_policy_init_qos() function
+743a3cddb1f0 | cpufreq: Set default policy->min/max values for all drivers
+db80ad776cd2 | cpufreq: Remove driver default policy->min/max init
+8c83947c5dbb | cpufreq: Use policy->min/max init as QoS request
 
 
 
@@ -89,6 +93,14 @@ ec7216f92e4e | arm64: errata: Mitigate TLBI errata on NVIDIA Olympus CPU
 7c29ba02210c | PCI: Introduce pcie_is_cxl()
 16d021c878dc | PCI/NPEM: Set LED_HW_PLUGGABLE for hotplug-capable ports
 a55f80233f38 | fwctl: Fix class init ordering to avoid NULL pointer dereference on device removal
+d769711fcddd | iommu: Fix NULL group->domain dereference in pci_dev_reset_iommu_done()
+834ab85aa966 | iommu: Fix kdocs of pci_dev_reset_iommu_done()
+b296ca1fb43a | iommu: Replace per-group resetting_domain with per-gdev blocked flag
+1615e8896a8f | iommu: Fix pasid attach in pci_dev_reset_iommu_prepare/done()
+0d5fd7a9323c | iommu: Fix nested pci_dev_reset_iommu_prepare/done()
+fc3523b16d2b | iommu: Fix ATS invalidation timeouts during __iommu_remove_group_pasid()
+5474e6e17a26 | iommu: Fix WARN_ON in __iommu_group_set_domain_nofail() due to reset
+15dd29ca6206 | iommu: Warn on premature unblock during DMA aliased sibling reset
 702c1d56c717 | PCI/CXL: Hide SBR from reset_methods if masked by CXL
 97d0a9c6e809 | i2c: tegra: Update Tegra410 I2C timing parameters
 
