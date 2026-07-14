@@ -80,14 +80,14 @@ if [ "$DRY_RUN" -eq 1 ]; then
     exit 0
 fi
 
+# Repository selection is controlled by the current directory or LINUX_GIT.
+# Do not let inherited git environment variables override that selection.
+unset GIT_DIR GIT_WORK_TREE
+
 # Check for Linux git repo in current directory or via LINUX_GIT
 check_linux_repo() {
     local repo_dir="$1"
-    if [ -d "$repo_dir/.git" ]; then
-        return 0
-    else
-        return 1
-    fi
+    git -C "$repo_dir" rev-parse --git-dir >/dev/null 2>&1
 }
 
 if ! check_linux_repo "."; then
