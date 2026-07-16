@@ -110,10 +110,43 @@ ABSENT=0
 BADSHA=0
 TOTAL=0
 
+# Collect entries per attention-needed category for the sectioned summary
+REVIEW_LINES=()
+ABSENT_LINES=()
+BADSHA_LINES=()
+
 output() {
     if [ "$QUIET" -eq 0 ]; then
         echo "$@"
     fi
+}
+
+# Emit a status line, count it, and record the attention-needed categories for
+# the summary sections
+report() {
+    local status="$1" abbrev="$2" line="$3"
+    local msg
+    printf -v msg "%-7s (%-8s) %s" "$status" "$abbrev" "$line"
+    output "$msg"
+    case "$status" in
+        EXISTS) EXISTS=$((EXISTS+1)) ;;
+        REVIEW) REVIEW=$((REVIEW+1)); REVIEW_LINES+=("$msg") ;;
+        ABSENT) ABSENT=$((ABSENT+1)); ABSENT_LINES+=("$msg") ;;
+        BADSHA) BADSHA=$((BADSHA+1)); BADSHA_LINES+=("$msg") ;;
+    esac
+}
+
+# Print a titled section listing the given entries; silent when there are none
+print_section() {
+    local title="$1"
+    shift
+    [ "$#" -eq 0 ] && return
+    local underline
+    printf -v underline '%*s' "${#title}" ''
+    echo ""
+    echo "$title"
+    echo "${underline// /_}"
+    printf '%s\n' "$@"
 }
 
 # Setup upstream: determine if it's a URL or existing remote/branch
@@ -185,23 +218,20 @@ while IFS= read -r line; do
             elif git rev-parse --verify "$SHA" 2>/dev/null; then
                 TITLE=$(git log --format=%s -n 1 "$SHA")
             else
-                output "$(printf "%-7s (%-8s) %s" "BADSHA" "$ABBREV" "$line")"
-                BADSHA=$((BADSHA+1))
+                report "BADSHA" "$ABBREV" "$line"
                 continue
             fi
         fi
         TITLE_BASENAME=$(echo "$TITLE" | sed -E 's/^([A-Za-z0-9_/.-]+:[[:space:]]+)*SAUCE:[[:space:]]+//')
         REFERENCE_SHA=$(git log "$UPSTREAM" --no-merges --format='%H' --grep="$TITLE_BASENAME" --fixed-strings -n 1)
         if [ -z "$REFERENCE_SHA" ]; then
-            output "$(printf "%-7s (%-8s) %s" "BADSHA" "$ABBREV" "$line")"
-            BADSHA=$((BADSHA+1))
+            report "BADSHA" "$ABBREV" "$line"
             continue
         fi
     else
         # Default: SHA must be in upstream; use it as reference
         if ! git merge-base --is-ancestor "$SHA" "$UPSTREAM" 2>/dev/null; then
-            output "$(printf "%-7s (%-8s) %s" "BADSHA" "$ABBREV" "$line")"
-            BADSHA=$((BADSHA+1))
+            report "BADSHA" "$ABBREV" "$line"
             continue
         fi
         REFERENCE_SHA="$SHA"
@@ -212,8 +242,7 @@ while IFS= read -r line; do
     # 2. Check if reference commit is present in branch (direct ancestor)
     if git merge-base --is-ancestor "$REFERENCE_SHA" "$BRANCH" 2>/dev/null; then
         ABBREV=$(git rev-parse --short=12 "$REFERENCE_SHA")
-        output "$(printf "%-7s (%-8s) %s" "EXISTS" "$ABBREV" "$line")"
-        EXISTS=$((EXISTS+1))
+        report "EXISTS" "$ABBREV" "$line"
         continue
     fi
 
@@ -239,11 +268,9 @@ while IFS= read -r line; do
                     <(echo "$REFERENCE_DIFF") \
                     <(git show --format= "$commit_hash" | grep -E '^[+-][^+-]') \
                     >/dev/null; then
-                    output "$(printf "%-7s (%-8s) %s" "EXISTS" "$ABBREV_LOCAL" "$line")"
-                    EXISTS=$((EXISTS+1))
+                    report "EXISTS" "$ABBREV_LOCAL" "$line"
                 else
-                    output "$(printf "%-7s (%-8s) %s" "REVIEW" "$ABBREV_LOCAL" "$line")"
-                    REVIEW=$((REVIEW+1))
+                    report "REVIEW" "$ABBREV_LOCAL" "$line"
                 fi
                 MATCH_FOUND=1
                 break
@@ -254,11 +281,9 @@ while IFS= read -r line; do
                     <(echo "$REFERENCE_DIFF") \
                     <(git show --format= "$commit_hash" | grep -E '^[+-][^+-]') \
                     >/dev/null; then
-                    output "$(printf "%-7s (%-8s) %s" "EXISTS" "$ABBREV_LOCAL" "$line")"
-                    EXISTS=$((EXISTS+1))
+                    report "EXISTS" "$ABBREV_LOCAL" "$line"
                 else
-                    output "$(printf "%-7s (%-8s) %s" "REVIEW" "$ABBREV_LOCAL" "$line")"
-                    REVIEW=$((REVIEW+1))
+                    report "REVIEW" "$ABBREV_LOCAL" "$line"
                 fi
                 MATCH_FOUND=1
                 break
@@ -267,8 +292,7 @@ while IFS= read -r line; do
     done < <(grep -F "$TITLE_BASENAME" "$BRANCH_LOG_CACHE")
     # No branch commit had matching title → report ABSENT
     if [ "$MATCH_FOUND" -eq 0 ]; then
-        output "$(printf "%-7s (%-8s) %s" "ABSENT" "$ABBREV" "$line")"
-        ABSENT=$((ABSENT+1))
+        report "ABSENT" "$ABBREV" "$line"
     fi
 
 done < "$SHA_LIST_FILE"
@@ -284,3 +308,9 @@ printf "%-7s: %d\n" "REVIEW" "$REVIEW"
 printf "%-7s: %d\n" "ABSENT" "$ABSENT"
 printf "%-7s: %d\n" "BADSHA" "$BADSHA"
 printf "%-7s: %d\n" "Total"  "$TOTAL"
+
+# Sectioned listing of the attention-needed entries, so REVIEW/ABSENT/BADSHA
+# patches are easy to reference and consume (also shown in quiet mode).
+print_section "REVIEW patches" "${REVIEW_LINES[@]:+"${REVIEW_LINES[@]}"}"
+print_section "ABSENT patches" "${ABSENT_LINES[@]:+"${ABSENT_LINES[@]}"}"
+print_section "BADSHA patches" "${BADSHA_LINES[@]:+"${BADSHA_LINES[@]}"}"

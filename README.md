@@ -11,6 +11,7 @@ A script to check if a list of upstream Linux kernel commit SHAs are present (ch
 - Compares patch content, ignoring commit message trailers and context-only changes.
 - **Match by title (`-t`)**: find the reference commit on upstream by title instead of list SHA; useful when the branch was rebased and list SHAs are no longer in upstream history.
 - Outputs a summary of results: EXISTS, REVIEW, ABSENT, BADSHA.
+- Sections the summary so the attention-needed entries (REVIEW, ABSENT, BADSHA) are listed out individually and are easy to reference — shown even in quiet mode.
 - Supports quiet mode, dry run, and verbose (debug) output.
 - Flexible: can specify branch and upstream (URL or remote/branch).
 
@@ -63,7 +64,25 @@ REVIEW : 3
 ABSENT : 1
 BADSHA : 2
 Total  : 24
+
+REVIEW patches
+______________
+REVIEW  (ba6996be) 0ce5c2477af2
+REVIEW  (bae492fb) abc7b3f1f056 RDMA/mlx5: Fix a WARN during dereg_mr for DM type
+REVIEW  (210ab445) 927dabc9aa4dbebf92b34da9b7acd7d8d5c6331b
+
+ABSENT patches
+______________
+ABSENT  (--------) ee512922ddd7
+
+BADSHA patches
+______________
+BADSHA  (--------) d4f4ca57cab76c3b61821e6f08e9be7fb8e37c08
+BADSHA  (--------) d069059317c1
 ```
+
+The `REVIEW`/`ABSENT`/`BADSHA` sections only appear when there is at least one
+entry in that category, and are printed in quiet mode (`-q`) as well.
 
 ### Example 2: Quiet Mode and Custom Branch
 ```
