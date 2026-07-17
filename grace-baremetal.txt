@@ -140,7 +140,7 @@ edf9088b6e1d | spi: tegra210-quad: Protect curr_xfer check in IRQ handler
 c87f820bc474 | soc/tegra: fuse: Do not register SoC device on ACPI boot
 48478b9f7913 | arm64/mm: Enable batched TLB flush in unmap_hotplug_range()
 01b9cae70616 | firmware: arm_ffa: Honor partition info descriptor size
-d0ce5f3f926a | firmware: arm_ffa: Respect firmware advertised RX/TX buffer size limits
+53716a4d745f | firmware: arm_ffa: Respect firmware advertised RX/TX buffer size limits
 
 
 # Bare Metal Support: Performance
