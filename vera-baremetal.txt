@@ -59,6 +59,7 @@ ea3db45ae476 | cpufreq: cppc: Update MIN_PERF/MAX_PERF in target callbacks
 2423e336d948 | gpio: tegra186: Simplify GPIO line name prefix handling
 2c299030c681 | gpio: tegra186: Support multi-socket devices
 4eeb19aaff55 | i2c: tegra: Introduce tegra_i2c_variant to identify DVC and VI
+8cdc494013df | cpufreq/amd-pstate: Cache the max frequency in cpudata
 0c0e440b0c93 | i2c: tegra: Add logic to support different register offsets
 59717f260183 | i2c: tegra: Add support for Tegra410
 8b8ee2e56f95 | soc/tegra: Use ARM SMCCC to get chip ID, revision, and platform info
