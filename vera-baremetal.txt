@@ -40,6 +40,11 @@ b53232fd220a | i2c: tegra: Do not configure DMA if not supported
 978b3ccbbac3 | i2c: tegra: Add HS mode support
 6077cfd716fb | i2c: tegra: Add support for SW mutex register
 1ac9e16dd226 | i2c: tegra: Add Tegra264 support
+5d5388b0e190 | iommu: Lock group->mutex in iommu_deferred_attach()
+4a73abb965b7 | iommu: Tidy domain for iommu_setup_dma_ops()
+a75b2be249d6 | iommu: Add iommu_driver_get_domain_for_dev() helper
+c279e83953d9 | iommu: Introduce pci_dev_reset_iommu_prepare/done()
+f5b16b802174 | PCI: Suspend iommu function prior to resetting a device
 eeb95c07d5fc | PCI: Add ASPEED vendor ID to pci_ids.h
 550a190494a0 | PCI: Add PCI_BRIDGE_NO_ALIAS quirk for ASPEED AST1150
 4a1cf5ed51b1 | cpufreq: CPPC: Add generic helpers for sysfs show/store
