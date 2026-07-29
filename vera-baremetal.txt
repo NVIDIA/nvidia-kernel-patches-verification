@@ -108,6 +108,8 @@ fc3523b16d2b | iommu: Fix ATS invalidation timeouts during __iommu_remove_group_
 15dd29ca6206 | iommu: Warn on premature unblock during DMA aliased sibling reset
 702c1d56c717 | PCI/CXL: Hide SBR from reset_methods if masked by CXL
 97d0a9c6e809 | i2c: tegra: Update Tegra410 I2C timing parameters
+25139c11693a | sched/fair: Fix RCU usage in NOHZ exit path on CPU offline
+265d5d4032c5 | soc/tegra: fuse: Fix spurious straps warning on SMCCC platforms
 
 
 
