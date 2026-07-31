@@ -180,6 +180,9 @@ f0c2264958e1 | arm64/mm: automatically fold contpte mappings
 ead79118dae6 | arm64/io: Provide a WC friendly __iowriteXX_copy()
 2b7a5e1fe022 | net: hns3: Remove io_stop_wc() calls after __iowrite64_copy()
 ef302283ddfc | IB/mlx5: Use __iowrite64_copy() for write combining stores
+37beb4256016 | randomize_kstack: Maintain kstack_offset per task
+a96ef5848cb0 | randomize_kstack: Unify random source across arches
+54a3cc145456 | KVM: arm64: Remove extra ISBs when using msr_hcr_el2
 9dc42c907028 | workqueue: fix typo in WQ_AFFN_SMT comment
 5920d046f7ae | workqueue: add WQ_AFFN_CACHE_SHARD affinity scope
 4cdc8a7389d5 | workqueue: set WQ_AFFN_CACHE_SHARD as the default affinity scope
@@ -421,6 +424,7 @@ a7efe23ed6dd | arm_mpam: Add workaround for T241-MPAM-4
 dc48eb1ff27c | arm_mpam: Add workaround for T241-MPAM-6
 aeb8595a5f8b | arm_mpam: Quirk CMN-650's CSU NRDY behaviour
 4ce0a2ccc035 | arm64: mpam: Add initial MPAM documentation
+021118ce5ea9 | arm_mpam: Fix MPAMCFG_MBW_PBM register setting
 
 
 
