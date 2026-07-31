@@ -93,7 +93,7 @@ e814f17ed157 | NVIDIA: VR: SAUCE: perf/arm_pmu: Skip PMCCNTR_EL0 on NVIDIA Olymp
 # Bare Metal Support: Hardware Workarounds
 ##########################################
 8fa90b6a9262 | NVIDIA: VR: SAUCE: arm64: Add workaround to convert MT_NORMAL_NC to Device-nGnRE
-
+12aab25ca56e | arm64: errata: work around NVIDIA Olympus device store/load ordering
 
 
 # End of list

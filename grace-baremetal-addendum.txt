@@ -1,0 +1,43 @@
+# NVIDIA Grace (Addendum) BML Kernel Patches
+# Format: COMMIT_SHA | TITLE
+#
+# This list is organized by the same groupings found
+# in the NVIDIA Grace Software Patches and Configuration
+# Guide Addendum.
+#
+
+
+
+# Bare Metal Support: Enablement
+################################
+
+
+
+# Bare Metal Support: Critical Fixes
+####################################
+
+
+
+# Bare Metal Support: Fixes
+###########################
+
+
+
+# Bare Metal Support: Performance
+#################################
+
+
+
+# Bare Metal Support: Performance Tools
+#######################################
+
+d32bf877c0c3 | perf/core: out-of-line and export perf_allow_cpu/tracepoint()
+6680bf0cb726 | drm/xe: gate observation streams with perf_allow_cpu()
+
+
+
+# Bare Metal Support: Hardware Workarounds
+##########################################
+
+
+# End of list
