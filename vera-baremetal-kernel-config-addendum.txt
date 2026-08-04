@@ -1,0 +1,8 @@
+# Vera bare-metal configurations from the non-upstream and hardware-workaround
+# addendum.
+# Table 111. Bare Metal Configs: Required (Non-Upstream)
+CONFIG_ARM64_WORKAROUND_NC_TO_NGNRE=y
+CONFIG_ARM_LFA=y
+CONFIG_EFI_SECRET=y
+CONFIG_KVM=y
+CONFIG_NVIDIA_OLYMPUS_1027_ERRATUM=y

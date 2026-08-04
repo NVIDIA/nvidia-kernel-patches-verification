@@ -1,0 +1,26 @@
+# The comment can have an optional value inside bracket, e.g. [=y], [>100], [<1024]
+
+# The following table contains config settings that enable functionality and are
+# required for bare metal support on the Vera platform.
+# Table 107. Bare Metal Configs: Required
+CONFIG_ARM_ARCH_TIMER_EVTSTREAM=y
+CONFIG_TCG_CRB=y
+CONFIG_ARM_FFA_TRANSPORT=y
+CONFIG_TCG_ARM_CRB_FFA=y
+
+# The following table contains the recommended config settings that provide
+# performance improvements for certain workloads.
+# Table 108. Bare Metal Configs: Recommended
+# n/a
+
+# The following table contains optional config settings that enable the
+# performance tooling functions on Vera platforms.
+# Table 109. Bare Metal Configs: Performance Tools
+CONFIG_ARM64_BRBE=y
+CONFIG_NVIDIA_TEGRA410_CMEM_LATENCY_PMU=m
+CONFIG_NVIDIA_TEGRA410_C2C_PMU=m
+
+# The following table contains config settings that are required when supporting
+# partner diagnostics on Vera platforms.
+# Table 110. Bare Metal Configs: Partner Diagnostics
+# n/a
