@@ -15,7 +15,7 @@ A script to check if a list of upstream Linux kernel commit SHAs are present (ch
 - Supports quiet mode, dry run, and verbose (debug) output.
 - Flexible: can specify branch and upstream (URL or remote/branch).
 
-## Usage
+## Verify Upstream Commits
 
 ```
 Usage: ./verify-upstream-commits [-b branch] [-U upstream] [-q] [-n] [-v] [-t] <sha_list_file>
@@ -105,15 +105,68 @@ $ ./verify-upstream-commits -t -U origin/linux-nvidia-6.18 vera-baremetal-addend
 
 List lines should use the format `SHA | TITLE` so that when the list SHA is not in upstream, the title is still available for the search.
 
-## Requirements
+### Requirements
 - Bash
 - git
 - A Linux kernel git repository (or set the LINUX_GIT environment variable to point to one)
 
-## Notes
+### Notes
 - The input file should contain one entry per line: **SHA** in the first column, optionally followed by **` | TITLE`** (pipe and commit subject). Blank lines and lines starting with `#` are ignored. The `SHA | TITLE` format is recommended when using `-t` (match by title).
 - **EXISTS**: the patch is on the branch (directly or as a cherry-pick/backport with matching diff).
 - **REVIEW**: a commit with matching title was found but the diff differs, or the title matches and there is no backport trailer (e.g. backported from list).
 - **ABSENT**: no commit on the branch has a matching title.
 - **BADSHA**: the list SHA is not in the given upstream (and with `-t`, no commit on upstream matches the title).
 - When `-U` is a URL, the script adds a temporary remote, fetches the default branch, and removes the remote on exit.
+
+## Kernel Configuration Validation
+
+Use `check_kernel_config.py` to validate a kernel configuration against NVIDIA
+platform reference specifications.
+
+### Requirements
+
+- Python 3.9 or later
+
+### Usage
+
+For a machine supporting both Grace and Vera, including the Vera non-upstream
+and hardware-workaround addendum, run:
+
+```
+$ python3 check_kernel_config.py -c /boot/config-$(uname -r) grace-baremetal-kernel-config.txt vera-baremetal-kernel-config.txt vera-baremetal-kernel-config-addendum.txt
+```
+
+The checker groups results by specification table and reports only failures by
+default. Add `-v` to include passing options. It accepts a kernel build
+configuration such as `.config` in place of `/boot/config-$(uname -r)`.
+
+### Example Output
+
+The following output is from a run using the Grace, Vera, and Vera addendum
+reference files:
+
+```
+$ python3 check_kernel_config.py -c /boot/config-$(uname -r) grace-baremetal-kernel-config.txt vera-baremetal-kernel-config.txt vera-baremetal-kernel-config-addendum.txt
+Loaded 47 specs from grace-baremetal-kernel-config.txt
+Loaded 7 specs from vera-baremetal-kernel-config.txt
+Loaded 5 specs from vera-baremetal-kernel-config-addendum.txt
+
+Results:
+  Bare Metal Configs: Required: 24/25 passed
+     [FAIL] CONFIG_IOMMU_DEFAULT_PASSTHROUGH=y, expected n
+  Bare Metal Configs: Recommended: 8/11 passed
+     [FAIL] CONFIG_PREEMPT_NONE not found
+     [FAIL] CONFIG_INIT_ON_ALLOC_DEFAULT_ON=y, expected n
+     [FAIL] CONFIG_IOMMU_DEFAULT_DMA_LAZY not found
+  Bare Metal Configs: Performance Tools: 4/6 passed
+     [FAIL] CONFIG_NVIDIA_TEGRA410_CMEM_LATENCY_PMU not found
+     [FAIL] CONFIG_NVIDIA_TEGRA410_C2C_PMU not found
+  Bare Metal Configs: Partner Diagnostics: 10/10 passed
+  Bare Metal Configs: MPAM: 1/2 passed
+     [FAIL] CONFIG_RESCTRL_FS not found
+  Bare Metal Configs: Required (Non-Upstream): 3/5 passed
+     [FAIL] CONFIG_EFI_SECRET not found
+     [FAIL] CONFIG_NVIDIA_OLYMPUS_1027_ERRATUM not found
+
+Summary: 50/59 configs passed
+```
