@@ -26,6 +26,8 @@
 # Bare Metal Support: Performance
 #################################
 
+c494788faffe | mm/gup: fix GUP-fast fallback for NULL-mapping order-0 folios
+
 
 
 # Bare Metal Support: Performance Tools
