@@ -93,4 +93,87 @@ dd216457a325 | NVIDIA: VR: CCA: SAUCE: arm64: RMI: Add SMC definitions for calli
 8fa90b6a9262 | NVIDIA: VR: SAUCE: arm64: Add workaround to convert MT_NORMAL_NC to Device-nGnRE
 
 
+# Bare Metal Support: MPAM
+###########################
+
+6e1ff6ccb960 | NVIDIA: SAUCE: arm_mpam: let low level MSC accessors return an error
+174213ad822e | NVIDIA: VR: SAUCE: resctrl/mpam: probe MPAMF_MBW_IDR MAX_LIM and hardlim_rw
+b0d714288cf0 | NVIDIA: SAUCE: arm_mpam: propagate MSC access errors for hw_probe functions
+00b4e53e950a | NVIDIA: SAUCE: arm_mpam: propagate MSC access errors for MBWU counters
+9f172b1c50b7 | NVIDIA: SAUCE: arm_mpam: propagate MSC access errors for msmon helpers
+736352f158e3 | NVIDIA: SAUCE: arm_mpam: propagate MSC access errors for __ris_msmon_read()
+b087a0a3ddf5 | NVIDIA: SAUCE: arm_mpam: propagate MSC access errors for state saving function
+f444c3d67ddb | NVIDIA: VR: SAUCE: arm_mpam: Allow cmax/cmin to be configured
+68993795d87a | NVIDIA: VR: SAUCE: arm_mpam: Rename mbw conversion to 'fract16' for code re-use
+9e67d5ab898b | NVIDIA: VR: SAUCE: resctrl/mpam: reset RIS by applying explicit default config
+b4f2217491fc | NVIDIA: VR: SAUCE: resctrl/mpam: track MBW max hard-limit in config
+421b7400eac6 | NVIDIA: SAUCE: arm_mpam: propagate MSC access errors for mpam_reprogram_ris_partid()
+b315c4576b3b | NVIDIA: SAUCE: arm_mpam: prepare mon_sel locking for MPAM-Fb
+86ac4381c93b | NVIDIA: SAUCE: arm_mpam: add MPAM-Fb MSC firmware access support
+2e55744cfac6 | NVIDIA: VR: SAUCE: arm_mpam: Avoid MSC teardown for the SW programming errors
+3f004047de92 | NVIDIA: SAUCE: arm_mpam: change MPAM-Fb error IRQ to use a threaded IRQ handler
+238ad13b0092 | NVIDIA: SAUCE: arm_mpam: detect and enable MPAM-Fb PCC support
+4cb78d45189c | NVIDIA: VR: SAUCE: arm_mpam: resctrl: Add kunit test for ABMC/CDP interactions
+d4a29030f546 | NVIDIA: VR: SAUCE: fs/resctrl: Avoid a race with dom_data_exit() and closid_num_dirty_rmid[]
+37ceb2e0b8ba | NVIDIA: VR: SAUCE: fs/resctrl: Avoid a race with dom_data_exit() and rmid_ptrs[]
+48f693b79318 | NVIDIA: VR: SAUCE: debugfs: Add helpers for creating cpumask entries in debugfs
+79433a1b8c14 | NVIDIA: VR: SAUCE: arm_mpam: Add resctrl_arch_round_bw()
+eb9f2f2ab728 | NVIDIA: VR: SAUCE: fs/resctrl,x86/resctrl: Factor mba rounding to be per-arch
+f476a2517ee0 | NVIDIA: VR: SAUCE: arm_mpam: Allow the maximum partid to be overridden from the command line
+d029487dce80 | NVIDIA: VR: SAUCE: fs/resctrl: Add this_is_not_abi mount option
+d060851d92bb | NVIDIA: VR: SAUCE: iommu: Add helpers to retrieve iommu_groups by id or kobject
+86d7c942272a | NVIDIA: VR: SAUCE: kobject: Add kset_get_next_obj() to allow a kset to be walked
+c569c143b7d1 | NVIDIA: VR: SAUCE: x86/resctrl: Add stub to allow other architecture to disable monitor overflow
+857edbf27060 | NVIDIA: VR: SAUCE: fs/resctrl: Uniform data type of component_id/domid/id/cache_id
+cbc067bda79c | NVIDIA: VR: SAUCE: fs/resctrl: Group all the MBA specific properties in a separate struct
+1182297e55e2 | NVIDIA: VR: SAUCE: fs/resctrl: Abstract duplicate domain test to a helper
+88aaac4ab8bf | NVIDIA: VR: SAUCE: fs/resctrl: Rename resctrl_get_default_ctrl() to include resource
+70402e6328f0 | NVIDIA: VR: SAUCE: x86/resctrl: Move over to specifying MBA control formats
+c30b5d230519 | NVIDIA: VR: SAUCE: fs/resctrl: Add additional files for percentage and bitmap controls
+f268c7b8c283 | NVIDIA: VR: SAUCE: fs/resctrl: Add L2 and L3 'MAX' resource schema
+c44e0dd50789 | NVIDIA: VR: SAUCE: arm_mpam: Handle CPU-less numa nodes
+61bbb6dee653 | NVIDIA: VR: SAUCE: Documentation: resctrl: document max_lim and MB_HLIM for MPAM MBA
+8d41624a7a80 | NVIDIA: VR: SAUCE: arm_mpam: Allow MSC to be forced to have an unknown location
+ab80eab173e8 | NVIDIA: VR: SAUCE: iommu/arm-smmu-v3: Register SMMU capabilities with MPAM
+c97c67a66fcd | NVIDIA: VR: SAUCE: iommu: Add helper to retrieve iommu kset
+7992bad03da0 | NVIDIA: VR: SAUCE: fs/resctrl: Move MBA supported check to parse_line() instead of parse_bw()
+bc6c00e3c615 | NVIDIA: VR: SAUCE: fs/resctrl: Add a schema format to the schema, allowing it to be different
+1978ee03c1e6 | NVIDIA: VR: SAUCE: fs/resctrl: Use schema format to check the resource is a bitmap
+1688071dccf0 | NVIDIA: VR: SAUCE: fs/resctrl: Add specific schema types for 'range'
+e5c8d2076555 | NVIDIA: VR: SAUCE: arm_mpam: resctrl: Convert MB resource to use percentage
+32ae261b2a6a | NVIDIA: VR: SAUCE: fs/resctrl: Remove 'range' schema format
+431102cc2595 | NVIDIA: VR: SAUCE: fs/resctrl: Add fflags_from_schema() for files based on schema format
+3052380334ae | NVIDIA: VR: SAUCE: fs/resctrl: Expose the schema format to user-space
+8643188a22c7 | NVIDIA: VR: SAUCE: arm_mpam: resctrl: Add the glue code to convert to/from cmax
+b1f4a9a13ca0 | NVIDIA: VR: SAUCE: resctrl: add MB_HLIM resource ID and schema type
+71e2c8ccb41a | NVIDIA: VR: SAUCE: resctrl: wire MB_HLIM schemata parsing and group setup
+2cec800bb783 | NVIDIA: VR: SAUCE: resctrl/mpam: bind MB_HLIM resource to MBA MPAM class
+5cb25ffaf51e | NVIDIA: VR: SAUCE: resctrl: add membw.mb_max_lim and arch_has_mb_max_lim
+5fd5ccc940e6 | NVIDIA: VR: SAUCE: resctrl/mpam: populate MBA mb_max_lim from MPAM probe
+d7970268fbb6 | NVIDIA: VR: SAUCE: iommu/arm-smmu-v3: Add mpam helpers to query and set state
+09e295980038 | NVIDIA: SAUCE: iommu: Add helpers to get and set the QoS state
+87ce868a4953 | NVIDIA: SAUCE: arm_mpam: resctrl: Add iommu helpers to get/set the partid and pmg
+d8963b11fe0d | NVIDIA: SAUCE: fs/resctrl: Add support for assigning iommu_groups to resctrl groups
+d7feed9c186e | NVIDIA: VR: SAUCE: arm_mpam: Add debugfs entries to show the MSC/RIS the driver discovered
+4b36ea0dfdc7 | NVIDIA: VR: SAUCE: arm_mpam: Add force-disable debugfs trigger
+15c6a34fc848 | NVIDIA: VR: SAUCE: arm_mpam: Expose the number of NRDY retries in debugfs
+fbd4a49c1354 | NVIDIA: VR: SAUCE: arm_mpam: resctrl: Determine if any exposed counter can overflow
+ebd7710556fb | NVIDIA: VR: SAUCE: fs/restrl: Allow the overflow handler to be disabled
+bab56ff359bf | NVIDIA: VR: SAUCE: resctrl: add MBA max_lim sysfs and visibility from init
+76ae111db0ca | NVIDIA: VR: SAUCE: arm_mpam: Include all MSC components during domain setup
+8eb6755e4fe1 | NVIDIA: VR: SAUCE: iommu/arm-smmu-v3: Fix MPAM for indentity-mappings
+d94daa7b2e96 | NVIDIA: SAUCE: iommu/arm-smmu-v3: Block kdump MPAM updates
+f1552cb2ec3c | NVIDIA: SAUCE: Fix mbm_L3_assign and mon_local_bytes
+75678c905514 | NVIDIA: SAUCE: arm_mpam: Fix monitor capability and MBM assign for MB events
+8cd3e8d7f969 | NVIDIA: SAUCE: fs/resctrl: Fix incorrect PID parsing after IOMMU group token
+b4cdf5f46757 | NVIDIA: SAUCE: fs/resctrl: Remove unused 'of' parameter from rdtgroup_move_iommu()
+3e3f1449de11 | NVIDIA: SAUCE: fs/resctrl: Migrate IOMMU groups when removing resource groups
+86cd7b6899c6 | NVIDIA: SAUCE: fs/resctrl: Fix redefinition of iommu helpers with CONFIG_RESCTRL_IOMMU=n
+520e4de12599 | NVIDIA: SAUCE: arm_mpam: Initialize mbwu_state values to 0
+d6166a06172e | NVIDIA: SAUCE: fs/resctrl: Fix iommu_group reference leaks when iterating groups
+8fd4c8525e61 | NVIDIA: SAUCE: arm_mpam: Skip NRDY values when saving MBWU state
+2aaa6a0fc7b1 | NVIDIA: SAUCE: arm_mpam: Scale saved MBWU state for T241-MPAM-6
+ee91463cd263 | NVIDIA: SAUCE: arm_mpam: Fix PCC channel lifetime during MSC removal
+
+
 # End of list

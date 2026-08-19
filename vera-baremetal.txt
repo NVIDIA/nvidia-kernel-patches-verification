@@ -112,6 +112,10 @@ fc3523b16d2b | iommu: Fix ATS invalidation timeouts during __iommu_remove_group_
 25139c11693a | sched/fair: Fix RCU usage in NOHZ exit path on CPU offline
 265d5d4032c5 | soc/tegra: fuse: Fix spurious straps warning on SMCCC platforms
 677042afb97a | tpm: tpm_crb_ffa: revert defered_probed when tpm_crb_ffa is built-in
+c243e6c470c4 | PCI: Introduce PCI_SLOT_PLACEHOLDER constant for slot_nr placeholder value
+dcc5bec09e23 | PCI: Allow per function PCI slots to fix slot reset on s390
+e18d1abc3bff | PCI: Avoid saving config space state if inaccessible
+ad05c16b290b | PCI: Fail FLR when config space is inaccessible
 231c7a57d193 | PCI/MSI: Enable memory decoding before restoring MSI-X messages
 fd88b5cb8b58 | security: lsm: allow LSMs to register for late_initcall_sync init
 1ebe7997b53b | security: ima: introduce IMA_INIT_LATE_SYNC option
@@ -174,6 +178,44 @@ bf585ba14726 | perf/arm_cspmu: nvidia: Add Tegra410 PCIE PMU
 
 # Bare Metal Support: CUDA
 ##########################
+
+
+
+# Bare Metal Support: MPAM
+###########################
+
+4ad79c874e53 | arm_mpam: Fix null pointer dereference when restoring bandwidth counters
+c1376f1ff3f0 | arm_mpam: Disable preemption when making accesses to fake MSC in kunit test
+1ef2a89584b7 | arm_mpam: Fix monitor instance selection when checking for hardware NRDY
+4387970bbd84 | arm_mpam: Pretend that NRDY is always hardware managed
+ccad6001be5c | arm_mpam: Improve check for whether or not NRDY is hardware managed
+f1caff3335ea | arm_mpam: Fix false positive assert failure during mpam_disable()
+6ccbb613b42a | arm_mpam: Check whether the config array is allocated before destroying it
+5302bc1493be | arm64: cpufeature: Add support for the MPAM v0.1 architecture version
+50a42e03cdbd | arm_mpam: Update architecture version check for MPAM MSC
+c2803bd580db | arm_mpam: Stop using uninitialized variables in __ris_msmon_read()
+b5a69c486921 | arm_mpam: Remove duplicate linux/srcu.h header
+b9f5c38e4af1 | arm_mpam: Use non-atomic bitops when modifying feature bitmap
+7625632fed43 | fs/resctrl: Tidy up the error path in resctrl_mkdir_event_configs()
+94a1206522d1 | x86,fs/resctrl: Create 'event_filter' files read only if they're not configurable
+f52abe650241 | fs/resctrl: Disallow the software controller when MBM counters are assignable
+ee3d4c81d89c | fs/resctrl: Add monitor property 'mbm_cntr_assign_fixed'
+3aec86e4ea01 | fs/resctrl: Continue counter allocation after failure
+9a1646211f8c | fs/resctrl: Document that automatic counter assignment is best effort
+1cfa74c683ea | fs/resctrl: Document tasks file behaviour for task id 0 and idle tasks
+d06b8e7c97c3 | fs/resctrl: Report invalid domain ID when parsing io_alloc_cbm
+c611752be9d7 | MAINTAINERS: Update resctrl entry
+79727019ce3d | fs/resctrl: Add missing return value descriptions
+f758340da529 | arm_mpam: resctrl: Fix MBA CDP alloc_capable handling on unmount
+67c0a487efa5 | arm_mpam: resctrl: Fix the check for no monitor components found
+4d5bbbafc170 | arm_mpam: resctrl: Make resctrl_mon_ctx_waiters static
+d2bf45d067c7 | fs/resctrl: Add "*" shorthand to set io_alloc CBM for all domains
+436d111d918a | arm_mpam: resctrl: Pick classes for use as MBM counters
+779cfd653168 | arm_mpam: resctrl: Pre-allocate assignable monitors
+6e0e538a75ce | arm_mpam: resctrl: Add resctrl_arch_config_cntr() for ABMC use
+a5ff6ef2d73e | arm_mpam: resctrl: Add resctrl_arch_cntr_read() & resctrl_arch_reset_cntr()
+6b4ee75215c9 | arm64: mpam: Add memory bandwidth usage (MBWU) documentation
+2c43aced9be3 | arm_mpam: Apply T241-MPAM-6 to 63-bit counters
 
 
 
