@@ -83,6 +83,7 @@ db80ad776cd2 | cpufreq: Remove driver default policy->min/max init
 ####################################
 
 ec7216f92e4e | arm64: errata: Mitigate TLBI errata on NVIDIA Olympus CPU
+12aab25ca56e | arm64: errata: work around NVIDIA Olympus device store/load ordering
 
 
 # Bare Metal Support: Fixes
@@ -110,6 +111,7 @@ fc3523b16d2b | iommu: Fix ATS invalidation timeouts during __iommu_remove_group_
 97d0a9c6e809 | i2c: tegra: Update Tegra410 I2C timing parameters
 25139c11693a | sched/fair: Fix RCU usage in NOHZ exit path on CPU offline
 265d5d4032c5 | soc/tegra: fuse: Fix spurious straps warning on SMCCC platforms
+231c7a57d193 | PCI/MSI: Enable memory decoding before restoring MSI-X messages
 
 
 
@@ -127,6 +129,7 @@ fdfe5a8cd873 | sched/fair: Attach sched_domain_shared to sd_asym_cpucapacity
 25a32e400a14 | sched/fair: Prefer fully-idle SMT cores in asym-capacity idle selection
 bf6aa722198d | sched/fair: Reject misfit pulls onto busy SMT siblings on asym-capacity
 61ea17a63719 | sched/fair: Add SIS_UTIL support to select_idle_capacity()
+293f9611ae73 | sched/fair: Prefer fully idle cores for NOHZ balancing
 
 
 
@@ -160,6 +163,9 @@ bf585ba14726 | perf/arm_cspmu: nvidia: Add Tegra410 PCIE PMU
 3dd73022306b | perf/arm_cspmu: nvidia: Add Tegra410 PCIE-TGT PMU
 429b7638b2df | perf: add NVIDIA Tegra410 CPU Memory Latency PMU
 2f89b7f78c50 | perf: add NVIDIA Tegra410 C2C PMU
+49f2413f9b55 | perf/arm_pmu: Skip PMCCNTR_EL0 on NVIDIA Olympus
+2d85e13c5526 | perf vendor events arm64: fix swapped MetricGroup for Tegra410 L1 prefetcher metrics
+9453bc6a69ef | perf vendor events arm64: Fix Tegra410 Olympus event 0x0197
 
 
 

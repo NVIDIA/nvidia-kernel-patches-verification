@@ -192,6 +192,7 @@ a96ef5848cb0 | randomize_kstack: Unify random source across arches
 1abaae9b38a8 | workqueue: fix parse_affn_scope() prefix matching bug
 76af54648899 | workqueue: validate cpumask_first() result in llc_populate_cpu_shard_id()
 c6890f36fc49 | workqueue: avoid unguarded 64-bit division
+c494788faffe | mm/gup: fix GUP-fast fallback for NULL-mapping order-0 folios
 
 
 
@@ -265,6 +266,8 @@ fbb4a4759b54 | cpufreq: Introduce an optional cpuinfo_avg_freq sysfs entry
 16d1e27475f6 | arm64: Provide an AMU-based version of arch_freq_get_on_cpu
 39b19974982e | arm64: Update AMU-based freq scale factor on entering idle
 20711efa91e8 | arm64: Utilize for_each_cpu_wrap for reference lookup
+d32bf877c0c3 | perf/core: out-of-line and export perf_allow_cpu/tracepoint()
+6680bf0cb726 | drm/xe: gate observation streams with perf_allow_cpu()
 
 
 

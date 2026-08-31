@@ -24,6 +24,7 @@ CONFIG_IPMI_SSIF=m
 CONFIG_ARCH_TEGRA_241_SOC=y
 CONFIG_TEGRA_IVC=y
 CONFIG_USB_XHCI_PCI_RENESAS=y # [=m]
+CONFIG_ARM64_ERRATUM_4118414=y
 
 # The following table contains the recommended config settings that provide
 # performance improvements for certain workloads.

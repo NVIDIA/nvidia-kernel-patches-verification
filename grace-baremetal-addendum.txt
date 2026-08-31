@@ -26,15 +26,12 @@
 # Bare Metal Support: Performance
 #################################
 
-c494788faffe | mm/gup: fix GUP-fast fallback for NULL-mapping order-0 folios
 
 
 
 # Bare Metal Support: Performance Tools
 #######################################
 
-d32bf877c0c3 | perf/core: out-of-line and export perf_allow_cpu/tracepoint()
-6680bf0cb726 | drm/xe: gate observation streams with perf_allow_cpu()
 
 
 
