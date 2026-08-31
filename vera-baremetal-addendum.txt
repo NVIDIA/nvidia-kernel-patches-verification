@@ -74,7 +74,6 @@ dd216457a325 | NVIDIA: VR: CCA: SAUCE: arm64: RMI: Add SMC definitions for calli
 # Bare Metal Support: Fixes
 ###########################
 11feb0fce275 | NVIDIA: VR: SAUCE: firmware: smccc: lfa: fix image names and init cleanup
-86c39e684714 | NVIDIA: SAUCE: PCI/MSI: Enable memory decoding before restoring MSI-X messages
 
 
 
@@ -86,14 +85,12 @@ dd216457a325 | NVIDIA: VR: CCA: SAUCE: arm64: RMI: Add SMC definitions for calli
 # Bare Metal Support: Performance Tools
 #######################################
 2391f7933e73 | NVIDIA: VR: SAUCE: arm64: defconfig: Enable NVIDIA TEGRA410 PMU
-e814f17ed157 | NVIDIA: VR: SAUCE: perf/arm_pmu: Skip PMCCNTR_EL0 on NVIDIA Olympus
 
 
 
 # Bare Metal Support: Hardware Workarounds
 ##########################################
 8fa90b6a9262 | NVIDIA: VR: SAUCE: arm64: Add workaround to convert MT_NORMAL_NC to Device-nGnRE
-12aab25ca56e | arm64: errata: work around NVIDIA Olympus device store/load ordering
 
 
 # End of list
