@@ -140,7 +140,6 @@ dcca27bc1ecc | perf: arm_pmu: Don't disable counter in armpmu_add()
 4b0567ad0be5 | perf: arm_pmuv3: Don't disable counter in armv8pmu_enable_event()
 7a5387748215 | perf: arm_v7_pmu: Drop obvious comments for enabling/disabling counters and interrupts
 7bf1001e0d91 | perf: arm_v7_pmu: Don't disable counter in (armv7|krait_|scorpion_)pmu_enable_event()
-c2e793da59fc | perf: apple_m1: Don't disable counter in m1_pmu_enable_event()
 dc4d58a752ea | perf: arm_pmu: Move PMUv3-specific data
 52e4a56ab8b8 | arm64/sysreg: Add BRBE registers and fields
 ae344bcb0d49 | arm64: Handle BRBE booting requirements
