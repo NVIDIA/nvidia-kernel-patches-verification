@@ -111,7 +111,11 @@ fc3523b16d2b | iommu: Fix ATS invalidation timeouts during __iommu_remove_group_
 97d0a9c6e809 | i2c: tegra: Update Tegra410 I2C timing parameters
 25139c11693a | sched/fair: Fix RCU usage in NOHZ exit path on CPU offline
 265d5d4032c5 | soc/tegra: fuse: Fix spurious straps warning on SMCCC platforms
+677042afb97a | tpm: tpm_crb_ffa: revert defered_probed when tpm_crb_ffa is built-in
 231c7a57d193 | PCI/MSI: Enable memory decoding before restoring MSI-X messages
+fd88b5cb8b58 | security: lsm: allow LSMs to register for late_initcall_sync init
+1ebe7997b53b | security: ima: introduce IMA_INIT_LATE_SYNC option
+c0fc127a9819 | security: ima: rename boot_aggregate when ima is initialised at late_sync
 
 
 

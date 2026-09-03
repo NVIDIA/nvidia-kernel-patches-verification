@@ -140,6 +140,10 @@ edf9088b6e1d | spi: tegra210-quad: Protect curr_xfer check in IRQ handler
 c87f820bc474 | soc/tegra: fuse: Do not register SoC device on ACPI boot
 48478b9f7913 | arm64/mm: Enable batched TLB flush in unmap_hotplug_range()
 01b9cae70616 | firmware: arm_ffa: Honor partition info descriptor size
+cc7e8f21b9f0 | Revert "firmware: arm_ffa: Change initcall level of ffa_init() to rootfs_initcall"
+e659fc8e537c | firmware: arm_ffa: Register core as a platform driver
+7fe2ec9fb8e9 | firmware: arm_ffa: Set the core device as FF-A device parent
+3acc80a78e45 | firmware: arm_ffa: Defer probe until pKVM is initialized
 53716a4d745f | firmware: arm_ffa: Respect firmware advertised RX/TX buffer size limits
 
 
