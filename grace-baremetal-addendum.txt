@@ -20,6 +20,7 @@
 
 # Bare Metal Support: Fixes
 ###########################
+3bb3e80faf21 | firmware: arm_ffa: Tear down driver during shutdown
 
 
 

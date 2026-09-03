@@ -9,6 +9,7 @@ CONFIG_ARM_FFA_TRANSPORT=y
 CONFIG_TCG_ARM_CRB_FFA=y
 CONFIG_NVIDIA_OLYMPUS_1027_ERRATUM=y
 CONFIG_HOTPLUG_SMT=y
+CONFIG_IMA_INIT_LATE_SYNC=y
 
 # The following table contains the recommended config settings that provide
 # performance improvements for certain workloads.
