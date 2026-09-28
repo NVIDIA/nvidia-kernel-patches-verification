@@ -248,7 +248,10 @@ while IFS= read -r line; do
 
     # 3. Search for similar title in branch (ignore tags/prefixes)
     MATCH_FOUND=0
-    REFERENCE_DIFF=$(git show --format= "$REFERENCE_SHA" | grep -E '^[+-][^+-]')
+    # A merge-commit reference produces no plain diff lines with `git show`,
+    # which would make grep exit 1 and (under set -euo pipefail) silently abort
+    # the whole script. Tolerate an empty diff instead of crashing.
+    REFERENCE_DIFF=$(git show --format= "$REFERENCE_SHA" | awk '/^[+-][^+-]/')
     while read -r commit_hash commit_title; do
         commit_title_basename=$(echo "$commit_title" | sed -E 's/^([A-Za-z0-9_/.-]+:[[:space:]]+)*SAUCE:[[:space:]]+//')
         if [[ "$commit_title_basename" == *"$TITLE_BASENAME"* ]]; then
@@ -266,7 +269,7 @@ while IFS= read -r line; do
                 ABBREV_LOCAL=$(git rev-parse --short=12 "$commit_hash")
                 if diff -u -w \
                     <(echo "$REFERENCE_DIFF") \
-                    <(git show --format= "$commit_hash" | grep -E '^[+-][^+-]') \
+                    <(git show --format= "$commit_hash" | grep -E '^[+-][^+-]' || true) \
                     >/dev/null; then
                     report "EXISTS" "$ABBREV_LOCAL" "$line"
                 else
@@ -279,7 +282,7 @@ while IFS= read -r line; do
                 ABBREV_LOCAL=$(git rev-parse --short=12 "$commit_hash")
                 if diff -u -w \
                     <(echo "$REFERENCE_DIFF") \
-                    <(git show --format= "$commit_hash" | grep -E '^[+-][^+-]') \
+                    <(git show --format= "$commit_hash" | grep -E '^[+-][^+-]' || true) \
                     >/dev/null; then
                     report "EXISTS" "$ABBREV_LOCAL" "$line"
                 else
