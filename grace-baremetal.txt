@@ -145,6 +145,8 @@ e659fc8e537c | firmware: arm_ffa: Register core as a platform driver
 7fe2ec9fb8e9 | firmware: arm_ffa: Set the core device as FF-A device parent
 3acc80a78e45 | firmware: arm_ffa: Defer probe until pKVM is initialized
 53716a4d745f | firmware: arm_ffa: Respect firmware advertised RX/TX buffer size limits
+9bf93cb2e180 | pps: bump PPS device count
+3bb3e80faf21 | firmware: arm_ffa: Tear down driver during shutdown
 
 
 # Bare Metal Support: Performance

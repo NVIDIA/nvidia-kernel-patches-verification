@@ -74,6 +74,8 @@ dd216457a325 | NVIDIA: VR: CCA: SAUCE: arm64: RMI: Add SMC definitions for calli
 # Bare Metal Support: Fixes
 ###########################
 11feb0fce275 | NVIDIA: VR: SAUCE: firmware: smccc: lfa: fix image names and init cleanup
+c8fc4136fd3c | sched/fair: Honor asymmetric SMT priority in idle selection
+648d44bda731 | sched/topology: Add asymmetric SMT packing override
 
 
 
@@ -96,23 +98,23 @@ dd216457a325 | NVIDIA: VR: CCA: SAUCE: arm64: RMI: Add SMC definitions for calli
 # Bare Metal Support: MPAM
 ###########################
 
-6e1ff6ccb960 | NVIDIA: SAUCE: arm_mpam: let low level MSC accessors return an error
+84e8795c271a | arm_mpam: let low level MSC accessors return an error
 174213ad822e | NVIDIA: VR: SAUCE: resctrl/mpam: probe MPAMF_MBW_IDR MAX_LIM and hardlim_rw
-b0d714288cf0 | NVIDIA: SAUCE: arm_mpam: propagate MSC access errors for hw_probe functions
-00b4e53e950a | NVIDIA: SAUCE: arm_mpam: propagate MSC access errors for MBWU counters
-9f172b1c50b7 | NVIDIA: SAUCE: arm_mpam: propagate MSC access errors for msmon helpers
-736352f158e3 | NVIDIA: SAUCE: arm_mpam: propagate MSC access errors for __ris_msmon_read()
-b087a0a3ddf5 | NVIDIA: SAUCE: arm_mpam: propagate MSC access errors for state saving function
+0db1715e4c9c | arm_mpam: propagate MSC access errors for hw_probe functions
+7ec57e8b75c9 | arm_mpam: propagate MSC access errors for MBWU counters
+e8166b11399b | arm_mpam: propagate MSC access errors for msmon helpers
+d32699539385 | arm_mpam: propagate MSC access errors for __ris_msmon_read()
+a3a94c13c442 | arm_mpam: propagate MSC access errors for state saving function
 f444c3d67ddb | NVIDIA: VR: SAUCE: arm_mpam: Allow cmax/cmin to be configured
 68993795d87a | NVIDIA: VR: SAUCE: arm_mpam: Rename mbw conversion to 'fract16' for code re-use
 9e67d5ab898b | NVIDIA: VR: SAUCE: resctrl/mpam: reset RIS by applying explicit default config
 b4f2217491fc | NVIDIA: VR: SAUCE: resctrl/mpam: track MBW max hard-limit in config
-421b7400eac6 | NVIDIA: SAUCE: arm_mpam: propagate MSC access errors for mpam_reprogram_ris_partid()
-b315c4576b3b | NVIDIA: SAUCE: arm_mpam: prepare mon_sel locking for MPAM-Fb
-86ac4381c93b | NVIDIA: SAUCE: arm_mpam: add MPAM-Fb MSC firmware access support
+60e33a1864fd | arm_mpam: propagate MSC access errors for mpam_reprogram_ris_partid()
+ca539a37d59a | arm_mpam: prepare mon_sel locking for MPAM-Fb
+0ef7c5eb77c6 | arm_mpam: add MPAM-Fb MSC firmware access support
 2e55744cfac6 | NVIDIA: VR: SAUCE: arm_mpam: Avoid MSC teardown for the SW programming errors
-3f004047de92 | NVIDIA: SAUCE: arm_mpam: change MPAM-Fb error IRQ to use a threaded IRQ handler
-238ad13b0092 | NVIDIA: SAUCE: arm_mpam: detect and enable MPAM-Fb PCC support
+453654684a0d | arm_mpam: change MPAM-Fb error IRQ to use a threaded IRQ handler
+cb351e3f304b | arm_mpam: detect and enable MPAM-Fb PCC support
 4cb78d45189c | NVIDIA: VR: SAUCE: arm_mpam: resctrl: Add kunit test for ABMC/CDP interactions
 d4a29030f546 | NVIDIA: VR: SAUCE: fs/resctrl: Avoid a race with dom_data_exit() and closid_num_dirty_rmid[]
 37ceb2e0b8ba | NVIDIA: VR: SAUCE: fs/resctrl: Avoid a race with dom_data_exit() and rmid_ptrs[]
