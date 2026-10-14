@@ -668,13 +668,27 @@ fc7063abd98e | iommufd: Allow a DMABUF to be revoked
 d2041f1f11dd | iommufd/selftest: Add some tests for the dmabuf flow
 81c45c62dc3e | iommu/arm-smmu-v3-iommufd: Allow attaching nested domain for GBPA cases
 9ee5d1766c8b | mm/hugetlb: fix incorrect error return from hugetlb_reserve_pages()
+69dc538a4f5a | iommufd: Fix building without dmabuf
+faa37ff3bf18 | iommufd/selftest: Add missing kconfig for DMA_SHARED_BUFFER
+61ceaf236115 | vfio: Prevent from pinned DMABUF importers to attach to VFIO DMABUF
 2781f2a930ab | iommu/arm-smmu-v3: Add update_safe bits to fix STE update sequence
 f3c1d372dbb8 | iommu/arm-smmu-v3: Mark STE MEV safe when computing the update sequence
 7cad80048595 | iommu/arm-smmu-v3: Mark EATS_TRANS safe when computing the update sequence
 a4f976edcb87 | iommu/arm-smmu-v3-test: Add nested s1bypass/s1dssbypass coverage
+80d9411c00e8 | PCI/P2PDMA: Add missing struct p2pdma_provider documentation
 a45dd3466302 | iommu/arm-smmu-v3: Do not set disable_ats unless vSTE is Translate
+e98137f0a874 | vfio/pci: Fix double free in dma-buf feature
+1a8a5227f229 | vfio: Wait for dma-buf invalidation to complete
 a82efb8747d1 | iommu: Add device ATS supported capability
 a11661a58c06 | iommufd: Report ATS not supported status via IOMMU_GET_HW_INFO
+d97708701434 | vfio/pci: Clean up DMABUFs before disabling function
+c64a647c84f3 | vfio/pci: fix dma-buf kref underflow after revoke
+702809dabdec | vfio/pci: Check BAR resources before exporting a DMABUF
+951ebc18d181 | PCI/P2PDMA: Avoid returning a provider for non_mappable_bars
+298ab7e6f163 | iommufd: Clarify IOAS_MAP_FILE dma-buf support
+5f3fc0ad9a41 | iommufd: Reject DMABUF pages from the access pin path
+f2d70dbd3dce | iommufd: Destroy the pages content after detaching from dmabuf
+dba4254e216d | iommufd/selftest: Fix dmabuf leak in iommufd_test_dmabuf_get()
 
 
 # Guest Kernel I/O Virtualization: vCMDQ
