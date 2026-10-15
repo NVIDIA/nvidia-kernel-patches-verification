@@ -147,6 +147,10 @@ e659fc8e537c | firmware: arm_ffa: Register core as a platform driver
 53716a4d745f | firmware: arm_ffa: Respect firmware advertised RX/TX buffer size limits
 9bf93cb2e180 | pps: bump PPS device count
 3bb3e80faf21 | firmware: arm_ffa: Tear down driver during shutdown
+4823725d9d1d | sched/fair: Increase weight bits for avg_vruntime
+101f3498b4bd | sched/fair: Revert 6d71a9c61604 ("sched/fair: Fix EEVDF entity placement bug causing scheduling lag")
+556146ce5e94 | sched/fair: Avoid overflow in enqueue_entity()
+b6eee96843e8 | sched/fair: Fix overflow in vruntime_eligible()
 
 
 # Bare Metal Support: Performance
