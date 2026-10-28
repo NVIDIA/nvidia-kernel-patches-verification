@@ -20,6 +20,7 @@
 
 # Bare Metal Support: Fixes
 ###########################
+e571152a6b47 | NVIDIA: SAUCE: spi: tegra210-quad: don't overwrite refreshed status with lost-IRQ snapshot
 
 
 
