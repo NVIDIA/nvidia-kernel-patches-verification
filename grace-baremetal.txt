@@ -155,6 +155,7 @@ e659fc8e537c | firmware: arm_ffa: Register core as a platform driver
 e329b94b1e47 | spi: tegra210-quad: Convert to hard IRQ with high-priority workqueue
 1ff82c13ea94 | spi: tegra210-quad: Cache TRANS_STATUS in ISR for timeout handler
 252ee24aff97 | spi: tegra210-quad: Process small PIO transfers in hard IRQ context
+c64d9b2c1f4f | nvme-pci: add NVME_QUIRK_DMAPOOL_ALIGN_512 for KIOXIA XG10d
 
 
 # Bare Metal Support: Performance

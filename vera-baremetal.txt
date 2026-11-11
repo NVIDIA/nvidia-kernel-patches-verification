@@ -76,6 +76,7 @@ ea3db45ae476 | cpufreq: cppc: Update MIN_PERF/MAX_PERF in target callbacks
 743a3cddb1f0 | cpufreq: Set default policy->min/max values for all drivers
 db80ad776cd2 | cpufreq: Remove driver default policy->min/max init
 8c83947c5dbb | cpufreq: Use policy->min/max init as QoS request
+dc9c9c4fcb88 | soc/tegra: pmc: Add PMC support for Tegra410
 
 
 
@@ -120,6 +121,9 @@ ad05c16b290b | PCI: Fail FLR when config space is inaccessible
 fd88b5cb8b58 | security: lsm: allow LSMs to register for late_initcall_sync init
 1ebe7997b53b | security: ima: introduce IMA_INIT_LATE_SYNC option
 c0fc127a9819 | security: ima: rename boot_aggregate when ima is initialised at late_sync
+2e2f69fc8ae2 | PCI/MSI: Skip MSI/MSI-X programming while the channel is offline
+c8fc4136fd3c | sched/fair: Honor asymmetric SMT priority in idle selection
+648d44bda731 | sched/topology: Add asymmetric SMT packing override
 
 
 

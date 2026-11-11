@@ -12,7 +12,6 @@
 
 # Bare Metal Support: Enablement
 ################################
-021306fb15e5 | NVIDIA: VR: SAUCE: soc/tegra: pmc: Add PMC support for Tegra410
 a02b6067b1a3 | NVIDIA: VR: SAUCE: firmware: smccc: Add support for Live Firmware Activation (LFA)
 da6c9c5f96de | NVIDIA: VR: SAUCE: firmware: smccc: lfa: Move image rescanning
 3787f08d8bbd | NVIDIA: VR: SAUCE: firmware: smccc: lfa: Add timeout and trigger watchdog
@@ -74,8 +73,6 @@ dd216457a325 | NVIDIA: VR: CCA: SAUCE: arm64: RMI: Add SMC definitions for calli
 # Bare Metal Support: Fixes
 ###########################
 11feb0fce275 | NVIDIA: VR: SAUCE: firmware: smccc: lfa: fix image names and init cleanup
-c8fc4136fd3c | sched/fair: Honor asymmetric SMT priority in idle selection
-648d44bda731 | sched/topology: Add asymmetric SMT packing override
 
 
 
