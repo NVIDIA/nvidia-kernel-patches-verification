@@ -1,0 +1,193 @@
+# NVIDIA BlueField-4 NVSwitch Bridge Patches
+# Format: COMMIT_SHA | TITLE
+#
+# Upstream commits needed on top of v6.18.19 to enable BlueField-4
+# support. Earlier v6.18.y kernels may need further fixes that are
+# already in v6.18.19.
+#
+# Entries are grouped by the first mainline release that contains them,
+# in upstream order, so each group can be cherry-picked as listed. On a
+# v6.19 base the v6.19 group is already present.
+#
+# The 19 non-upstream BlueField-4 patches from the same list are in
+# nvswitch-bf4-addendum.txt.
+
+## Merged in v6.19
+1971b18785d1 | cpufreq: CPPC: Don't warn if FIE init fails to read counters
+211de28b1caf | net/mlx5: Use common mlx5_same_hw_devs function
+7718f2a8b87a | net/mlx5: Add software system image GUID infrastructure
+9352d40c8bcd | devlink: Add new "max_mac_per_vf" generic device param
+2c031d4c772f | i40e: support generic devlink param "max_mac_per_vf"
+0e535824d0bc | devlink: Introduce switchdev_inactive eswitch mode
+9902b6381d76 | net/mlx5: MPFS, add support for dynamic enable/disable
+9da611df15aa | net/mlx5: E-Switch, support eswitch inactive mode
+eea31f21dce1 | {rdma,net}/mlx5: Query vports mac address from device
+7b8a8ec20cfc | PCI/TPH: Expose pcie_tph_get_st_table_loc()
+583b4fe1c19d | net/mlx5: fs, set non default device per namespace
+3fee828789b1 | net/mlx5: Move the esw mode notifier chain outside the devlink lock
+d3a356db853b | net/mlx5: Move the vhca event notifier outside of the devlink lock
+e63c9c5f0a48 | net/mlx5: Move the SF HW table notifier outside the devlink lock
+d4a0acbd94c2 | net/mlx5: Move the SF table notifiers outside the devlink lock
+011d133bb988 | devlink: pass extack through to devlink_param::get()
+17a42aa465c0 | devlink: refactor devlink_nl_param_value_fill_one()
+2a367002ed32 | devlink: support default values for param-get and param-set
+8be656cfb931 | selftest: netdevsim: test devlink default params
+3506242da071 | RDMA/mlx5: Change default device for LAG slaves in RDMA TRANSPORT namespaces
+2ae8c7edea87 | net/mlx5: Fix Unbinding uplink-netdev in switchdev mode
+
+## Merged in v7.0
+81cee9166a90 | compiler_types: Introduce __flex_counter() and family
+3df5dd46fca4 | net/mlx5: Add max_tx_speed and its CAP bit to IFC
+50f1d188c580 | net/mlx5: Propagate LAG effective max_tx_speed to vports
+28ea6036dad2 | net/mlx5: Handle port and vport speed change events in MPESW
+f0b2fde98065 | net/mlx5: Add support for querying bond speed
+29903edf04c2 | devlink: Refactor devlink_rate_nodes_check
+0e6c95c98829 | net/mlx5: Support devlink port state for host PF
+2941abac6d0b | IB/core: Add helper to convert port attributes to data rate
+51a07ce2fefd | IB/core: Add query_port_speed verb
+aaecff5e13cd | RDMA/mlx5: Implement query_port_speed callback
+fa5c82f4d2bb | slab.h: disable completely broken overflow handling in flex allocations
+
+## Merged in v7.1
+658fa7b1c47a | ACPI: CPPC: Add cppc_get_perf() API to read performance controls
+b3e45fb2db9d | ACPI: CPPC: Warn on missing mandatory DESIRED_PERF register
+38428a680026 | ACPI: CPPC: Extend cppc_set_epp_perf() for FFH/SystemMemory
+24ad4c6c136b | cpufreq: CPPC: Update cached perf_ctrls on sysfs write
+ea3db45ae476 | cpufreq: cppc: Update MIN_PERF/MAX_PERF in target callbacks
+13c45a26635f | ACPI: CPPC: add APIs and sysfs interface for perf_limited
+856250ba2e81 | cpufreq: CPPC: Add sysfs documentation for perf_limited
+8505bfb4e4ec | ACPI: CPPC: Move reference performance to capabilities
+be473f0591f1 | ACPI: CPPC: Fix uninitialized ref variable in cppc_get_perf_caps()
+0cc24977224a | ACPI: CPPC: Check cpc_read() return values consistently
+2423e336d948 | gpio: tegra186: Simplify GPIO line name prefix handling
+2c299030c681 | gpio: tegra186: Support multi-socket devices
+d332424d1d06 | perf/arm_cspmu: nvidia: Rename doc to Tegra241
+f5caf26fd6c7 | perf/arm_cspmu: nvidia: Add Tegra410 UCF PMU
+bc86281fe4bd | perf/arm_cspmu: Add arm_cspmu_acpi_dev_get
+bf585ba14726 | perf/arm_cspmu: nvidia: Add Tegra410 PCIE PMU
+3dd73022306b | perf/arm_cspmu: nvidia: Add Tegra410 PCIE-TGT PMU
+429b7638b2df | perf: add NVIDIA Tegra410 CPU Memory Latency PMU
+2f89b7f78c50 | perf: add NVIDIA Tegra410 C2C PMU
+68deca0f0f4b | devlink: expose devlink instance index over netlink
+0f5531879afb | devlink: add helpers to get bus_name/dev_name
+e2e3666fd360 | devlink: avoid extra iterations when found devlink is not registered
+d85a8af57da8 | devlink: allow to use devlink index as a command handle
+eb32a6310a7b | devlink: introduce __devlink_alloc() with dev driver pointer
+104733e1303e | devlink: add devl_warn() helper and use it in port warnings
+f8e761655997 | net/mlx5: Add IFC bits for shared headroom pool PBMC support
+691dffc7255e | net/mlx5: Add silent mode set/query and VHCA RX IFC bits
+91e9f3e7b626 | net/mlx5: LAG, replace pf array with xarray
+2b204cdb1206 | net/mlx5: LAG, use xa_alloc to manage LAG device indices
+da0349d0ffc7 | net/mlx5: E-switch, modify peer miss rule index to vhca_id
+971b28accc09 | net/mlx5: LAG, replace mlx5_get_dev_index with LAG sequence number
+0bc9059fab63 | net/mlx5: Add VHCA RX flow destination support for FW steering
+d6c9b4de8109 | {net/RDMA}/mlx5: Add LAG demux table API and vport demux rules
+4dd2115f4359 | net/mlx5: Expose MLX5_UMR_ALIGN definition
+7be3163c49b2 | devlink: Refactor resource functions to be generic
+6f38acfed5ed | devlink: Add port-level resource registration infrastructure
+4be8326d817e | net/mlx5: Register SF resource on PF port representor
+085b234b28cc | netdevsim: Add devlink port resource registration
+11636b550eea | devlink: Add dump support for device-level resources
+810b76394d69 | devlink: Include port resources in resource dump dumpit
+7511ff14f30d | devlink: Add port-specific option to resource dump doit
+396135377104 | selftest: netdevsim: Add devlink port resource doit test
+170e160a0e7c | devlink: Document port-level resources and full dump
+1bc45341a6ea | devlink: Add resource scope filtering to resource dump
+2a8e91235254 | selftest: netdevsim: Add resource dump and scope filter test
+78c327c1728d | devlink: Document resource scope filtering
+f9e3bd43d55f | net/mlx5: Rename MLX5_PF page counter type to MLX5_SELF
+a1bac8b70ede | net/mlx5: Add icm_mng_function_id_mode cap bit
+4eeb19aaff55 | i2c: tegra: Introduce tegra_i2c_variant to identify DVC and VI
+0c0e440b0c93 | i2c: tegra: Add logic to support different register offsets
+59717f260183 | i2c: tegra: Add support for Tegra410
+3abcedfdfd31 | net/mlx5: SD: Serialize init/cleanup
+05217e4ffbb2 | net/mlx5: SD, Keep multi-pf debugfs entries on primary
+3564222cfdde | net/mlx5e: SD, Fix missing cleanup on probe error
+d466ddda5500 | net/mlx5e: SD, Fix race condition in secondary device probe/remove
+c6df9a65cbb0 | net/mlx5: Skip disabled vports when setting max TX speed
+
+## Merged in v7.2
+f950ddb57ce4 | net/mlx5: E-Switch, move work queue generation counter
+2a110ee54e89 | net/mlx5: E-Switch, introduce generic work queue dispatch helper
+6a92fe1956d2 | net/mlx5: E-Switch, fix deadlock between devlink lock and esw->wq
+5ffd937ea405 | mlx5: Rename the vport number enums for host PF and VF
+a750f4674a63 | net/mlx5: Add function_id_type for enable/disable_hca cmds
+e2337517e127 | net/mlx5: Remove unused host_sf_enable field
+02c54621e81c | net/mlx5: Extend query_esw_functions output for multi-function support
+3796df7645e5 | net/mlx5: wire frag buf pools lifecycle hooks
+3b16155425af | net/mlx5: add frag buf pools create/destroy paths
+b501400fa66d | net/mlx5: Lag: refactor representor reload handling
+386ef557f6df | net/mlx5: E-Switch, let esw work callers choose GFP flags
+9b8468f001e4 | net/mlx5: E-Switch, add representor lifecycle lock
+63ec6c69e613 | net/mlx5: Lag, avoid LAG and representor lock cycles
+32a72840ee30 | net/mlx5: E-Switch, serialize representor lifecycle
+8a6712925d38 | net/mlx5: E-Switch, unwind only newly loaded representor types
+25933aca1012 | net/mlx5: E-Switch, load reps via work queue after registration
+8ca32460815f | net/mlx5: Relax capability check for eswitch query paths
+5796d9fe0b88 | net/mlx5: Make debugfs page counters by function type dynamic
+1fba57c91416 | net/mlx5: Add VHCA_ID page management mode support
+e3ec1570895b | net/mlx5: HWS, Check if device is down while polling for completion
+920fdc4d21e3 | net/mlx5: Use helper to parse host PF info
+a4f75c4238b0 | net/mlx5: Use v1 response layout for query_esw_functions
+3fefa7e7c14b | net/mlx5: Use mlx5_eswitch_is_vf_vport() for IPsec VF checks
+62af408fd772 | net/mlx5: Switch vport HCA cap helpers to kvzalloc
+9244a323125c | net/mlx5: Add mlx5_vport_set_other_func_general_cap macro
+fa2852a28c5b | net/mlx5: Refactor mlx5_set_msix_vec_count() SET_HCA_CAP
+d7ec361003fa | net/mlx5: Use vport helper for IPsec eswitch set caps
+4a3b5efee2e5 | net/mlx5: Generalize enable/disable HCA for any PF vport
+ed9671b8bd4f | net/mlx5: Add satellite PF vport support
+69978da9bb71 | net/mlx5: Introduce generic helper for PF SFs info
+171b7fb59f8d | net/mlx5: Initialize host PF host number earlier
+7aed78522df2 | net/mlx5: Initialize satellite PF SF vports
+beca1cd919e0 | net/mlx5: Support SPF SFs in SF hardware table
+0b43d2b76cc2 | net/mlx5: Expose PF number from query_esw_functions
+90a6aabb74a4 | net/mlx5: Map SF controller to pfnum for satellite PFs
+e020a7067295 | net/mlx5: Register devlink ports for satellite PFs
+ac338d8011c0 | net/mlx5: Register SF resource on satellite PF ports
+425ac0e7a6a0 | net/mlx5: Support state get/set for satellite PF ports
+652be53b37d8 | net/mlx5: Add FDB peer miss rules for satellite PFs
+ea0dada7194e | net/mlx5: Add SPF function type for page management
+cf6c4c0508a9 | net/mlx5: LAG, factor out shared FDB code into dedicated file
+b48b6308dfae | net/mlx5: E-Switch, align disable sequence with switchdev-to-legacy transition
+2b1ba02c379f | net/mlx5: E-Switch, move devcom init from TC to eswitch layer
+2ca494dad967 | net/mlx5: LAG, replace peer count check with direct peer lookup
+14a47f55c8de | net/mlx5: LAG, prepare for SD device integration
+3cbce590b7f2 | net/mlx5: LAG, extend shared FDB API with group_id filter
+3c103110835d | net/mlx5: SD, introduce Socket Direct LAG
+8b9fffb6d38b | net/mlx5: LAG, block RoCE and VF LAG for SD devices
+c3933a7a7f64 | net/mlx5: LAG, block multipath LAG for SD devices
+8698ddb07f87 | net/mlx5: SD, keep netdev resources on same PF in switchdev mode
+786b1d7486b0 | net/mlx5e: TC, track peer flow slots with bitmap
+9f062b931daa | net/mlx5e: TC, enable steering for SD LAG
+0b1c4495aa00 | net/mlx5e: Verify unique vhca_id count instead of range
+ddbddbf8aee5 | net/mlx5: Add sd_group_size bits for SD management
+597baeb467d8 | net/mlx5: E-Switch, skip uplink IB rep load for SD secondary devices
+95e26588c84b | net/mlx5: devcom, expose locked variant of send_event
+d5e77e4d3023 | net/mlx5: devcom, add DEVCOM_CANT_FAIL for non-rollback events
+4b918a198389 | net/mlx5: SD, make primary/secondary role determination more robust
+13158554a302 | net/mlx5: SD, add L2 table silent mode query support
+a1bfe9f1da83 | net/mlx5: SD, expend vport metadata for SD secondary devices
+2a3fb8b2f450 | net/mlx5: SD, support switchdev mode transition with shared FDB
+232de72bdea2 | net/mlx5: E-Switch, notify SD on eswitch disable
+eaaf1ff178a0 | net/mlx5: LAG, store demux resources per master lag_func
+ebd629e70045 | net/mlx5: LAG, disable both regular and SD LAG on lag_disable_change
+98d56915eef5 | net/mlx5: LAG, introduce software vport LAG implementation
+de464720489c | net/mlx5: LAG, add MPESW over SD LAG support
+68c2dd59a6c7 | net/mlx5: E-Switch, Tie rep load/unload to SD LAG state
+e3a02f3ecb13 | net/mlx5: SD, defer vport metadata init until SD is ready
+7bcfb19465fc | net/mlx5: SD, enable SD over ECPF and allow switchdev transition
+0f0e4ae6975c | net/mlx5: LAG, Fix off-by-one in single-FDB error rollback
+7bed4af0ced8 | net/mlx5e: TC, skip peer flow cleanup when LAG seq is unavailable
+43e970d961ad | net/mlx5: SF, Handle function changed event
+
+## Merged in v7.3
+e48abacd6e83 | devlink: Migrate from info->user_ptr to info->ctx
+f6ec46b7e2b2 | devlink: print controller prefix for non-zero controller
+a49ea2e042af | net/mlx5: Set satellite PF devlink ports as non-external
+cb59bfd419d0 | devlink: Expose external flag for PCI SF ports
+486e5419b7ec | net/mlx5: SD, prefer sd_group_size from vport context
+20f11b5cfa42 | net/mlx5: Move vport DOWN state check out of mlx5_query_vport_max_tx_speed()
+d09e8f64653c | net/mlx5: devcom, Base component size on linked devices
+e1e29ada2b93 | net/mlx5: SD, unload reps on shared FDB create error path
+bae23d1ae620 | net/mlx5: LAG, reload IB reps of LAG master before the rest
+fe4114221364 | net/mlx5: Lag, split aggregate speed into oper and max helpers

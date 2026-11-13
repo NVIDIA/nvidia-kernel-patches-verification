@@ -1,0 +1,19 @@
+# NVIDIA ConnectX-8 NVSwitch Bridge Patches: Data Direct Placement (DDP)
+# Format: COMMIT_SHA | TITLE
+#
+# From the "Data Direct Placement (DDP)" section of the Linux Kernel Patch
+# Support for ConnectX-8 and ConnectX-9 guide:
+#
+# https://networking-docs.nvidia.com/linuxkernelpatchforconnectx8andconnectx9/data-direct-placement-ddp
+#
+# These patches are also part of nvswitch-cx8.txt, which adds
+# ConnectX-8 enablement and the other supported features.
+
+
+## Data Direct Placement (DDP)
+# Out-of-order receive (DDP) and conditional multiplane enablement
+# Minimum Linux kernel release: 6.13
+8b36f7c3c661 | RDMA/mlx5: Support OOO RX WQE consumption
+8439662f6f16 | Introduce mlx5 data direct placement (DDP)
+eb3d354efb39 | RDMA/mlx5: Support querying per-plane IB PortCounters
+45d339fefaa3 | RDMA/mlx5: Enable multiplane mode only when it is supported

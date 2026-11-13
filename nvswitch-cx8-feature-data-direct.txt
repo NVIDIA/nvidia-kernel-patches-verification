@@ -1,0 +1,34 @@
+# NVIDIA ConnectX-8 NVSwitch Bridge Patches: Data Direct (DirectNIC)
+# Format: COMMIT_SHA | TITLE
+#
+# From the "Data Direct (DirectNIC)" section of the Linux Kernel Patch
+# Support for ConnectX-8 and ConnectX-9 guide:
+#
+# https://networking-docs.nvidia.com/linuxkernelpatchforconnectx8andconnectx9/data-direct-directnic
+#
+# Entries under "Related" and "Upstream fixes" are not in the guide. They
+# are other upstream patches for the same device, and upstream fixes
+# found through Fixes: tags.
+#
+# These patches are also part of nvswitch-cx8.txt, which adds
+# ConnectX-8 enablement and the other supported features.
+
+
+## Data Direct (DirectNIC)
+# Direct NIC-GPU datapath through the Data Direct side DMA engine
+# Minimum Linux kernel release: 6.11 - 6.12
+47c8846a49ba | PCI: Extend ACS configurability
+c77aec65e828 | RDMA/mlx5: Consider the query_vuid cap for data_direct
+ec7ad6530909 | RDMA/mlx5: Introduce GET_DATA_DIRECT_SYSFS_PATH ioctl
+de8f847a5114 | RDMA/mlx5: Add support for DMABUF MR registrations with Data-direct
+3aa73c6b795b | RDMA: Pass uverbs_attr_bundle as part of '.reg_user_mr_dmabuf' API
+253c61dc256b | RDMA/umem: Introduce an option to revoke DMABUF umem
+682358fd35de | RDMA/umem: Add support for creating pinned DMABUF umem with a given dma device
+2e8e631d7a41 | RDMA/mlx5: Add the initialization flow to utilize the 'data direct' device
+6910e3660d86 | RDMA/mlx5: Introduce the 'data direct' driver
+c772a2c69018 | net/mlx5: Add IFC related stuff for data direct
+
+# Upstream fixes (Fixes: tag) for patches in this section
+9b9d25390847 | RDMA/mlx5: Fix memory leak in GET_DATA_DIRECT_SYSFS_PATH handler
+9cf8a952d57b | PCI/ACS: Fix 'pci=config_acs=' parameter
+f3c3ccc4fe49 | PCI: Fix pci_enable_acs() support for the ACS quirks

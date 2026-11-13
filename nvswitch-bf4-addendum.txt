@@ -1,0 +1,36 @@
+# NVIDIA BlueField-4 (Out-of-Tree Addendum, use -t) NVSwitch Bridge Patches
+# Format: COMMIT_SHA | TITLE
+#
+# Non-upstream patches needed with nvswitch-bf4.txt to enable BlueField-4
+# support on top of v6.18.19.
+#
+# They come from the mlnx_ofed_26_01_vr branch of mlnx-ofa_kernel-4.0.
+# That branch is rebased every quarter, so the SHAs below (as of
+# 5397cbe5a0, 2026-11-02) will go stale, and some entries have none. Only
+# check this list by title, against the current branch:
+#
+#   verify-upstream-commits -t -U <remote>/mlnx_ofed_26_01_vr nvswitch-bf4-addendum.txt
+
+13a69a98c3a3 | net/mlx5: Fix left shift overflow calculating sf_bar_length
+709e75a579b8 | net/mlx5: SD, manage metadata wholly in SD
+ba35d1bfda89 | net/mlx5e: Fix use-after-free of representor send-to-vport-meta rule
+973dd71003eb | net/mlx5e: rep, Fix races between devcom PAIR event and uplink close
+76a2620edc5e | net/mlx5: ECPF, Avoid FW reset nack unless external host SFs exist
+febb8942e440 | net/mlx5: Nack sync reset requests if external host SFs exist
+0b4ce2bfa929 | net/mlx5: Attach late uplink netdev to loaded representors
+eb5240db9628 | RDMA/mlx5: Fix representor netdev reference leak on LAG state change
+96a00611f8b4 | net/mlx5: Add controller number for SF and ECVF phys_port_name
+e870b264500b | net/mlx5: Add MLX5_PCI_PF_TYPE_QUERY_PF to mlx5_ifc
+5287dea3132a | net/mlx5: SF, Pass pfnum through the SF hardware-table allocation path
+
+# Not on any mlnx-ofa_kernel-4.0 branch as of 2026-11-13, so they have no
+# SHA; -t matches them by title only. Until they reach the branch given to
+# -U, they report BADSHA.
+------------ | net/mlx5e: support TX rule for IPsec tunnel-mode packet offload on VF
+------------ | net/mlx5e: allow fragmented packets in IPsec tunnel-mode packet offload
+------------ | xfrm: fragment oversized inner packets for tunnel-mode packet offload
+------------ | net/mlx5: SD, serialize SD LAG init/cleanup against LAG mode changes
+------------ | devlink: Apply eswitch mode boot defaults
+------------ | devlink: Parse eswitch mode boot defaults
+------------ | devlink: Factor out eswitch mode setting
+------------ | net/mlx5: Clear FW reset-in-progress bit before reload

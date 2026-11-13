@@ -1,0 +1,35 @@
+# NVIDIA ConnectX-8 NVSwitch Bridge Patches: InfiniBand Multiplane
+# Format: COMMIT_SHA | TITLE
+#
+# From the "InfiniBand Multiplane" section of the Linux Kernel Patch
+# Support for ConnectX-8 and ConnectX-9 guide:
+#
+# https://networking-docs.nvidia.com/linuxkernelpatchforconnectx8andconnectx9/infiniband-multiplane
+#
+# Entries under "Related" and "Upstream fixes" are not in the guide. They
+# are other upstream patches for the same device, and upstream fixes
+# found through Fixes: tags.
+#
+# These patches are also part of nvswitch-cx8.txt, which adds
+# ConnectX-8 enablement and the other supported features.
+
+
+## InfiniBand Multiplane
+# Multi-plane device and port support, per-plane counters and
+# IB sub-device (SMI) management for full XDR bandwidth
+# Minimum Linux kernel release: 6.11
+af48f95492dc | RDMA/core: Introduce "name_assign_type" for an IB device
+7a2210a57d42 | RDMA/mlx5: Support per-plane port IB counters by querying PPCNT register
+c6b6677d85d4 | net/mlx5: mlx5_ifc update for accessing ppcnt register of plane ports
+3b43399b297c | RDMA/mlx5: Add plane index support when querying PTYS registers
+294424839b5e | RDMA/nldev: Add support to dump device type and parent device if exists
+060c642b2ab8 | RDMA/nldev: Add support to add/delete a sub IB device through netlink
+026a425990af | RDMA/mlx5: Support plane device and driver APIs to add and delete it
+a9e0facacfd1 | RDMA/core: Create GSI QP only when CM is supported
+bca51197620a | RDMA/core: Support IB sub device with type "SMI"
+2a5db20fa532 | RDMA/mlx5: Add support to multi-plane device and port
+65528cfb21fd | net/mlx5: mlx5_ifc update for multi-plane support
+50660c5197f5 | RDMA/core: Create "issm*" device nodes only when SMI is supported
+
+# Upstream fixes (Fixes: tag) for patches in this section
+fa3c411d21eb | RDMA/core: always drop device refcount in ib_del_sub_device_and_put()
