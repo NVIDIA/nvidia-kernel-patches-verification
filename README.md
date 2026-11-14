@@ -12,6 +12,7 @@ A script to check if a list of upstream Linux kernel commit SHAs are present (ch
 - **Match by title (`-t`)**: find the reference commit on upstream by title instead of list SHA; useful when the branch was rebased and list SHAs are no longer in upstream history.
 - Outputs a summary of results: EXISTS, REVIEW, ABSENT, BADSHA.
 - Sections the summary so the attention-needed entries (REVIEW, ABSENT, BADSHA) are listed out individually and are easy to reference — shown even in quiet mode.
+- **Interactive mode (`-i`)**: pick a hardware type from a menu, then check all of its patches or a single feature.
 - Supports quiet mode, dry run, and verbose (debug) output.
 - Flexible: can specify branch and upstream (URL or remote/branch).
 
@@ -19,12 +20,15 @@ A script to check if a list of upstream Linux kernel commit SHAs are present (ch
 
 ```
 Usage: ./verify-upstream-commits [-b branch] [-U upstream] [-q] [-n] [-v] [-t] <sha_list_file>
+       ./verify-upstream-commits -i [-b branch] [-U upstream] [-q] [-n] [-v] [-t] [list_dir]
   -b branch         Branch to check (default: current branch)
   -U upstream       Upstream source: URL or remote/branch (default: https://github.com/torvalds/linux, branch master)
   -q                Quiet mode (only summary)
   -n                Dry run (show what would be checked, don't execute)
   -v                Verbose mode (enable debug output)
   -t                Match by title: find reference commit on upstream by title instead of list SHA
+  -i                Interactive: choose a hardware type, then all patches or one feature,
+                    from the lists in list_dir (default: this script's directory)
 ```
 
 ## Examples
@@ -105,10 +109,74 @@ $ ./verify-upstream-commits -t -U origin/linux-nvidia-6.18 vera-baremetal-addend
 
 List lines should use the format `SHA | TITLE` so that when the list SHA is not in upstream, the title is still available for the search.
 
+A commit whose subject is the title is preferred over newer commits that only mention it, such as `Revert "..."` or `BACKPORTS: Fix "..."`, both on upstream and on the branch being checked.
+
+The BlueField-4 addendum lists patches from the `mlnx_ofed_26_01_vr` branch of mlnx-ofa_kernel-4.0, which is rebased every quarter. Add that repository as a remote of your kernel tree, here named `ofed-kernel`, and match by title:
+
+```
+$ cd ~/linux
+$ git fetch ofed-kernel mlnx_ofed_26_01_vr
+$ ~/nvidia-kernel-patches-verification/verify-upstream-commits -t -U ofed-kernel/mlnx_ofed_26_01_vr \
+      ~/nvidia-kernel-patches-verification/nvswitch-bf4-addendum.txt
+```
+
+### Example 4: Check a Single NIC Feature
+`nvswitch-cx8.txt` and `nvswitch-cx9.txt` list every patch for each NIC. To
+check one feature, use its `nvswitch-<nic>-feature-<feature>.txt` list
+instead. ConnectX-9 builds on ConnectX-8, so check the ConnectX-8 lists as
+well:
+
+```
+$ ./verify-upstream-commits -q nvswitch-cx9-feature-hws.txt
+```
+
+### Example 5: Interactive Mode
+With `-i`, the script lists the hardware types it finds in the list directory.
+After you pick one, it offers all of that hardware's patches or one of its
+`-feature-` lists, then checks your choice against the current branch. Hardware
+without feature lists is checked in full. Enter `q` to quit. The lists are read
+from the script's own directory, so you can run it from your kernel tree:
+
+```
+$ cd ~/linux
+$ ~/nvidia-kernel-patches-verification/verify-upstream-commits -i -q
+
+Hardware type:
+   1) grace-baremetal          Grace BML Kernel Patches (386 patches)
+   2) grace-iov                Grace I/O Virtualization (IOV) Kernel Patches (738 patches)
+   3) nvswitch-bf4             BlueField-4 NVSwitch Bridge Patches (170 patches)
+   4) nvswitch-bf4-addendum    BlueField-4 (Out-of-Tree Addendum, use -t) NVSwitch Bridge Patches (19 patches)
+   5) nvswitch-cx7             ConnectX-7 NVSwitch Bridge Patches (14 patches)
+   6) nvswitch-cx8             ConnectX-8 NVSwitch Bridge Patches (65 patches)
+   7) nvswitch-cx9             ConnectX-9 NVSwitch Bridge Patches (154 patches)
+   8) vera-baremetal           Vera BML Kernel Patches (171 patches)
+   9) vera-baremetal-addendum  Vera (Addendum) BML Kernel Patches (139 patches)
+  10) vera-iov                 Vera I/O Virtualization (IOV) Kernel Patches (1 patch)
+Select [1-10, q to quit]: 6
+
+Patches to check for nvswitch-cx8:
+   1) All patches (nvswitch-cx8.txt, 65 patches)
+   2) Data Direct (DirectNIC) (nvswitch-cx8-feature-data-direct.txt, 13 patches)
+   3) Data Direct Placement (DDP) (nvswitch-cx8-feature-ddp.txt, 4 patches)
+   4) InfiniBand Multiplane (nvswitch-cx8-feature-ib-multiplane.txt, 13 patches)
+   5) Net Namespace Awareness for IB Devices (nvswitch-cx8-feature-net-namespace.txt, 12 patches)
+Select [1-5, q to quit]: 4
+
+Checking nvswitch-cx8-feature-ib-multiplane.txt (13 patches)
+Caching branch log for master...
+Summary
+_______
+EXISTS : 13
+REVIEW : 0
+ABSENT : 0
+BADSHA : 0
+Total  : 13
+```
+
 ### Requirements
 - Bash
 - git
-- A Linux kernel git repository (or set the LINUX_GIT environment variable to point to one)
+- A Linux kernel git repository: run from inside one, or set the LINUX_GIT environment variable to point to one (for example, when running from this repository)
 
 ### Notes
 - The input file should contain one entry per line: **SHA** in the first column, optionally followed by **` | TITLE`** (pipe and commit subject). Blank lines and lines starting with `#` are ignored. The `SHA | TITLE` format is recommended when using `-t` (match by title).

@@ -12,12 +12,15 @@ DEFAULT_UPSTREAM_BRANCH="master"
 
 usage() {
     echo "Usage: $0 [-b branch] [-U upstream] [-q] [-n] [-v] [-t] <sha_list_file>"
+    echo "       $0 -i [-b branch] [-U upstream] [-q] [-n] [-v] [-t] [list_dir]"
     echo "  -b branch         Branch to check (default: current branch)"
     echo "  -U upstream       Upstream source: URL or remote/branch (default: $DEFAULT_UPSTREAM_URL)"
     echo "  -q                Quiet mode (only summary)"
     echo "  -n                Dry run (show what would be checked, don't execute)"
     echo "  -v                Verbose mode (enable debug output)"
     echo "  -t                Match by title: find reference commit on upstream by title instead of list SHA"
+    echo "  -i                Interactive: choose a hardware type, then all patches or one feature,"
+    echo "                    from the lists in list_dir (default: this script's directory)"
     echo ""
     echo "Example:"
     echo "    ~/kernel-patches-verification/verify-upstream-commits -U https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git ~/nvidia-kernel-patches-verification/grace-baremetal.txt"
@@ -31,6 +34,8 @@ QUIET=0
 DRY_RUN=0
 VERBOSE=0
 BY_TITLE=0
+INTERACTIVE=0
+SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
 # Support for -h and --help
 for arg in "$@"; do
@@ -39,7 +44,7 @@ for arg in "$@"; do
     fi
 done
 
-while getopts "b:U:qnvt" opt; do
+while getopts "b:U:qnvti" opt; do
     case $opt in
         b) BRANCH="$OPTARG" ;;
         U) UPSTREAM_ARG="$OPTARG" ;;
@@ -47,20 +52,129 @@ while getopts "b:U:qnvt" opt; do
         n) DRY_RUN=1 ;;
         v) VERBOSE=1 ;;
         t) BY_TITLE=1 ;;
+        i) INTERACTIVE=1 ;;
         *) usage ;;
     esac
 done
 shift $((OPTIND-1))
 
-if [ "$#" -ne 1 ]; then
-    usage
+# Number of commit entries (non-blank, non-comment lines) in a list, e.g. "4 patches"
+list_count() {
+    local n
+    n=$(grep -c -v -E '^[[:space:]]*#|^[[:space:]]*$' "$1" || true)
+    if [ "$n" -eq 1 ]; then
+        echo "1 patch"
+    else
+        echo "$n patches"
+    fi
+}
+
+# List title from its first header line, e.g. "ConnectX-8 NVSwitch Bridge Patches"
+list_title() {
+    local title
+    title=$(head -n 1 "$1")
+    title="${title#\#}"
+    title="${title# }"
+    echo "${title#NVIDIA }"
+}
+
+# Print a numbered menu on stderr and set MENU_CHOICE to the chosen index (from 0)
+menu() {
+    local prompt="$1" reply i
+    shift
+    echo "" >&2
+    echo "$prompt" >&2
+    for ((i = 1; i <= $#; i++)); do
+        printf '  %2d) %s\n' "$i" "${!i}" >&2
+    done
+    while true; do
+        if ! read -r -p "Select [1-$#, q to quit]: " reply; then
+            echo "" >&2
+            exit 1
+        fi
+        case "$reply" in
+            q|Q) exit 0 ;;
+        esac
+        if [[ "$reply" =~ ^[0-9]+$ ]] && [ $((10#$reply)) -ge 1 ] && [ $((10#$reply)) -le $# ]; then
+            MENU_CHOICE=$((10#$reply - 1))
+            return
+        fi
+        echo "Invalid choice: $reply" >&2
+    done
+}
+
+# Interactive mode: choose a hardware list from LIST_DIR, then either the whole
+# list or one of its <hardware>-feature-<feature>.txt lists. Sets SHA_LIST_FILE.
+choose_list() {
+    local dir="$1" f name width=0
+    local hw=() hw_labels=() lists=() list_labels=()
+
+    # Hardware lists are the non-empty SHA lists that are not per-feature lists
+    # (this skips kernel config references, which hold CONFIG_ lines instead).
+    # Sort by name so a list comes before its addendum.
+    while IFS= read -r name; do
+        f="$dir/$name.txt"
+        grep -q -E '^[[:space:]]*[0-9a-fA-F]{7,40}([[:space:]]|$)' "$f" || continue
+        hw+=("$f")
+        [ "${#name}" -gt "$width" ] && width=${#name}
+    done < <(for f in "$dir"/*.txt; do
+                 [ -f "$f" ] || continue
+                 case "$f" in *-feature-*.txt) continue ;; esac
+                 basename "$f" .txt
+             done | LC_ALL=C sort)
+    if [ "${#hw[@]}" -eq 0 ]; then
+        echo "No SHA lists found in $dir" >&2
+        exit 1
+    fi
+    for f in "${hw[@]}"; do
+        hw_labels+=("$(printf '%-*s  %s (%s)' "$width" "$(basename "$f" .txt)" \
+            "$(list_title "$f")" "$(list_count "$f")")")
+    done
+    menu "Hardware type:" "${hw_labels[@]}"
+    f="${hw[$MENU_CHOICE]}"
+    name=$(basename "$f" .txt)
+
+    lists=("$f")
+    list_labels=("All patches ($(basename "$f"), $(list_count "$f"))")
+    for f in "$dir/$name"-feature-*.txt; do
+        [ -f "$f" ] || continue
+        lists+=("$f")
+        list_labels+=("$(list_title "$f" | sed 's/^.*: //') ($(basename "$f"), $(list_count "$f"))")
+    done
+    if [ "${#lists[@]}" -eq 1 ]; then
+        echo "No per-feature lists for $name; checking all patches." >&2
+        MENU_CHOICE=0
+    else
+        menu "Patches to check for $name:" "${list_labels[@]}"
+    fi
+    SHA_LIST_FILE="${lists[$MENU_CHOICE]}"
+    echo "" >&2
+    echo "Checking $(basename "$SHA_LIST_FILE") ($(list_count "$SHA_LIST_FILE"))" >&2
+}
+
+if [ "$INTERACTIVE" -eq 1 ]; then
+    [ "$#" -le 1 ] || usage
+    LIST_DIR="${1:-$SCRIPT_DIR}"
+    if [ ! -d "$LIST_DIR" ]; then
+        echo "Directory not found: $LIST_DIR" >&2
+        exit 1
+    fi
+    if [ ! -t 0 ]; then
+        echo "Interactive mode (-i) needs a terminal" >&2
+        exit 1
+    fi
+    choose_list "$LIST_DIR"
+else
+    [ "$#" -eq 1 ] || usage
+    SHA_LIST_FILE="$1"
 fi
 
-SHA_LIST_FILE="$1"
 if [ ! -f "$SHA_LIST_FILE" ]; then
     echo "File not found: $SHA_LIST_FILE" >&2
     exit 1
 fi
+# Use an absolute path, since the script may cd to LINUX_GIT below
+SHA_LIST_FILE="$(cd "$(dirname "$SHA_LIST_FILE")" && pwd)/$(basename "$SHA_LIST_FILE")"
 
 # Enable debug output if verbose mode is set
 if [ "$VERBOSE" -eq 1 ]; then
@@ -84,10 +198,11 @@ fi
 # Do not let inherited git environment variables override that selection.
 unset $(git rev-parse --local-env-vars)
 
-# Check for Linux git repo in current directory or via LINUX_GIT
+# Check for Linux git repo in current directory or via LINUX_GIT. Any git repo
+# is not enough: running from this list repo must still fall back to LINUX_GIT.
 check_linux_repo() {
     local repo_dir="$1"
-    git -C "$repo_dir" rev-parse --git-dir >/dev/null 2>&1
+    git -C "$repo_dir" rev-parse --verify --quiet HEAD:Kbuild >/dev/null 2>&1
 }
 
 if ! check_linux_repo "."; then
@@ -147,6 +262,44 @@ print_section() {
     echo "$title"
     echo "${underline// /_}"
     printf '%s\n' "$@"
+}
+
+# Commits whose message contains a title can be newer than the commit with
+# that title, such as Revert "..." or BACKPORTS: Fix "...". These helpers
+# read "SHA SUBJECT" lines, newest first, and prefer a commit whose subject
+# is the title $1. Subjects are compared without their "PREFIX: SAUCE:" tags,
+# like the titles.
+TITLE_MATCH_AWK='
+    function is_title(line,    s) {
+        s = substr(line, index(line, " ") + 1)
+        sub(/^([A-Za-z0-9_\/.-]+:[[:space:]]+)*SAUCE:[[:space:]]+/, "", s)
+        return s == ENVIRON["TITLE_BASENAME"]
+    }'
+
+# Print all lines, those whose subject is the title first
+exact_title_first() {
+    TITLE_BASENAME="$1" awk "$TITLE_MATCH_AWK"'
+        { if (is_title($0)) print; else rest[++n] = $0 }
+        END { for (i = 1; i <= n; i++) print rest[i] }'
+}
+
+# Print the SHA of the newest commit on $1 whose subject is the title $2,
+# looking at up to 10 commits that contain it, else of the newest such commit.
+# Each git log stops at its first match, which keeps this as fast as a plain
+# -n 1 search when the newest match is the right one.
+title_reference_sha() {
+    local upstream="$1" title_basename="$2" skip line first=""
+    for skip in 0 1 2 3 4 5 6 7 8 9; do
+        line=$(git log "$upstream" --no-merges --format='%H %s' --grep="$title_basename" \
+            --fixed-strings -n 1 --skip="$skip")
+        [ -z "$line" ] && break
+        [ -z "$first" ] && first="${line%% *}"
+        if [ -n "$(echo "$line" | TITLE_BASENAME="$title_basename" awk "$TITLE_MATCH_AWK"'is_title($0)')" ]; then
+            echo "${line%% *}"
+            return
+        fi
+    done
+    echo "$first"
 }
 
 # Setup upstream: determine if it's a URL or existing remote/branch
@@ -223,7 +376,7 @@ while IFS= read -r line; do
             fi
         fi
         TITLE_BASENAME=$(echo "$TITLE" | sed -E 's/^([A-Za-z0-9_/.-]+:[[:space:]]+)*SAUCE:[[:space:]]+//')
-        REFERENCE_SHA=$(git log "$UPSTREAM" --no-merges --format='%H' --grep="$TITLE_BASENAME" --fixed-strings -n 1)
+        REFERENCE_SHA=$(title_reference_sha "$UPSTREAM" "$TITLE_BASENAME")
         if [ -z "$REFERENCE_SHA" ]; then
             report "BADSHA" "$ABBREV" "$line"
             continue
@@ -292,7 +445,7 @@ while IFS= read -r line; do
                 break
             fi
         fi
-    done < <(grep -F "$TITLE_BASENAME" "$BRANCH_LOG_CACHE")
+    done < <(grep -F "$TITLE_BASENAME" "$BRANCH_LOG_CACHE" | exact_title_first "$TITLE_BASENAME")
     # No branch commit had matching title → report ABSENT
     if [ "$MATCH_FOUND" -eq 0 ]; then
         report "ABSENT" "$ABBREV" "$line"

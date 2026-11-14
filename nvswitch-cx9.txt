@@ -1,13 +1,192 @@
 # NVIDIA ConnectX-9 NVSwitch Bridge Patches
 # Format: COMMIT_SHA | TITLE
+#
+# This list is organized by the same groupings found in the
+# Linux Kernel Patch Support for ConnectX-8 and ConnectX-9 guide:
+#
+# https://networking-docs.nvidia.com/linuxkernelpatchforconnectx8andconnectx9/
+#
+# Entries under "Related" and "Upstream fixes" are not in the guide. They
+# are other upstream patches for the same device, and upstream fixes
+# found through Fixes: tags.
+#
+# Each supported feature is also available as its own list:
+#
+#   nvswitch-cx9-feature-200g-per-lane.txt
+#   nvswitch-cx9-feature-hws.txt
+#
+# ConnectX-9 support builds on ConnectX-8; verify nvswitch-cx8.txt as well.
 
-## CX-9 Enablement
-# Enable configurations
+
+## ConnectX-9 Enablement
+# ConnectX-9 PCI device ID
+# Minimum Linux kernel release: 6.16
 ad4f6df4f384 | net/mlx5: Update the list of the PCI supported devices
 
-## 200Gbps Per Lane Link Modes in CX-9
-# ConnectX-9 support
+## 200Gbps Per Lane Link Modes in ConnectX-9
+# 200Gbps per lane ethtool/mlx5 link modes, FEC settings and RDMA speeds
+# Minimum Linux kernel release: 6.15 - 6.16
 4897f9b7f8bd | ethtool: Add support for 200Gbps per lane link modes
 ee0a4fc396f1 | net/mlx5: Add support for 200Gbps per lane link modes
 4e343c11efbb | net/mlx5e: Support FEC settings for 200G per lane link modes
 d00d16bcbc25 | RDMA/mlx5: Add support for 200Gbps per lane speeds
+
+# Related (ConnectX-9): IFC prerequisite for 200G per lane FEC
+387bef82d0b4 | net/mlx5: Update mlx5_ifc to support FEC for 200G per lane link modes
+
+# Upstream fixes (Fixes: tag) for patches in this section
+6d0477d0d067 | net/mlx5e: Fix missing FEC RS stats for RS_544_514_INTERLEAVED_QUAD
+c84ce45a7a3f | net/mlx5e: Fix reporting support for all RS FEC variants
+802eedcc0b25 | net/mlx5e: Fix missing FEC mode mapping for RS_544_514_INTERLEAVED_QUAD
+
+## Hardware Steering (HWS)
+# Hardware-managed flow steering. SW steering (SWS) is not supported
+# on ConnectX-9, so HWS is required for flow steering offloads
+# Minimum Linux kernel release: 6.12 - 6.18
+34c626c3004a | net/mlx5: Added missing mlx5_ifc definition for HW Steering
+00b9f0daefd7 | net/mlx5: Added missing definitions in preparation for HW Steering
+504e536d9010 | net/mlx5: HWS, added actions handling
+71a1372b8275 | net/mlx5: HWS, added tables handling
+49674803542c | net/mlx5: HWS, added rules handling
+74a778b4a63f | net/mlx5: HWS, added definers handling
+472dd792348f | net/mlx5: HWS, added matchers functionality
+0869701cba3d | net/mlx5: HWS, added FW commands handling
+aefc15a0fa1c | net/mlx5: HWS, added modify header pattern and args handling
+6c5e68254027 | net/mlx5: HWS, added vport handling
+c61afff94373 | net/mlx5: HWS, added memory management handling
+2111bb970c78 | net/mlx5: HWS, added backward-compatible API handling
+d4a605e968e7 | net/mlx5: HWS, added debug dump and internal headers
+2ca62599aa0b | net/mlx5: HWS, added send engine and context handling
+510f9f61a112 | net/mlx5: HWS, added API and enabled HWS support
+e2e9ddf8775b | net/mlx5: HWS, updated API functions comments to kernel doc
+3f4c38df5b0f | net/mlx5: HWS, fixed error flow return values of some functions
+48eb74e878e0 | net/mlx5: fs, move steering common function to fs_cmd.h
+da2f660b3ba1 | net/mlx5: fs, make get_root_namespace API function
+940390d97690 | net/mlx5: fs, move hardware fte deletion function reset
+8ad0e9608c2c | net/mlx5: fs, remove unused member
+ef7b79b924e5 | net/mlx5: fs, separate action and destination into distinct struct
+1217e6989c99 | net/mlx5: fs, add support for no append at software level
+be461814aa4c | net/mlx5: HWS, check the correct variable in hws_send_ring_alloc_sq()
+19da17010a55 | net/mlx5: Fix wrong reserved field in hca_cap_2 in mlx5_ifc
+d8c561741ef8 | net/mlx5: HWS, fixed double-free in error flow of creating SQ
+d15525f30010 | net/mlx5: HWS, changed E2BIG error to a negative return code
+65b4eb9f3d1e | net/mlx5: HWS, removed wrong access to a number of rules variable
+5aa2184e2908 | net/mlx5: HWS, fixed double free in error flow of definer layout
+45bcbd49224a | net/mlx5: HWS, don't destroy more bwc queue locks than allocated
+9addffa34359 | net/mlx5: HWS, use lock classes for bwc locks
+e03cf321882b | net/mlx5: DR, moved all the SWS code into a separate directory
+a2740138ec65 | net/mlx5: HWS, renamed the files in accordance with naming convention
+530b69a26952 | net/mlx5: HWS: Fix memory leak in mlx5hws_definer_calc_layout
+10e0f0c018d5 | net/mlx5: HWS: Properly set bwc queue locks lock classes
+9a0155a709fa | net/mlx5: HWS, no need to expose mlx5hws_send_queues_open/close
+429776b6019b | net/mlx5: HWS, do not initialize native API queues
+020ca0abae4c | net/mlx5: HWS, remove the use of duplicated structs
+0647f27a5fac | net/mlx5: HWS, remove implementation of unused FW commands
+0a1ef807a403 | net/mlx5: HWS, denote how refcounts are protected
+c86963aae5b8 | net/mlx5: HWS, simplify allocations as we support only FDB
+cc611ab6c712 | net/mlx5: HWS, add error message on failure to move rules
+1ce840c7a659 | net/mlx5: HWS, change error flow on matcher disconnect
+ad4da6cc36ac | net/mlx5: HWS, remove wrong deletion of the miss table list
+05e3c287b987 | net/mlx5: HWS, reduce memory consumption of a matcher struct
+61fb92701b8a | net/mlx5: HWS, num_of_rules counter on matcher should be atomic
+2f851d1702dc | net/mlx5: HWS, separate SQ that HWS uses from the usual traffic SQs
+be482f1d10da | net/mlx5: HWS, fix definer's HWS_SET32 macro for negative offset
+a105db854cf2 | net/mlx5: HWS, handle returned error value in pool alloc
+85ab9ea32548 | net/mlx5: HWS, use the right size when writing arg data
+663e61225c40 | net/mlx5: HWS, support flow sampler destination
+d74ee6e197a2 | net/mlx5: HWS, set timeout on polling for completion
+95f68e06b41b | net/mlx5: fs, add counter object to flow destination
+31d1356b8fdc | net/mlx5: fs, add mlx5_fs_pool API
+cbfdefc44194 | net/mlx5: fs, add HWS root namespace functions
+0f3ecf5c57d8 | net/mlx5: fs, add HWS flow table API functions
+4160405f6c4d | net/mlx5: fs, add HWS flow group API functions
+c7e62a788a98 | net/mlx5: fs, add HWS actions pool
+aecd9d1020e3 | net/mlx5: fs, add HWS packet reformat API function
+b36315ca69cb | net/mlx5: fs, add HWS modify header API function
+b581f4266928 | net/mlx5: fs, manage flow counters HWS action sharing by refcount
+3fd62e943aeb | net/mlx5: fs, add dest table cache
+2ec6786ad0a6 | net/mlx5: fs, add HWS fte API functions
+8e2e08a6d1e0 | net/mlx5: fs, add support for dest vport HWS action
+866e50321256 | net/mlx5: fs, set create match definer to not supported by HWS
+c09cf80ed299 | net/mlx5: fs, add HWS get capabilities
+9fc43b5e3933 | net/mlx5: fs, add HWS to steering mode options
+ab6912ff6558 | net/mlx5: HWS, update flow - remove the use of dual RTCs
+3fc44ca44d7c | net/mlx5: HWS, update flow - support through bigger action RTC
+af02dbfe3740 | net/mlx5: HWS, rework the check if matcher size can be increased
+f9a5b34f9251 | net/mlx5: ifc: Reorganize mlx5_ifc_flow_table_context_bits
+34eea5b12a10 | net/mlx5e: CT: Add initial support for Hardware Steering
+554f9773fdee | net/mlx5e: CT: Make mlx5_ct_fs_smfs_ct_validate_flow_rule reusable
+066d49c199a6 | net/mlx5e: CT: Offload connections with hardware steering rules
+521992337f67 | net/mlx5: HWS, Rightsize bwc matcher priority
+cc2cc56fc6e6 | net/mlx5: fs, add API for sharing HWS action by refcount
+82d3639ef7dc | net/mlx5: fs, add support for flow meters HWS action
+32e658c84b6d | net/mlx5: fs, add support for dest flow sampler HWS action
+eae1389ab2f5 | net/mlx5: HWS, remove unused code for alias flow tables
+1a403ad383ab | net/mlx5: HWS, use list_move() instead of del/add
+8389f2de903c | net/mlx5: HWS, log the unsupported mask in definer
+eacc77a73275 | net/mlx5e: Use custom tunnel header for vxlan gbp
+36ef2575e78d | net/mlx5: HWS, Fix matcher action template attach
+b2ae16214ffe | net/mlx5: HWS, Remove unused element array
+38956bea7349 | net/mlx5: HWS, Make pool single resource
+d171ce3d9888 | net/mlx5: HWS, Refactor pool implementation
+43a2038c6d8a | net/mlx5: HWS, Cleanup after pool refactoring
+045626947665 | net/mlx5: HWS, Add fullness tracking to pool
+a68334f9750f | net/mlx5: HWS, Fix pool size optimization
+983d01b2ce0a | net/mlx5: HWS, Implement action STE pool
+593a9470a856 | net/mlx5: HWS, Use the new action STE pool
+22174f16f121 | net/mlx5: HWS, Cleanup matcher action STE table
+864531ca2072 | net/mlx5: HWS, Free unused action STE tables
+3db55f8cc8d3 | net/mlx5: HWS, Export action STE tables to debugfs
+5f2f8d8b6800 | net/mlx5: HWS, Fix IP version decision
+6991a975e416 | net/mlx5: HWS, Harden IP version definer checks
+f41f3edf0b15 | net/mlx5: HWS, Disallow matcher IP version mixing
+d2338a27fcee | net/mlx5: HWS, expose function mlx5hws_table_ft_set_next_ft in header
+fed5f4831281 | net/mlx5: HWS, add definer function to get field name str
+3c739d1624e3 | net/mlx5: HWS, expose polling function in header file
+b816743a182f | net/mlx5: HWS, introduce isolated matchers
+17e0accac577 | net/mlx5: HWS, support complex matchers
+9d4024edce10 | net/mlx5: HWS, force rehash when rule insertion failed
+4c56b5cbc323 | net/mlx5: HWS, fix counting of rules in the matcher
+041861b40f59 | net/mlx5: HWS, fix redundant extension of action templates
+ef94799a8741 | net/mlx5: HWS, rework rehash loop
+578b856b5e72 | net/mlx5: HWS, dump bad completion details
+ca7690dae126 | net/mlx5: SWS, fix reformat id error handling
+b206d9ec19df | net/mlx5: HWS, register reformat actions with fw
+0b6e452caf03 | net/mlx5: HWS, fix typo - 'nope' to 'nop'
+01e035fd0380 | net/mlx5: HWS, handle modify header actions dependency
+a540ee75945a | net/mlx5: HWS, Fix an error code in mlx5hws_bwc_rule_create_complex()
+a002602676cd | net/mlx5: HWS, Init mutex on the correct path
+b5e3c76f35ee | net/mlx5: HWS, fix missing ip_version handling in definer
+b8335829518e | net/mlx5: HWS, make sure the uplink is the last destination
+1619bdf4389c | net/mlx5: HWS, Add error checking to hws_bwc_rule_complex_hash_node_get()
+60afb51c8941 | net/mlx5: HWS, remove unused create_dest_array parameter
+26b06579d50d | net/mlx5: HWS, remove incorrect comment
+d8e7ab591b50 | net/mlx5: HWS, Export rule skip logic
+3dcac700d20b | net/mlx5: HWS, Refactor rule skip logic
+59807d071724 | net/mlx5: HWS, Create STEs directly from matcher
+c8332ce09691 | net/mlx5: HWS, Decouple matcher RX and TX sizes
+6b44fffdc7b7 | net/mlx5: HWS, Track matcher sizes individually
+29063103f864 | net/mlx5: HWS, Rearrange to prevent forward declaration
+96e4c4a1a5bc | net/mlx5: HWS, Shrink empty matchers
+a9aec713d0d9 | net/mlx5: Add HWS as secondary steering mode
+159846ffbaf5 | net/mlx5: HWS, Enable IPSec hardware offload in legacy mode
+2462c1b92172 | net/mlx5: HWS, fix bad parameter in CQ creation
+615b690612b7 | net/mlx5: HWS, fix simple rules rehash error flow
+4a842b1bf18a | net/mlx5: HWS, fix complex rules rehash error flow
+1a72298d27ce | net/mlx5: HWS, prevent rehash from filling up the queues
+7c60952f8358 | net/mlx5: HWS, don't rehash on every kind of insertion failure
+8a51507320eb | net/mlx5: HWS, Fix table creation UID
+2c0a959bebdc | net/mlx5: HWS, Fix memory leak in hws_pool_buddy_init error path
+a630f83592cd | net/mlx5: HWS, Fix memory leak in hws_action_get_shared_stc_nic error flow
+24b6e5314047 | net/mlx5: HWS, Fix uninitialized variables in mlx5hws_pat_calc_nop error flow
+00a50e4e8974 | net/mlx5: HWS, Fix pattern destruction in mlx5hws_pat_get_pattern error path
+6043819e707c | net/mlx5: fs, fix UAF in flow counter release
+efb877cf27e3 | net/mlx5: HWS, ignore flow level for multi-dest table
+d2d6f950cb43 | net/mlx5: CT: Use the correct counter offset
+cf9a8627b9a3 | net/mlx5: Prevent flow steering mode changes in switchdev mode
+906154caa7d3 | net/mlx5: HWS, Generalize complex matchers
+
+# Upstream fixes (Fixes: tag) for patches in this section
+41c5d104f338 | net/mlx5: fix unintentional sign extension on shift of dest_attr->vport.vhca_id
+86f1d0f063e4 | net/mlx5: HWS: Reject unsupported remove-header action
+bb09d0e64eca | net/mlx5: HWS, fix matcher leak on resize target setup failure

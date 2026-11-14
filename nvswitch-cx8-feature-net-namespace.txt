@@ -1,0 +1,34 @@
+# NVIDIA ConnectX-8 NVSwitch Bridge Patches: Net Namespace Awareness for IB Devices
+# Format: COMMIT_SHA | TITLE
+#
+# From the "Net Namespace Awareness for IB Devices" section of the Linux Kernel Patch
+# Support for ConnectX-8 and ConnectX-9 guide:
+#
+# https://networking-docs.nvidia.com/linuxkernelpatchforconnectx8andconnectx9/net-namespace-awareness-for-ib-devices
+#
+# Entries under "Related" and "Upstream fixes" are not in the guide. They
+# are other upstream patches for the same device, and upstream fixes
+# found through Fixes: tags.
+#
+# These patches are also part of nvswitch-cx8.txt, which adds
+# ConnectX-8 enablement and the other supported features.
+
+
+## Net Namespace Awareness for IB Devices
+# IB device net namespace inheritance and CAP_NET_RAW checks in
+# user namespaces
+# Minimum Linux kernel release: 6.17
+449728196d65 | RDMA/counter: Check CAP_NET_RAW check in user namespace for RDMA counters
+28ea058a2979 | RDMA/nldev: Check CAP_NET_RAW in user namespace for QP modify
+bd82467f17e0 | RDMA/mlx5: Check CAP_NET_RAW in user namespace for devx create
+4b527c23c92d | RDMA/uverbs: Check CAP_NET_RAW in user namespace for RAW QP create
+0498c2d9984e | RDMA/uverbs: Check CAP_NET_RAW in user namespace for QP create
+14957e8125e7 | RDMA/mlx5: Check CAP_NET_RAW in user namespace for anchor create
+95a89ec304c3 | RDMA/mlx5: Check CAP_NET_RAW in user namespace for flow create
+f458ccd2aa2c | RDMA/uverbs: Check CAP_NET_RAW in user namespace for flow create
+f1208b05574f | RDMA/ipoib: Use parent rdma device net namespace
+611d08207d31 | RDMA/mlx5: Allocate IB device with net namespace supplied from core dev
+8cffca866ba8 | RDMA/core: Extend RDMA device registration to be net namespace aware
+
+# Upstream fixes (Fixes: tag) for patches in this section
+98269398c02a | RDMA/uverbs: Add empty rdma_uattrs_has_raw_cap() declaration

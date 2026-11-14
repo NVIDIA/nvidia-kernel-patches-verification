@@ -1,0 +1,32 @@
+# NVIDIA ConnectX-9 NVSwitch Bridge Patches: 200Gbps Per Lane Link Modes in ConnectX-9
+# Format: COMMIT_SHA | TITLE
+#
+# From the "200Gbps Per Lane Link Modes in ConnectX-9" section of the Linux Kernel Patch
+# Support for ConnectX-8 and ConnectX-9 guide:
+#
+# https://networking-docs.nvidia.com/linuxkernelpatchforconnectx8andconnectx9/200gbps-per-lane-link-modes-in-connectx-9
+#
+# Entries under "Related" and "Upstream fixes" are not in the guide. They
+# are other upstream patches for the same device, and upstream fixes
+# found through Fixes: tags.
+#
+# These patches are also part of nvswitch-cx9.txt, which adds
+# ConnectX-9 enablement and the other supported features.
+# ConnectX-9 also needs the nvswitch-cx8-feature-* lists.
+
+
+## 200Gbps Per Lane Link Modes in ConnectX-9
+# 200Gbps per lane ethtool/mlx5 link modes, FEC settings and RDMA speeds
+# Minimum Linux kernel release: 6.15 - 6.16
+4897f9b7f8bd | ethtool: Add support for 200Gbps per lane link modes
+ee0a4fc396f1 | net/mlx5: Add support for 200Gbps per lane link modes
+4e343c11efbb | net/mlx5e: Support FEC settings for 200G per lane link modes
+d00d16bcbc25 | RDMA/mlx5: Add support for 200Gbps per lane speeds
+
+# Related (ConnectX-9): IFC prerequisite for 200G per lane FEC
+387bef82d0b4 | net/mlx5: Update mlx5_ifc to support FEC for 200G per lane link modes
+
+# Upstream fixes (Fixes: tag) for patches in this section
+6d0477d0d067 | net/mlx5e: Fix missing FEC RS stats for RS_544_514_INTERLEAVED_QUAD
+c84ce45a7a3f | net/mlx5e: Fix reporting support for all RS FEC variants
+802eedcc0b25 | net/mlx5e: Fix missing FEC mode mapping for RS_544_514_INTERLEAVED_QUAD
